@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DISC Assessment — Talento 3D</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #ffffff; --bg2: #f7f7f8; --bg3: #efefef;
+  --text: #1a1a1a; --text2: #6b7280; --text3: #9ca3af;
+  --border: #e5e7eb; --border2: #d1d5db;
+  --blue: #2980b9; --green: #27ae60; --red: #c0392b; --orange: #e67e22;
+  --radius: 8px; --radius-lg: 12px;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg2); color: var(--text); font-size: 13px; min-height: 100vh; }
+#app { max-width: 640px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+input:not([type=range]), select, textarea {
+  width: 100%; padding: 8px 10px; border: 1px solid var(--border2);
+  border-radius: var(--radius); background: var(--bg); color: var(--text);
+  font-size: 13px; font-family: inherit; outline: none; transition: border-color .15s;
+}
+input:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(41,128,185,.15); }
+label { font-size: 10px; color: var(--text2); display: block; margin-bottom: 3px; font-weight: 500; letter-spacing: .3px; }
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.2rem; }
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: 9px 18px; border: 1px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 13px; font-family: inherit; cursor: pointer; transition: all .12s; font-weight: 500; }
+.btn:hover { background: var(--bg2); }
+.btn:disabled { opacity: .38; cursor: not-allowed; }
+.btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+.btn-primary:hover:not(:disabled) { opacity: .88; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.disc-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+.disc-bar span:first-child { width: 14px; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+.disc-bar .track { flex: 1; background: var(--bg3); border-radius: 3px; height: 18px; overflow: hidden; border: 1px solid var(--border); }
+.disc-bar .fill { height: 100%; border-radius: 3px; display: flex; align-items: center; justify-content: flex-end; padding-right: 5px; transition: width .4s; }
+.disc-bar .fill span { font-size: 10px; color: #fff; font-weight: 700; }
+.tag { font-size: 9px; font-weight: 600; padding: 2px 7px; border-radius: 4px; flex-shrink: 0; margin-left: 6px; }
+.tag-green { color: var(--green); background: rgba(39,174,96,.12); }
+.tag-red   { color: var(--red);   background: rgba(192,57,43,.10); }
+.mode-card { border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 1.2rem; cursor: pointer; transition: all .15s; background: var(--bg); }
+.mode-card:hover { border-color: var(--blue); background: rgba(41,128,185,.04); }
+.pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+.pill-blue { background: rgba(41,128,185,.12); color: var(--blue); }
+.pill-green { background: rgba(39,174,96,.12); color: var(--green); }
+.alert { padding: 10px 14px; border-radius: var(--radius); font-size: 12px; margin-bottom: 12px; }
+.alert-red    { background: rgba(192,57,43,.08); border: 1px solid rgba(192,57,43,.25); color: var(--red); }
+.alert-green  { background: rgba(39,174,96,.08); border: 1px solid rgba(39,174,96,.25); color: var(--green); }
+.alert-blue   { background: rgba(41,128,185,.08); border: 1px solid rgba(41,128,185,.25); color: var(--blue); }
+.alert-orange { background: rgba(230,126,34,.08); border: 1px solid rgba(230,126,34,.25); color: var(--orange); }
+.encuadre-box { background: linear-gradient(135deg,rgba(41,128,185,.06),rgba(39,174,96,.06)); border: 1px solid rgba(41,128,185,.2); border-radius: var(--radius-lg); padding: 1.6rem 1.4rem; text-align: center; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; margin-right: 6px; vertical-align: middle; }
+.confiab-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.confiab-row:last-child { border-bottom: none; }
+.semaforo { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+.sem-green  { background: #27ae60; }
+.sem-yellow { background: #f39c12; }
+.sem-red    { background: #e74c3c; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+// ── SUPABASE ──────────────────────────────────────────────────────────────────
+const SB_URL = 'https://kiwzvpqdwunkajupyzyu.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtpd3p2cHFkd3Vua2FqdXB5enl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4NDI5NTUsImV4cCI6MjA5NTQxODk1NX0.VNfVERMNTu8J9VBEjdjJfgRTpPsqS7f_pZ7OFdL5MB8';
+const SB_H = { 'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=representation' };
+async function sbGet(t,f={}){
+  const q=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');
+  const r=await fetch(`${SB_URL}/rest/v1/${t}${q?'?'+q:''}`,{headers:SB_H});
+  if(!r.ok)throw new Error(await r.text()); return r.json();
+}
+async function sbInsert(t,row){
+  const r=await fetch(`${SB_URL}/rest/v1/${t}`,{method:'POST',headers:SB_H,body:JSON.stringify(row)});
+  if(!r.ok)throw new Error(await r.text()); return r.json();
+}
+async function sbUpdate(t,row,f){
+  const q=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');
+  const r=await fetch(`${SB_URL}/rest/v1/${t}?${q}`,{method:'PATCH',headers:SB_H,body:JSON.stringify(row)});
+  if(!r.ok)throw new Error(await r.text()); return r.json();
+}
+
+// ── 24 SETS ───────────────────────────────────────────────────────────────────
+const SETS=[
+  {k1:"SIC*",k2:"S*CD",p:["Siempre trato de tener en cuenta los sentimientos de los demás.","Generalmente puedo persuadir a los demás de mis puntos de vista.","Me gusta reconocer el mérito de los demás cuando corresponde.","Tengo un enfoque de la vida poco convencional."]},
+  {k1:"ICD*",k2:"ICDS",p:["Me preocupo por mi imagen personal.","Trabajo bien como parte de un equipo.","Casi nunca me doy por vencido en nada.","Tengo mucho cuidado de no ofender a nadie."]},
+  {k1:"*DSI",k2:"CD*I",p:["Soy minucioso y detallista en mi trabajo.","Mantengo mis decisiones con firmeza una vez tomadas.","Sigo siempre las instrucciones de mis superiores.","Creo que la vida está para disfrutarla."]},
+  {k1:"CS*I",k2:"*SDI",p:["Estoy dispuesto a escuchar las opiniones de los demás.","Trato de ayudar a otros siempre que puedo.","Generalmente logro que se haga lo que yo quiero.","Tengo una actitud alegre y amable."]},
+  {k1:"*C*S",k2:"ICDS",p:["Tengo buen sentido del humor.","Me gusta entender bien las cosas antes de actuar.","Puedo actuar sin preocuparme por las consecuencias.","No suelo perder la calma fácilmente."]},
+  {k1:"DSIC",k2:null,  p:["Soy una persona competitiva.","Trato de considerar los puntos de vista de los demás.","Soy sociable y tengo confianza al hablar con otros.","Me gusta mantener la paz siempre que puedo."]},
+  {k1:"*SDI",k2:"C*DI",p:["Me cuesta mucho enojarme.","Soy muy leal a mis amigos y socios.","Confío mucho en mis propias capacidades.","Trato de ser amable y cortés siempre que puedo."]},
+  {k1:"DI**",k2:"**SC",p:["Disfruto de los desafíos.","Me resulta fácil motivar a los demás.","Conozco bien mis propias limitaciones.","Me gusta resolver problemas usando la lógica y la razón."]},
+  {k1:"ISDC",k2:"ISD*",p:["Tengo una actitud optimista ante la vida.","Siempre trato de incluir a los demás en mis planes.","No me da miedo asumir riesgos.","Creo en dar respeto a quien se lo merece."]},
+  {k1:"DC*S",k2:"D*IS",p:["Me gusta probar cosas nuevas y conocer gente.","Siempre estoy dispuesto a escuchar críticas constructivas.","Creo que es importante ser amable y agradable con todos.","No creo en imponer mis ideas a los demás."]},
+  {k1:"IS*D",k2:"ISCD",p:["Me relaciono con facilidad en situaciones sociales.","Tengo una actitud relajada y fácil de llevar.","Me gusta leer o escuchar música.","Prefiero hacer las cosas rápido y con eficiencia."]},
+  {k1:"*DCS",k2:"ID*S",p:["Me comunico de forma entusiasta y animada.","Persisto en las tareas difíciles hasta terminarlas.","Soy una persona organizada y lógica.","Prefiero confiar en las personas tal como se muestran."]},
+  {k1:"DIS*",k2:"*ISC",p:["No me asusta involucrarme en una discusión.","Disfruto mucho de los eventos sociales.","Siempre estoy dispuesto a recibir consejos.","No tengo problema en dar marcha atrás si la situación lo requiere."]},
+  {k1:"CDIS",k2:"C*I*",p:["Prefiero pensar las cosas con cuidado antes de actuar.","Una vez que empiezo algo, me aseguro de terminarlo.","La gente suele confiar en mi palabra.","Confío en la naturaleza humana."]},
+  {k1:"S*C*",k2:"**CD",p:["Siempre estoy dispuesto a ayudar a los demás.","Prefiero tener un trabajo que me divierta.","Puedo admitir cuando otra persona tiene razón.","Soy una persona fuerte e independiente."]},
+  {k1:"I**D",k2:"*SCD",p:["Me siento cómodo con gente desconocida.","Soy empático con los sentimientos de los demás.","Siempre doy el beneficio de la duda.","Soy capaz de imponer mi personalidad cuando hace falta."]},
+  {k1:"CS*D",k2:"*SID",p:["Trato de ser diplomático y tener tacto.","Me siento conforme con mi vida actual.","Trato de mostrar una imagen lo más profesional posible.","Puedo ser bastante audaz a veces."]},
+  {k1:"IS*D",k2:"**CD",p:["Soy respetado, y quizás admirado, por mis colegas.","Disfruto ayudando a otros a resolver problemas.","Prefiero no buscar problemas donde no los hay.","Tengo un carácter fuerte y decidido."]},
+  {k1:"CDIS",k2:"*DIS",p:["No soy una persona ruidosa ni agresiva.","Me gusta actuar con independencia e iniciativa propia.","Disfruto de la compañía de los demás.","Soy una persona paciente."]},
+  {k1:"D*SI",k2:null,  p:["Creo en defenderme y hacerme valer.","Me adapto a ideas o conceptos nuevos sin dificultad.","No me altero con facilidad.","Prefiero ver el lado positivo de las cosas."]},
+  {k1:"S*DC",k2:"ISDC",p:["Tiendo a confiar en la mayoría de la gente.","No soy una persona demasiado ambiciosa.","Prefiero hacer las cosas antes que pensarlas tanto.","No me gusta involucrarme en situaciones de confrontación."]},
+  {k1:"I*DS",k2:"ICDS",p:["Disfruto hablar con las personas.","Casi nunca asumo riesgos innecesarios.","Puedo tomar decisiones rápidas en el momento.","Tengo mucho autocontrol."]},
+  {k1:"ICD*",k2:"I*DS",p:["Me llevo bien con los demás.","Me esfuerzo por hacer un trabajo de alta calidad.","No me da miedo decir lo que pienso.","Soy una persona tranquila y medida."]},
+  {k1:"DSIC",k2:"DSIC",p:["Me gusta estar activo todo el tiempo.","Me gusta llevarme bien con la mayor cantidad de gente posible.","Tengo un círculo de amigos amplio.","Soy una persona muy organizada y ordenada."]}
+];
+
+// ── ALGORITMO ─────────────────────────────────────────────────────────────────
+const CAL_U=[47.46,34.12,51.43,24.05], CAL_M=[41.67,42.67,30.00,35.29];
+const DC={D:'#c0392b',I:'#e67e22',S:'#27ae60',C:'#2980b9'};
+
+function pKey(k){if(!k)return[-1,-1,-1,-1];const m={D:0,I:1,S:2,C:3,'*':-1};return k.split('').map(c=>m[c]??-1);}
+function scoreW(ans,kf){const r=[0,0,0,0];ans.forEach(({mi,li},i)=>{const k=pKey(SETS[i][kf]);for(let p=0;p<4;p++){if(k[p]===-1)continue;r[k[p]]+=(p===mi?3:p===li?0:1);}});return r;}
+function normArr(r,cal){return r.map((v,i)=>Math.min(100,Math.max(0,Math.round(v/cal[i]*100))));}
+function computeProfiles(ans){
+  const U=normArr(scoreW(ans,'k1'),CAL_U),M=normArr(scoreW(ans,'k2'),CAL_M),C=U.map((v,i)=>Math.round((v+M[i])/2));
+  const o=a=>({D:a[0],I:a[1],S:a[2],C:a[3]});return{U:o(U),M:o(M),C:o(C)};
+}
+function derivarRasgos(d,i,s,c){
+  const mix=(p,q=null,r=null)=>r!==null?Math.round(p*.80+q*.15+r*.05):q!==null?Math.round(p*.90+q*.10):Math.round(p);
+  return{'Independencia':mix(d,i*.1),'Auto Confianza':mix(d,c*.1),'Eficiencia':mix(d,c,s),'Automotivacion':mix(d,i),
+    'Entusiasmo':mix(i,d*.1),'Amistoso':mix(i,s),'Sensitividad':mix(i,s,c),'Cooperativismo':mix(s,i),
+    'Paciencia':mix(s,c*.1),'Pensador Objetivo':mix(c,s),'Exactitud':mix(c,s*.1),'Persistencia':mix(c,d*.1)};
+}
+function calcularTop3Roles(rasgos){
+  const eng={'Independencia':'Independence','Entusiasmo':'Enthusiasm','Amistoso':'Friendliness','Cooperativismo':'Cooperativeness',
+    'Exactitud':'Accuracy','Automotivacion':'Self-motivation','Auto Confianza':'Self-confidence','Sensitividad':'Sensitivity',
+    'Pensador Objetivo':'Thoughtfulness','Persistencia':'Persistence','Paciencia':'Patience','Eficiencia':'Efficiency'};
+  const roles={'Pionero':['Independence','Self-motivation','Efficiency'],'Relacionista':['Enthusiasm','Friendliness','Self-confidence'],
+    'Apoyo':['Cooperativeness','Patience','Sensitivity'],'Analista':['Accuracy','Thoughtfulness','Persistence'],
+    'Motivador':['Enthusiasm','Cooperativeness','Friendliness'],'Innovador':['Independence','Enthusiasm','Self-motivation'],
+    'Finalizador':['Persistence','Efficiency','Accuracy'],'Especialista':['Accuracy','Thoughtfulness','Self-motivation'],
+    'Ancla':['Patience','Accuracy','Cooperativeness']};
+  const de={};Object.entries(rasgos).forEach(([k,v])=>{de[eng[k]]=v;});
+  const top=Object.entries(de).sort((a,b)=>b[1]-a[1]).map(([k])=>k);
+  const pts={};Object.entries(roles).forEach(([rol,rc])=>{let s=0;top.forEach((r,i)=>{if(rc.includes(r))s+=(12-i);});pts[rol]=s;});
+  const ord=Object.entries(pts).sort((a,b)=>b[1]-a[1]).map(([k])=>k);
+  return[ord[0],ord[1],ord[2]];
+}
+function today(){return new Date().toISOString().split('T')[0];}
+
+// ── CONSISTENCIA ──────────────────────────────────────────────────────────────
+// Pares de sets temáticamente similares — si el perfil es consistente
+// las respuestas deben apuntar al mismo factor dominante
+const PARES_CONSIST = [[0,6],[1,22],[3,9],[4,13],[8,10],[11,16],[14,20],[15,17],[18,7],[21,23]];
+
+function calcularConsistencia(ans) {
+  function factorDominante(a) {
+    const k=pKey(SETS[a.setIdx||0]?.k1||SETS[0].k1);
+    if(k[a.mi]!==-1) return k[a.mi];
+    return -1;
+  }
+  // Comparar factor elegido como MÁS en pares similares
+  let iguales=0, total=0;
+  PARES_CONSIST.forEach(([ia,ib])=>{
+    const fa=pKey(SETS[ia].k1)[ans[ia].mi];
+    const fb=pKey(SETS[ib].k1)[ans[ib].mi];
+    if(fa!==-1&&fb!==-1){total++;if(fa===fb)iguales++;}
+  });
+  return total>0?Math.round((iguales/total)*100)/100:0.7;
+}
+
+// ── TEMPORIZADOR ──────────────────────────────────────────────────────────────
+const TIMER = {
+  start: null,          // timestamp inicio cuestionario
+  setTimes: [],         // ms por set
+  setStart: null,       // timestamp inicio set actual
+  startSet(i) { this.setStart=Date.now(); },
+  endSet(i) {
+    if(this.setStart) { this.setTimes[i]=(Date.now()-this.setStart)/1000; this.setStart=null; }
+  },
+  totalSec() { return this.start ? Math.round((Date.now()-this.start)/1000) : 0; },
+  fmt(s) { const m=Math.floor(s/60),sec=s%60; return `${m}m ${sec.toString().padStart(2,'0')}s`; },
+  maxPausa() {
+    if(!this.setTimes.length) return {sec:0,set:0};
+    let max=0,idx=0;
+    this.setTimes.forEach((t,i)=>{if(t>max){max=t;idx=i;}});
+    return {sec:Math.round(max),set:idx+1,label:SETS[idx]?.label||`Set ${idx+1}`};
+  },
+  semaforo() {
+    const total=this.totalSec();
+    if(total<240)  return{color:'red',   cls:'sem-red',   txt:'Muy rápida (< 4 min)'};
+    if(total<600)  return{color:'green', cls:'sem-green', txt:'Normal (4–10 min)'};
+    if(total<1800) return{color:'green', cls:'sem-green', txt:'Reflexiva (10–30 min)'};
+    return{color:'orange',cls:'sem-yellow',txt:'Inusualmente lenta (> 30 min)'};
+  }
+};
+
+// ── ESTADO ────────────────────────────────────────────────────────────────────
+const ST={
+  screen:'modo', // modo|datos|encuadre|q|saving|result
+  modo:null,
+  empleadoData:null,
+  form:{empresa:'',unidad:'',nombre:'',apellido:'',legajo:'',sexo:'M',comentario:''},
+  cur:0, sel:'most',
+  ans:Array(24).fill(null).map(()=>({mi:null,li:null})),
+  result:null, error:null,
+};
+
+// URL params
+(()=>{
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('legajo')){ST.form.legajo=p.get('legajo');ST.modo='empleado';ST.screen='datos';}
+  if(p.get('modo')==='candidato'){ST.modo='candidato';ST.screen='datos';}
+})();
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render(){
+  const app=document.getElementById('app');
+  const screens={modo:hModo,datos:hDatos,encuadre:hEncuadre,q:hQ,saving:hSaving,result:hResult};
+  app.innerHTML=(screens[ST.screen]||hModo)();
+  attachEvents();
+}
+
+// ── PANTALLA 1: MODO ──────────────────────────────────────────────────────────
+function hModo(){return`
+  <div style="text-align:center;padding:1.5rem 0 1rem">
+    <div style="font-size:11px;font-weight:600;color:#2980b9;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">TALENTO 3D</div>
+    <h1 style="font-size:22px;font-weight:600;margin-bottom:4px">Evaluación DISC</h1>
+    <p style="font-size:12px;color:var(--text2)">Seleccioná cómo vas a participar</p>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+    <div class="mode-card" id="btnEmpleado">
+      <div style="font-size:32px;margin-bottom:8px">👤</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">Soy empleado</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.5">Trabajo en la empresa y tengo mi número de legajo</div>
+      <div class="pill pill-blue" style="margin-top:10px">Con legajo</div>
+    </div>
+    <div class="mode-card" id="btnCandidato">
+      <div style="font-size:32px;margin-bottom:8px">🔍</div>
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">Soy candidato</div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.5">Estoy en un proceso de selección o evaluación externa</div>
+      <div class="pill pill-green" style="margin-top:10px">Sin legajo</div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:var(--text3);text-align:center">24 pantallas · 10–15 minutos · Sin posibilidad de retroceder</p>`;}
+
+// ── PANTALLA 2: DATOS ─────────────────────────────────────────────────────────
+function hDatos(){
+  const f=ST.form, isEmp=ST.modo==='empleado', ed=ST.empleadoData;
+  const found=isEmp&&ed;
+  return`
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.2rem">
+    <button id="btnBackModo" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--text2)">←</button>
+    <div>
+      <h2 style="font-size:18px;font-weight:600;margin:0">${isEmp?'Datos del empleado':'Datos del candidato'}</h2>
+      <p style="font-size:11px;color:var(--text2);margin:0">${isEmp?'Ingresá tu legajo para buscarte en el sistema':'Completá tus datos antes de comenzar'}</p>
+    </div>
+  </div>
+  ${ST.error?`<div class="alert alert-red">${ST.error}</div>`:''}
+  ${found?`<div class="alert alert-green">✓ Empleado encontrado: <strong>${ed.colaborador}</strong> — ${ed.empresa}${ed.unidad_de_negocio?' / '+ed.unidad_de_negocio:''}</div>`:''}
+  <div class="card">
+    <div style="display:grid;gap:10px">
+      ${isEmp?`
+      <div>
+        <label>Número de legajo *</label>
+        <div style="display:flex;gap:8px">
+          <input id="fLegajo" value="${f.legajo}" placeholder="Ej: 1234" style="flex:1">
+          <button class="btn btn-primary" id="btnBuscar" style="flex-shrink:0">Buscar →</button>
+        </div>
+        <p style="font-size:10px;color:var(--text3);margin-top:4px">Tu RRHH te proporcionó este número</p>
+      </div>`:''}
+      ${!isEmp||found?`
+      <div class="grid2">
+        <div><label>Apellido *</label><input id="fApellido" value="${ed?.colaborador?.split(',')[0]?.trim()||f.apellido}" placeholder="Apellido" ${found?'disabled style="opacity:.6"':''}></div>
+        <div><label>Nombre *</label><input id="fNombre" value="${ed?.colaborador?.split(',')[1]?.trim()||f.nombre}" placeholder="Nombre" ${found?'disabled style="opacity:.6"':''}></div>
+      </div>
+      <div><label>Empresa *</label><input id="fEmpresa" value="${ed?.empresa||f.empresa}" placeholder="Empresa" ${found?'disabled style="opacity:.6"':''}></div>
+      <div><label>Área / Unidad de negocio</label><input id="fUnidad" value="${ed?.unidad_de_negocio||f.unidad}" placeholder="Ej: Comercial, Operaciones..." ${found?'disabled style="opacity:.6"':''}></div>
+      <div class="grid2">
+        <div><label>Sexo</label>
+          <select id="fSexo"><option value="M" ${f.sexo==='M'?'selected':''}>Masculino</option><option value="F" ${f.sexo==='F'?'selected':''}>Femenino</option></select>
+        </div>
+        <div><label>Comentarios</label><input id="fComentario" value="${f.comentario}" placeholder="Puesto, área, etc."></div>
+      </div>
+      <button class="btn btn-primary" id="btnIniciar" style="width:100%;padding:11px;margin-top:4px">Continuar →</button>
+      `:`<p style="font-size:12px;color:var(--text2);text-align:center;padding:1rem">Ingresá tu legajo y hacé clic en <strong>Buscar</strong></p>`}
+    </div>
+  </div>`;}
+
+// ── PANTALLA 3: ENCUADRE ──────────────────────────────────────────────────────
+function hEncuadre(){
+  const nombre=ST.form.nombre||ST.empleadoData?.colaborador?.split(',')[1]?.trim()||'';
+  return`
+  <div style="min-height:80vh;display:flex;flex-direction:column;justify-content:center;gap:1.2rem">
+    <div class="encuadre-box">
+      <div style="font-size:36px;margin-bottom:12px">🎯</div>
+      <h2 style="font-size:20px;font-weight:600;margin-bottom:12px;color:var(--text)">
+        ${nombre?`Hola, ${nombre}`:''} antes de comenzar
+      </h2>
+      <div style="text-align:left;max-width:460px;margin:0 auto">
+        <p style="font-size:14px;line-height:1.7;color:var(--text);margin-bottom:12px">
+          Esta evaluación <strong>no tiene respuestas correctas ni incorrectas</strong>. 
+          No mide si sos bueno o malo en algo.
+        </p>
+        <p style="font-size:14px;line-height:1.7;color:var(--text);margin-bottom:12px">
+          Describe <strong>cómo sos naturalmente</strong> — tu estilo de comunicación, 
+          tus fortalezas y la forma en que preferís trabajar.
+        </p>
+        <p style="font-size:14px;line-height:1.7;color:var(--text);margin-bottom:16px">
+          Un perfil honesto te ayuda a vos y a tu equipo. 
+          Un perfil estratégico solo genera decisiones equivocadas sobre tu propio desarrollo.
+        </p>
+        <div style="background:rgba(41,128,185,.08);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px">
+          <p style="font-size:12px;color:var(--blue);font-weight:500;margin-bottom:4px">💡 Cómo responder</p>
+          <p style="font-size:12px;color:var(--text2);line-height:1.6">
+            En cada pantalla vas a ver 4 frases. Elegí primero la que <strong>más</strong> te describe 
+            y luego la que <strong>menos</strong> te describe. Seguí tu primera impresión — 
+            no hay que pensar demasiado.
+          </p>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btnEmpezar" style="padding:12px 32px;font-size:14px">
+        Empezar las 24 preguntas →
+      </button>
+      <p style="font-size:11px;color:var(--text3);margin-top:10px">Una vez que empezás, no podés retroceder</p>
+    </div>
+  </div>`;}
+
+// ── PANTALLA 4: CUESTIONARIO ──────────────────────────────────────────────────
+function hQ(){
+  const s=SETS[ST.cur],a=ST.ans[ST.cur],isMost=ST.sel==='most';
+  const ic=isMost?'#27ae60':'#c0392b';
+  const ibg=isMost?'rgba(39,174,96,.07)':'rgba(192,57,43,.07)';
+  const ibr=isMost?'rgba(39,174,96,.3)':'rgba(192,57,43,.25)';
+  const phrases=s.p.map((ph,pi)=>{
+    const isM=a.mi===pi,isL=a.li===pi,dis=!isMost&&a.mi===pi;
+    let brd='var(--border2)',bg='var(--bg)',tag='';
+    if(isM){brd='#27ae60';bg='rgba(39,174,96,.07)';tag=`<span class="tag tag-green">MÁS</span>`;}
+    if(isL){brd='#c0392b';bg='rgba(192,57,43,.07)';tag=`<span class="tag tag-red">MENOS</span>`;}
+    return`<button class="ph-btn" data-pi="${pi}" style="text-align:left;background:${bg};border:2px solid ${brd};border-radius:var(--radius);padding:11px 13px;cursor:${dis?'not-allowed':'pointer'};opacity:${dis?.28:1};display:flex;align-items:center;width:100%;font-family:inherit;margin-bottom:8px;transition:border-color .12s">
+      <span style="font-size:11px;color:var(--text2);min-width:18px;flex-shrink:0">${pi+1}.</span>
+      <span style="font-size:13px;color:var(--text);flex:1;line-height:1.45;text-align:left">${ph}</span>${tag}
+    </button>`;
+  }).join('');
+  const name=ST.form.nombre?(ST.form.apellido?`${ST.form.apellido}, ${ST.form.nombre}`:ST.form.nombre):(ST.empleadoData?.colaborador||'');
+  return`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <span style="font-size:11px;color:var(--text2)">${name}</span>
+    <span style="font-size:12px;font-weight:600;color:var(--text2)">${ST.cur+1} / 24</span>
+  </div>
+  <div style="height:4px;background:var(--bg3);border-radius:2px;margin-bottom:14px;overflow:hidden">
+    <div style="width:${Math.round(ST.cur/24*100)}%;height:100%;background:#2980b9;border-radius:2px;transition:width .3s"></div>
+  </div>
+  <div style="background:${ibg};border:1px solid ${ibr};border-radius:var(--radius);padding:9px 13px;margin-bottom:13px">
+    <span style="font-size:13px;font-weight:600;color:${ic}">${isMost?'▲  Seleccione la frase con la que MÁS se identifica':'▼  Seleccione la frase con la que MENOS se identifica'}</span>
+  </div>
+  <div>${phrases}</div>`;}
+
+// ── PANTALLA 5: GUARDANDO ─────────────────────────────────────────────────────
+function hSaving(){return`
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:12px">
+    <div style="width:40px;height:40px;border:3px solid rgba(41,128,185,.2);border-top-color:#2980b9;border-radius:50%;animation:spin .7s linear infinite"></div>
+    <p style="font-size:14px;font-weight:500">Guardando tu perfil DISC...</p>
+    <p style="font-size:12px;color:var(--text2)">Esto tarda unos segundos</p>
+  </div>`;}
+
+// ── PANTALLA 6: RESULTADO ─────────────────────────────────────────────────────
+function hResult(){
+  const r=ST.result, isEmp=ST.modo==='empleado';
+  const bar=(f,v)=>`
+    <div class="disc-bar">
+      <span style="color:${DC[f]}">${f}</span>
+      <div class="track"><div class="fill" style="width:${v}%;background:${DC[f]}">${v>=20?`<span>${v}</span>`:''}</div></div>
+      ${v<20?`<span style="font-size:11px;font-weight:600;color:${DC[f]};min-width:24px">${v}</span>`:''}
+    </div>`;
+  const pBlock=(title,sub,sc)=>`
+    <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.9rem 1rem;flex:1;min-width:130px">
+      <p style="font-size:11px;font-weight:600;margin:0 0 1px">${title}</p>
+      <p style="font-size:9px;color:var(--text2);margin:0 0 9px">${sub}</p>
+      ${['D','I','S','C'].map(f=>bar(f,sc[f])).join('')}
+    </div>`;
+  const rolColor={'Pionero':'#E74C3C','Relacionista':'#E67E22','Apoyo':'#2ECC71','Analista':'#3498DB',
+    'Motivador':'#9B59B6','Innovador':'#1ABC9C','Finalizador':'#F39C12','Especialista':'#34495E','Ancla':'#7F8C8D'};
+  const rc=rolColor[r.rol1]||'#2980b9';
+
+  // Bloque de confiabilidad — solo visible en el resultado
+  const sem=r.confiab.semaforo;
+  const consSem=r.confiab.consist>=0.75?{cls:'sem-green',txt:'Alta'}:r.confiab.consist>=0.5?{cls:'sem-yellow',txt:'Media'}:{cls:'sem-red',txt:'Baja'};
+  const confiabHtml=`
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <p style="font-size:12px;font-weight:600;margin:0">Indicadores de confiabilidad</p>
+        <span style="font-size:9px;color:var(--text3);font-style:italic">Solo visible para RRHH / consultor</span>
+      </div>
+      <div class="confiab-row">
+        <span style="font-size:12px;color:var(--text2)">⏱ Tiempo total</span>
+        <span style="font-size:12px;font-weight:600">${r.confiab.tiempoFmt}</span>
+      </div>
+      <div class="confiab-row">
+        <span style="font-size:12px;color:var(--text2)">📊 Ritmo de respuesta</span>
+        <span style="font-size:12px;font-weight:600"><span class="semaforo ${sem.cls}"></span>${sem.txt}</span>
+      </div>
+      <div class="confiab-row">
+        <span style="font-size:12px;color:var(--text2)">🔍 Consistencia interna</span>
+        <span style="font-size:12px;font-weight:600"><span class="semaforo ${consSem.cls}"></span>${consSem.txt} (${Math.round(r.confiab.consist*100)}%)</span>
+      </div>
+      <div class="confiab-row">
+        <span style="font-size:12px;color:var(--text2)">⏸ Mayor pausa</span>
+        <span style="font-size:12px;font-weight:600">Set ${r.confiab.maxPausa.set} — ${r.confiab.maxPausa.sec}s</span>
+      </div>
+      <div style="margin-top:10px;padding:10px;background:var(--bg2);border-radius:var(--radius)">
+        <p style="font-size:11px;color:var(--text2);line-height:1.6;margin:0">
+          ${sem.color==='red' && sem.txt.includes('rápida') ? '⚠️ Evaluación completada en tiempo inusualmente corto. Se recomienda validar el perfil en una conversación.' :
+            sem.color==='orange' ? '⚠️ Tiempo de respuesta inusualmente largo. Puede indicar análisis estratégico de las preguntas.' :
+            consSem.cls==='sem-red' ? '⚠️ Baja consistencia en respuestas similares. El perfil puede no reflejar con precisión el estilo natural.' :
+            '✓ El perfil tiene buena confiabilidad. El tiempo y la consistencia son coherentes con una evaluación honesta.'}
+        </p>
+      </div>
+    </div>`;
+
+  return`
+  <div style="text-align:center;padding:.8rem 0 .4rem">
+    <div style="font-size:11px;font-weight:600;color:#2980b9;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">RESULTADO</div>
+    <h2 style="font-size:19px;font-weight:600;margin-bottom:2px">${r.name}</h2>
+    <p style="font-size:11px;color:var(--text2)">${r.empresa}${r.unidad?' · '+r.unidad:''}</p>
+  </div>
+  <div style="background:${rc}15;border:1px solid ${rc}40;border-radius:var(--radius-lg);padding:1rem;margin:12px 0;text-align:center">
+    <p style="font-size:10px;font-weight:600;color:${rc};text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Rol principal</p>
+    <p style="font-size:22px;font-weight:700;color:${rc};margin-bottom:2px">${r.rol1}</p>
+    <p style="font-size:11px;color:var(--text2)">Secundario: ${r.rol2} · Terciario: ${r.rol3}</p>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    ${pBlock('Perfil Natural','Underlying',r.U)}
+    ${pBlock('Perfil Máscara','Mask',r.M)}
+    ${pBlock('Compuesto','Promedio',r.C)}
+  </div>
+  ${confiabHtml}
+  <div class="alert ${r.saved?'alert-green':'alert-red'}" style="margin-bottom:12px">
+    ${r.saved?`✓ Perfil guardado en Talento 3D · ${isEmp?'Tu perfil quedó activo':'Aparecerás en el módulo de Onboarding'}`:'⚠ No se pudo guardar. Mostrá este resultado a tu RRHH.'}
+  </div>
+  <button class="btn" style="width:100%" onclick="location.reload()">← Nueva evaluación</button>`;}
+
+// ── EVENTOS ───────────────────────────────────────────────────────────────────
+function attachEvents(){
+  document.getElementById('btnEmpleado')?.addEventListener('click',()=>{ST.modo='empleado';ST.screen='datos';ST.error=null;render();});
+  document.getElementById('btnCandidato')?.addEventListener('click',()=>{ST.modo='candidato';ST.screen='datos';ST.error=null;render();});
+  document.getElementById('btnBackModo')?.addEventListener('click',()=>{ST.screen='modo';ST.error=null;ST.empleadoData=null;render();});
+
+  ['fLegajo','fApellido','fNombre','fEmpresa','fUnidad','fSexo','fComentario'].forEach((id,idx)=>{
+    const keys=['legajo','apellido','nombre','empresa','unidad','sexo','comentario'];
+    const el=document.getElementById(id);
+    el?.addEventListener('input',e=>{ST.form[keys[idx]]=e.target.value;});
+    el?.addEventListener('change',e=>{ST.form[keys[idx]]=e.target.value;});
+  });
+
+  document.getElementById('btnBuscar')?.addEventListener('click',async()=>{
+    const legajo=document.getElementById('fLegajo')?.value?.trim();
+    if(!legajo){ST.error='Ingresá tu número de legajo.';render();return;}
+    ST.form.legajo=legajo;
+    const btn=document.getElementById('btnBuscar');
+    btn.innerHTML='<span class="spinner"></span>Buscando...';btn.disabled=true;
+    try{
+      const rows=await sbGet('colaboradores',{employee_id_number:legajo});
+      if(!rows||rows.length===0){ST.error=`No encontramos un empleado con legajo ${legajo}. Verificá el número o consultá a RRHH.`;ST.empleadoData=null;}
+      else{ST.empleadoData=rows[0];ST.error=null;}
+    }catch(e){ST.error='Error al conectar con el sistema. Intentá de nuevo.';}
+    render();
+  });
+
+  document.getElementById('btnIniciar')?.addEventListener('click',()=>{
+    const nombre=document.getElementById('fNombre')?.value?.trim()||ST.empleadoData?.colaborador?.split(',')[1]?.trim()||'';
+    const apellido=document.getElementById('fApellido')?.value?.trim()||ST.empleadoData?.colaborador?.split(',')[0]?.trim()||'';
+    const empresa=document.getElementById('fEmpresa')?.value?.trim()||ST.empleadoData?.empresa||'';
+    if(!empresa||(!nombre&&!apellido)){ST.error='Completá al menos empresa y nombre.';render();return;}
+    ST.form.nombre=nombre;ST.form.apellido=apellido;ST.form.empresa=empresa;
+    ST.form.unidad=document.getElementById('fUnidad')?.value?.trim()||ST.empleadoData?.unidad_de_negocio||'';
+    ST.form.sexo=document.getElementById('fSexo')?.value||'M';
+    ST.form.comentario=document.getElementById('fComentario')?.value?.trim()||'';
+    ST.error=null;ST.screen='encuadre';render();
+  });
+
+  document.getElementById('btnEmpezar')?.addEventListener('click',()=>{
+    ST.ans=Array(24).fill(null).map(()=>({mi:null,li:null}));
+    ST.cur=0;ST.sel='most';
+    TIMER.start=Date.now();TIMER.setTimes=[];TIMER.startSet(0);
+    ST.screen='q';render();
+  });
+
+  document.querySelectorAll('.ph-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const pi=parseInt(btn.dataset.pi);
+      const a=ST.ans[ST.cur];
+      if(ST.sel==='most'){
+        a.mi=pi;ST.sel='least';render();
+      }else{
+        if(pi===a.mi)return;
+        a.li=pi;
+        TIMER.endSet(ST.cur);
+        if(ST.cur<23){
+          ST.cur++;ST.sel='most';TIMER.startSet(ST.cur);render();
+        }else{
+          finalizarEvaluacion();
+        }
+      }
+    });
+  });
+}
+
+// ── FINALIZAR ─────────────────────────────────────────────────────────────────
+async function finalizarEvaluacion(){
+  ST.screen='saving';render();
+  const profiles=computeProfiles(ST.ans);
+  const{U,M,C}=profiles;
+  const rasgos=derivarRasgos(U.D,U.I,U.S,U.C);
+  const[rol1,rol2,rol3]=calcularTop3Roles(rasgos);
+  const consist=calcularConsistencia(ST.ans);
+  const totalSec=TIMER.totalSec();
+  const nombreCompleto=`${ST.form.apellido}, ${ST.form.nombre}`.replace(/^,\s*/,'').replace(/,\s*$/,'');
+
+  ST.result={
+    name:nombreCompleto,empresa:ST.form.empresa,unidad:ST.form.unidad,
+    U,M,C,rol1,rol2,rol3,saved:false,
+    confiab:{
+      totalSec,tiempoFmt:TIMER.fmt(totalSec),
+      semaforo:TIMER.semaforo(),
+      consist,
+      maxPausa:TIMER.maxPausa(),
+    }
+  };
+
+  try{
+    const fila={
+      empresa:ST.form.empresa, unidad_de_negocio:ST.form.unidad||'',
+      fecha:today(), colaborador:nombreCompleto,
+      independencia:rasgos['Independencia'], entusiasmo:rasgos['Entusiasmo'],
+      amistoso:rasgos['Amistoso'], cooperativismo:rasgos['Cooperativismo'],
+      exactitud:rasgos['Exactitud'], automotivacion:rasgos['Automotivacion'],
+      auto_confianza:rasgos['Auto Confianza'], sensitividad:rasgos['Sensitividad'],
+      pensador_objetivo:rasgos['Pensador Objetivo'], persistencia:rasgos['Persistencia'],
+      paciencia:rasgos['Paciencia'], eficiencia:rasgos['Eficiencia'],
+      rol_preferido_1:rol1, rol_preferido_2:rol2, rol_preferido_3:rol3,
+      d_score:U.D, i_score:U.I, s_score:U.S, c_score:U.C,
+      // Confiabilidad guardada para RRHH
+      tiempo_evaluacion_seg: totalSec,
+      consistencia_interna: Math.round(consist*100),
+    };
+    if(ST.modo==='empleado'&&ST.form.legajo){
+      fila.estado='Activo';
+      await sbUpdate('colaboradores',fila,{employee_id_number:ST.form.legajo});
+    }else{
+      fila.estado='Activo';fila.tipo='candidato';fila.employee_id_number=null;
+      await sbInsert('colaboradores',fila);
+    }
+    ST.result.saved=true;
+  }catch(e){console.error(e);ST.result.saved=false;}
+  ST.screen='result';render();
+}
+
+render();
+</script>
+</body>
+</html>
