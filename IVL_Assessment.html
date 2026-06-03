@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IVL — Índice de Vitalidad Laboral · Talento 3D</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #ffffff; --bg2: #f8fafc; --bg3: #f1f5f9;
+  --text: #1e293b; --text2: #64748b; --text3: #94a3b8;
+  --border: #e2e8f0; --border2: #cbd5e1;
+  --azul: #2980b9; --verde: #27ae60; --naranja: #e67e22;
+  --rojo: #c0392b; --amarillo: #f39c12;
+  --radius: 8px; --radius-lg: 14px;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg2); color: var(--text); font-size: 14px; min-height: 100vh; }
+#app { max-width: 640px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+
+/* INPUTS */
+input:not([type=radio]), select {
+  width: 100%; padding: 8px 11px; border: 1px solid var(--border2);
+  border-radius: var(--radius); background: var(--bg); color: var(--text);
+  font-size: 13px; font-family: inherit; outline: none; transition: border-color .15s;
+}
+input:focus, select:focus { border-color: var(--azul); box-shadow: 0 0 0 2px rgba(41,128,185,.13); }
+label { font-size: 10px; color: var(--text2); display: block; margin-bottom: 3px; font-weight: 600; letter-spacing: .3px; text-transform: uppercase; }
+
+/* BUTTONS */
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; border: 1px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 13px; font-family: inherit; cursor: pointer; transition: all .15s; font-weight: 500; }
+.btn:hover { background: var(--bg3); }
+.btn:disabled { opacity: .35; cursor: not-allowed; }
+.btn-primary { background: var(--azul); color: #fff; border-color: var(--azul); }
+.btn-primary:hover:not(:disabled) { opacity: .88; }
+
+/* CARDS */
+.card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.3rem; }
+
+/* MODE CARDS */
+.mode-card { border: 2px solid var(--border); border-radius: var(--radius-lg); padding: 1.3rem; cursor: pointer; transition: all .15s; background: var(--bg); }
+.mode-card:hover { border-color: var(--azul); background: rgba(41,128,185,.04); }
+
+/* FRECUENCIA BUTTONS */
+.freq-group { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.freq-btn {
+  flex: 1; min-width: 80px; padding: 9px 6px; border: 1.5px solid var(--border2);
+  border-radius: var(--radius); background: var(--bg); color: var(--text2);
+  font-size: 12px; font-family: inherit; cursor: pointer; transition: all .15s;
+  text-align: center; font-weight: 500; line-height: 1.3;
+}
+.freq-btn:hover { border-color: var(--azul); color: var(--azul); }
+.freq-btn.selected { border-color: var(--azul); background: rgba(41,128,185,.1); color: var(--azul); font-weight: 700; }
+.freq-btn.selected-5 { border-color: var(--verde); background: rgba(39,174,96,.1); color: var(--verde); font-weight: 700; }
+.freq-btn.selected-1 { border-color: var(--rojo); background: rgba(192,57,43,.1); color: var(--rojo); font-weight: 700; }
+
+/* DIMENSION BADGE */
+.dim-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 20px; font-size: 10px;
+  font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* ALERTS */
+.alert { padding: 10px 14px; border-radius: var(--radius); font-size: 12px; margin-bottom: 10px; }
+.alert-red    { background: rgba(192,57,43,.08); border: 1px solid rgba(192,57,43,.25); color: var(--rojo); }
+.alert-orange { background: rgba(230,126,34,.08); border: 1px solid rgba(230,126,34,.25); color: var(--naranja); }
+.alert-yellow { background: rgba(243,156,18,.08); border: 1px solid rgba(243,156,18,.25); color: var(--amarillo); }
+.alert-green  { background: rgba(39,174,96,.08);  border: 1px solid rgba(39,174,96,.25);  color: var(--verde); }
+.alert-blue   { background: rgba(41,128,185,.08); border: 1px solid rgba(41,128,185,.25); color: var(--azul); }
+
+/* SCORE RING */
+.ring-wrap { position: relative; width: 110px; height: 110px; flex-shrink: 0; }
+.ring-wrap svg { transform: rotate(-90deg); }
+.ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.ring-num { font-size: 26px; font-weight: 800; line-height: 1; }
+.ring-label { font-size: 9px; color: var(--text2); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+
+/* DIM BAR */
+.dim-bar-wrap { margin-bottom: 12px; }
+.dim-bar-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.dim-bar-track { height: 10px; background: var(--bg3); border-radius: 5px; overflow: hidden; border: 1px solid var(--border); }
+.dim-bar-fill { height: 100%; border-radius: 5px; transition: width .5s; }
+
+/* BRECHA */
+.brecha-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.brecha-row:last-child { border-bottom: none; }
+.brecha-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* SPINNER */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 6px; }
+
+/* GRID */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+@media (max-width: 500px) {
+  .freq-btn { font-size: 11px; padding: 8px 4px; min-width: 60px; }
+  .grid2 { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ── SUPABASE ──────────────────────────────────────────────────────────────────
+const SB_URL = 'https://kiwzvpqdwunkajupyzyu.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtpd3p2cHFkd3Vua2FqdXB5enl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4NDI5NTUsImV4cCI6MjA5NTQxODk1NX0.VNfVERMNTu8J9VBEjdjJfgRTpPsqS7f_pZ7OFdL5MB8';
+const SB_H = { 'apikey':SB_KEY,'Authorization':`Bearer ${SB_KEY}`,'Content-Type':'application/json','Prefer':'return=representation' };
+
+async function sbInsert(t,row){ const r=await fetch(`${SB_URL}/rest/v1/${t}`,{method:'POST',headers:SB_H,body:JSON.stringify(row)}); if(!r.ok)throw new Error(await r.text()); return r.json(); }
+async function sbGet(t,f={}){ const q=Object.entries(f).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&'); const r=await fetch(`${SB_URL}/rest/v1/${t}${q?'?'+q:''}`,{headers:SB_H}); if(!r.ok)throw new Error(await r.text()); return r.json(); }
+
+// ── PREGUNTAS ─────────────────────────────────────────────────────────────────
+const DIMS = [
+  { key:'motivacion', label:'Motivación & Proyecto Profesional', color:'#2980b9', icon:'🚀',
+    desc:'Mide si el trabajo actual alimenta el desarrollo profesional de la persona.' },
+  { key:'fit', label:'Fit con el Entorno', color:'#27ae60', icon:'🎯',
+    desc:'Mide la alineación entre la persona y su puesto, equipo, jefe y cultura.' },
+  { key:'balance', label:'Balance Demandas-Recursos', color:'#e67e22', icon:'⚖️',
+    desc:'Detecta riesgo de burnout o sub-exigencia según carga y recursos disponibles.' },
+  { key:'proposito', label:'Claridad de Propósito', color:'#9b59b6', icon:'🧭',
+    desc:'Mide si la persona encuentra sentido e impacto real en lo que hace.' },
+];
+
+// preguntas[dim][0] = empleado, preguntas[dim][1] = jefe
+const PREGUNTAS = {
+  motivacion: {
+    e: [
+      "¿Sentís que tu trabajo actual te ayuda a desarrollar las capacidades que querés tener?",
+      "¿Las habilidades que más usás en tu trabajo son las que más valorás de vos mismo?",
+      "¿Sentís que en este rol estás creciendo como profesional, no solo cumpliendo?",
+      "¿Podés ver una conexión clara entre lo que hacés hoy y dónde querés estar en tu carrera?",
+      "Cuando enfrentás un desafío difícil, ¿lo vivís como una oportunidad de aprendizaje?",
+    ],
+    j: [
+      "¿Este colaborador aprovecha activamente las oportunidades de aprendizaje que se le presentan?",
+      "¿Las tareas asignadas le permiten usar y desarrollar sus mejores capacidades?",
+      "¿Observás que este colaborador está creciendo en sus capacidades durante el último período?",
+      "¿Este colaborador tiene claridad sobre cómo su rol conecta con su desarrollo profesional?",
+      "¿Este colaborador enfrenta los desafíos como oportunidades de crecimiento?",
+    ]
+  },
+  fit: {
+    e: [
+      "¿Sentís que las tareas de tu puesto aprovechan lo que mejor sabés hacer?",
+      "¿Te sentís parte del equipo con el que trabajás?",
+      "Cuando tenés un logro importante, ¿sentís que es reconocido por quienes importa?",
+      "¿Entendés claramente qué se espera de vos en tu rol?",
+      "¿Sentís que los valores de la empresa se alinean con los tuyos?",
+    ],
+    j: [
+      "¿Las tareas asignadas a este colaborador aprovechan sus fortalezas reales?",
+      "¿Este colaborador se integra bien con el equipo?",
+      "¿Reconocés los logros de este colaborador de forma regular?",
+      "¿Este colaborador tiene claro qué se espera de él en su rol?",
+      "¿Este colaborador actúa de forma coherente con los valores de la organización?",
+    ]
+  },
+  balance: {
+    e: [
+      "¿Sentís que tenés la autonomía suficiente para hacer bien tu trabajo?",
+      "¿La carga de trabajo que tenés te permite hacerlo con la calidad que querés?",
+      "Cuando enfrentás un problema difícil, ¿sabés a quién acudir para resolverlo?",
+      "¿Sentís que tu trabajo te permite aprender y crecer?",
+      "¿Podés desconectarte del trabajo cuando terminás el día?",
+    ],
+    j: [
+      "¿Este colaborador tiene la autonomía que necesita para ser efectivo?",
+      "¿La carga de trabajo de este colaborador es sostenible en el tiempo?",
+      "¿Este colaborador tiene acceso real al apoyo que necesita cuando enfrenta dificultades?",
+      "¿Este colaborador tiene oportunidades reales de desarrollo en su rol actual?",
+      "¿Observás señales de agotamiento o desgaste en este colaborador?",
+    ]
+  },
+  proposito: {
+    e: [
+      "¿Sabés con claridad cómo tu trabajo contribuye a los resultados de la empresa?",
+      "¿Sentís que lo que hacés tiene impacto real, más allá de completar tareas?",
+      "¿Podés explicarle a alguien de afuera por qué tu trabajo importa?",
+      "¿Ves un futuro para vos dentro de esta empresa en los próximos dos años?",
+      "¿Elegirías este trabajo si tuvieras que empezar de nuevo hoy?",
+    ],
+    j: [
+      "¿Este colaborador entiende cómo su trabajo impacta en los resultados del equipo?",
+      "¿Este colaborador toma decisiones pensando en el impacto, no solo en cumplir?",
+      "¿Este colaborador comunica con convicción la importancia de su rol?",
+      "¿Ves potencial de crecimiento para este colaborador dentro de la organización?",
+      "¿Recomendarías a este colaborador para asumir más responsabilidades?",
+    ]
+  }
+};
+
+// Preguntas inversas (respuesta alta = peor): balance[4] = jefe balance[4]
+const INVERSAS_JEFE = { balance: [4] }; // "¿Observás señales de agotamiento?"
+
+const FREQ_LABELS = ['Nunca','Raramente','A veces','Frecuentemente','Siempre'];
+
+function today(){ return new Date().toISOString().split('T')[0]; }
+
+// ── ESTADO ────────────────────────────────────────────────────────────────────
+const ST = {
+  screen: 'modo',   // modo|datos|encuadre|q|saving|result
+  modo: null,       // 'empleado'|'jefe'
+  form: { empresa:'', colaborador:'', jefe:'', periodo: today().slice(0,7) },
+  cur: 0,           // pregunta actual 0-19
+  respuestas: Array(20).fill(null),
+  result: null,
+  error: null,
+};
+
+// URL params
+(()=>{
+  const p = new URLSearchParams(window.location.search);
+  if(p.get('modo')==='jefe'){ ST.modo='jefe'; ST.screen='datos'; }
+  if(p.get('modo')==='empleado'){ ST.modo='empleado'; ST.screen='datos'; }
+  if(p.get('empresa')) ST.form.empresa = decodeURIComponent(p.get('empresa'));
+  if(p.get('colaborador')) ST.form.colaborador = decodeURIComponent(p.get('colaborador'));
+  if(p.get('jefe')) ST.form.jefe = decodeURIComponent(p.get('jefe'));
+})();
+
+// Construir lista plana de 20 preguntas según modo
+function buildPreguntas(modo) {
+  const field = modo === 'empleado' ? 'e' : 'j';
+  const list = [];
+  DIMS.forEach(d => {
+    PREGUNTAS[d.key][field].forEach((q,i) => {
+      list.push({ texto:q, dim:d.key, idx:i });
+    });
+  });
+  return list;
+}
+
+// ── SCORING ───────────────────────────────────────────────────────────────────
+function calcScores(respuestas, modo) {
+  const dims = {};
+  let pregIdx = 0;
+  DIMS.forEach(d => {
+    let sum = 0;
+    for(let i=0;i<5;i++){
+      let r = respuestas[pregIdx] || 3;
+      // Invertir si corresponde
+      const eInversa = modo==='jefe' && INVERSAS_JEFE[d.key]?.includes(i);
+      if(eInversa) r = 6 - r;
+      sum += r;
+      pregIdx++;
+    }
+    dims[d.key] = Math.round((sum/5 - 1) / 4 * 100);
+  });
+  const ivl = Math.round(Object.values(dims).reduce((a,b)=>a+b,0) / 4);
+  return { dims, ivl };
+}
+
+function calcAlertas(scores) {
+  const alertas = [];
+  if(scores.ivl < 25) alertas.push({ nivel:'rojo', txt:'IVL crítico — riesgo de desvinculación en 90 días. Conversación urgente recomendada.' });
+  else if(scores.ivl < 40) alertas.push({ nivel:'naranja', txt:'IVL bajo — riesgo de desconexión emocional. Requiere atención en los próximos 30 días.' });
+  if(scores.dims.motivacion < 30) alertas.push({ nivel:'rojo', txt:'Motivación & Proyecto Profesional crítica — la persona no ve conexión entre su rol y su desarrollo.' });
+  if(scores.dims.proposito < 30) alertas.push({ nivel:'rojo', txt:'Claridad de Propósito crítica — alto riesgo de salida activa en el corto plazo.' });
+  if(scores.dims.balance < 30) alertas.push({ nivel:'naranja', txt:'Balance Demandas-Recursos bajo — riesgo de burnout o deterioro de desempeño.' });
+  return alertas;
+}
+
+function interpretacion(ivl) {
+  if(ivl >= 75) return { label:'Alta Vitalidad', color:'#27ae60', txt:'El colaborador está energizado, motivado y alineado con su entorno. Condiciones óptimas para el desarrollo.' };
+  if(ivl >= 55) return { label:'Vitalidad Media', color:'#f39c12', txt:'Hay aspectos positivos pero también áreas que requieren atención. Revisar las dimensiones más bajas.' };
+  if(ivl >= 35) return { label:'Vitalidad Baja', color:'#e67e22', txt:'El colaborador muestra señales de desconexión. Acción recomendada en el corto plazo.' };
+  return { label:'Vitalidad Crítica', color:'#c0392b', txt:'Situación de riesgo alto. Se recomienda conversación individual urgente con RRHH y el jefe directo.' };
+}
+
+function recomendaciones(scores) {
+  const recs = [];
+  if(scores.dims.motivacion < 55) recs.push({ dim:'Motivación & Proyecto', txt:'Conversación de carrera: ¿hacia dónde quiere crecer y cómo el rol actual puede potenciarlo?' });
+  if(scores.dims.fit < 55) recs.push({ dim:'Fit con el Entorno', txt:'Revisar asignación de tareas y reconocimiento. ¿El puesto aprovecha sus fortalezas reales?' });
+  if(scores.dims.balance < 55) recs.push({ dim:'Balance D-R', txt:'Evaluar carga de trabajo, autonomía y recursos disponibles. Prevenir deterioro antes del burnout.' });
+  if(scores.dims.proposito < 55) recs.push({ dim:'Propósito', txt:'Conectar el trabajo del colaborador con el impacto en el equipo y la empresa de forma explícita.' });
+  if(!recs.length) recs.push({ dim:'General', txt:'Mantener las condiciones actuales. Evaluar en 6 meses.' });
+  return recs;
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render() {
+  const app = document.getElementById('app');
+  const map = { modo:hModo, datos:hDatos, encuadre:hEncuadre, q:hQ, saving:hSaving, result:hResult };
+  app.innerHTML = (map[ST.screen]||hModo)();
+  ev();
+}
+
+// ── PANTALLA 1: MODO ──────────────────────────────────────────────────────────
+function hModo(){ return `
+  <div style="text-align:center;padding:1.8rem 0 1rem">
+    <div style="font-size:10px;font-weight:700;color:#9b59b6;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px">TALENTO 3D</div>
+    <h1 style="font-size:22px;font-weight:800;color:#1e293b;margin-bottom:4px">Índice de Vitalidad Laboral</h1>
+    <p style="font-size:13px;color:var(--text2);max-width:380px;margin:0 auto">Evaluación confidencial del bienestar y compromiso profesional</p>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+    <div class="mode-card" id="btnEmpleado">
+      <div style="font-size:30px;margin-bottom:8px">👤</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px;color:var(--text)">Soy el colaborador</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.5">Evaluás tu propia experiencia en el trabajo</div>
+    </div>
+    <div class="mode-card" id="btnJefe">
+      <div style="font-size:30px;margin-bottom:8px">👥</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px;color:var(--text)">Soy el jefe / líder</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.5">Evaluás a un colaborador de tu equipo</div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:var(--text3);text-align:center">20 preguntas · 5–8 minutos · Resultados confidenciales</p>`;}
+
+// ── PANTALLA 2: DATOS ─────────────────────────────────────────────────────────
+function hDatos(){ const f=ST.form,isE=ST.modo==='empleado'; return `
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:1.2rem">
+    <button id="btnBackModo" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--text2)">←</button>
+    <div>
+      <h2 style="font-size:18px;font-weight:700;margin:0">${isE?'Tus datos':'Datos del colaborador'}</h2>
+      <p style="font-size:11px;color:var(--text2);margin:0">${isE?'Completá tus datos antes de comenzar':'Indicá a quién estás evaluando'}</p>
+    </div>
+  </div>
+  ${ST.error?`<div class="alert alert-red">${ST.error}</div>`:''}
+  <div class="card">
+    <div style="display:grid;gap:10px">
+      <div><label>Empresa *</label><input id="fEmpresa" value="${f.empresa}" placeholder="Empresa"></div>
+      <div><label>${isE?'Tu nombre completo *':'Nombre del colaborador *'}</label>
+        <input id="fColab" value="${f.colaborador}" placeholder="${isE?'Ej: García, María':'Ej: García, María'}">
+      </div>
+      ${!isE?`<div><label>Tu nombre (jefe evaluador) *</label><input id="fJefe" value="${f.jefe}" placeholder="Ej: López, Juan"></div>`:''}
+      <div>
+        <label>Período</label>
+        <input type="month" id="fPeriodo" value="${f.periodo}">
+      </div>
+    </div>
+    <button class="btn btn-primary" id="btnIniciar" style="width:100%;margin-top:14px;padding:11px">
+      Continuar →
+    </button>
+    <p style="font-size:10px;color:var(--text3);text-align:center;margin-top:8px">Las respuestas son confidenciales. Los resultados los ve primero ${isE?'vos':'el colaborador'}.</p>
+  </div>`;}
+
+// ── PANTALLA 3: ENCUADRE ──────────────────────────────────────────────────────
+function hEncuadre(){ const isE=ST.modo==='empleado'; return `
+  <div style="min-height:75vh;display:flex;flex-direction:column;justify-content:center;gap:1.2rem">
+    <div class="card" style="border:2px solid rgba(155,89,182,.25);background:linear-gradient(135deg,rgba(155,89,182,.04),rgba(41,128,185,.04))">
+      <div style="text-align:center;margin-bottom:1.2rem">
+        <div style="font-size:40px;margin-bottom:8px">🌡️</div>
+        <h2 style="font-size:19px;font-weight:700;margin-bottom:4px">Antes de comenzar</h2>
+        <p style="font-size:12px;color:var(--text2)">${ST.form.colaborador}</p>
+      </div>
+      <div style="background:rgba(41,128,185,.07);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px">
+        <p style="font-size:13px;line-height:1.7;color:var(--text)">
+          ${isE
+            ? 'Este cuestionario mide tu <strong>nivel de energía y bienestar profesional</strong>. No evalúa tu desempeño ni tus habilidades técnicas. Es una herramienta de desarrollo — los resultados los recibís <strong>vos primero</strong>, antes que nadie más.'
+            : 'Este cuestionario mide tu <strong>percepción del bienestar y compromiso</strong> de este colaborador. Respondé con honestidad — la comparación entre tu visión y la del colaborador genera los insights más valiosos.'
+          }
+        </p>
+      </div>
+      <div style="display:grid;gap:8px;margin-bottom:16px">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <span style="color:#9b59b6;font-size:16px;flex-shrink:0">✦</span>
+          <span style="font-size:13px;color:var(--text)">No hay respuestas correctas o incorrectas</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <span style="color:#9b59b6;font-size:16px;flex-shrink:0">✦</span>
+          <span style="font-size:13px;color:var(--text)">Respondé según cómo es <em>habitualmente</em>, no en casos excepcionales</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <span style="color:#9b59b6;font-size:16px;flex-shrink:0">✦</span>
+          <span style="font-size:13px;color:var(--text)">Seguí tu primera impresión — no analices demasiado cada pregunta</span>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btnEmpezar" style="width:100%;padding:12px;font-size:14px">
+        Comenzar las 20 preguntas →
+      </button>
+    </div>
+  </div>`;}
+
+// ── PANTALLA 4: CUESTIONARIO ──────────────────────────────────────────────────
+function hQ(){
+  const preguntas = buildPreguntas(ST.modo);
+  const p = preguntas[ST.cur];
+  const dim = DIMS.find(d=>d.key===p.dim);
+  const pct = Math.round(ST.cur/20*100);
+  const dimStart = DIMS.findIndex(d=>d.key===p.dim)*5;
+  const enDim = ST.cur - dimStart + 1;
+
+  const freqBtns = FREQ_LABELS.map((lbl,i)=>{
+    const val = i+1;
+    const sel = ST.respuestas[ST.cur]===val;
+    let cls = sel ? (val===5?'selected-5':val===1?'selected-1':'selected') : '';
+    return `<button class="freq-btn ${cls}" data-val="${val}">${lbl}</button>`;
+  }).join('');
+
+  const isE = ST.modo==='empleado';
+  const nombre = ST.form.colaborador.split(',')[0]?.trim() || ST.form.colaborador;
+
+  return `
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <span style="font-size:11px;color:var(--text2)">${isE?nombre:'Evaluando: '+nombre}</span>
+    <span style="font-size:12px;font-weight:700;color:var(--text2)">${ST.cur+1} / 20</span>
+  </div>
+  <div style="height:4px;background:var(--bg3);border-radius:2px;margin-bottom:14px;overflow:hidden">
+    <div style="width:${pct}%;height:100%;background:${dim.color};border-radius:2px;transition:width .3s"></div>
+  </div>
+  <div class="dim-badge" style="background:${dim.color}18;color:${dim.color};border:1px solid ${dim.color}30">
+    ${dim.icon} ${dim.label} · ${enDim}/5
+  </div>
+  <div class="card" style="margin-bottom:14px;border-left:3px solid ${dim.color}">
+    <p style="font-size:15px;line-height:1.6;color:var(--text);font-weight:500">${p.texto}</p>
+  </div>
+  <div class="freq-group">${freqBtns}</div>
+  <div style="display:flex;justify-content:space-between;margin-top:5px">
+    <span style="font-size:10px;color:var(--text3)">Nunca</span>
+    <span style="font-size:10px;color:var(--text3)">Siempre</span>
+  </div>
+  ${ST.cur>0?`<button id="btnPrevQ" style="margin-top:14px;background:none;border:none;color:var(--text2);cursor:pointer;font-size:12px">← Anterior</button>`:''}
+  ${ST.respuestas[ST.cur]!==null&&ST.cur<19?`<button id="btnNextQ" class="btn btn-primary" style="float:right;margin-top:14px;padding:8px 20px">Siguiente →</button>`:''}
+  <div style="clear:both"></div>`;}
+
+// ── PANTALLA 5: GUARDANDO ─────────────────────────────────────────────────────
+function hSaving(){ return `
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:12px">
+    <div style="width:40px;height:40px;border:3px solid rgba(155,89,182,.2);border-top-color:#9b59b6;border-radius:50%;animation:spin .7s linear infinite"></div>
+    <p style="font-size:14px;font-weight:600">Calculando tu IVL...</p>
+    <p style="font-size:12px;color:var(--text2)">Procesando las 20 respuestas</p>
+  </div>`;}
+
+// ── PANTALLA 6: RESULTADO ─────────────────────────────────────────────────────
+function hResult(){
+  const r = ST.result;
+  const interp = interpretacion(r.ivl);
+  const alertas = calcAlertas(r);
+  const recs = recomendaciones(r);
+  const isE = ST.modo==='empleado';
+
+  // Ring SVG
+  const circ = 2*Math.PI*44;
+  const dash = (r.ivl/100)*circ;
+  const ring = `<div class="ring-wrap">
+    <svg width="110" height="110" viewBox="0 0 110 110">
+      <circle cx="55" cy="55" r="44" fill="none" stroke="#e2e8f0" stroke-width="9"/>
+      <circle cx="55" cy="55" r="44" fill="none" stroke="${interp.color}" stroke-width="9"
+        stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/>
+    </svg>
+    <div class="ring-center">
+      <span class="ring-num" style="color:${interp.color}">${r.ivl}</span>
+      <span class="ring-label">IVL</span>
+    </div>
+  </div>`;
+
+  // Dimension bars
+  const dimBars = DIMS.map(d=>{
+    const v = r.dims[d.key];
+    const c = v>=70?'#27ae60':v>=50?'#f39c12':v>=35?'#e67e22':'#c0392b';
+    return `<div class="dim-bar-wrap">
+      <div class="dim-bar-header">
+        <span style="font-size:12px;font-weight:600">${d.icon} ${d.label}</span>
+        <span style="font-size:13px;font-weight:700;color:${c}">${v}</span>
+      </div>
+      <div class="dim-bar-track">
+        <div class="dim-bar-fill" style="width:${v}%;background:${c}"></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Alertas
+  const alertasHtml = alertas.map(a=>`
+    <div class="alert alert-${a.nivel==='rojo'?'red':a.nivel==='naranja'?'orange':'yellow'}">
+      ${a.nivel==='rojo'?'🔴':a.nivel==='naranja'?'🟠':'🟡'} ${a.txt}
+    </div>`).join('');
+
+  // Recomendaciones
+  const recsHtml = recs.map(rec=>`
+    <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border)">
+      <span style="color:#9b59b6;font-size:16px;flex-shrink:0">→</span>
+      <div>
+        <p style="font-size:11px;font-weight:700;color:#9b59b6;margin-bottom:2px;text-transform:uppercase;letter-spacing:.5px">${rec.dim}</p>
+        <p style="font-size:13px;color:var(--text);line-height:1.6">${rec.txt}</p>
+      </div>
+    </div>`).join('');
+
+  const nombre = ST.form.colaborador;
+
+  return `
+  <div style="text-align:center;padding:.8rem 0 .6rem">
+    <div style="font-size:10px;font-weight:700;color:#9b59b6;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px">ÍNDICE DE VITALIDAD LABORAL</div>
+    <h2 style="font-size:18px;font-weight:700;margin-bottom:2px">${nombre}</h2>
+    <p style="font-size:11px;color:var(--text2)">${ST.form.empresa} · ${ST.form.periodo}${!isE?' · Evaluado por: '+ST.form.jefe:''}</p>
+  </div>
+
+  <!-- Score principal -->
+  <div class="card" style="display:flex;align-items:center;gap:1.4rem;margin-bottom:12px;border-top:4px solid ${interp.color}">
+    ${ring}
+    <div style="flex:1">
+      <p style="font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:${interp.color};margin-bottom:4px">${interp.label}</p>
+      <p style="font-size:13px;color:var(--text);line-height:1.6">${interp.txt}</p>
+    </div>
+  </div>
+
+  <!-- Dimensiones -->
+  <div class="card" style="margin-bottom:12px">
+    <p style="font-size:12px;font-weight:700;margin-bottom:12px">Detalle por dimensión</p>
+    ${dimBars}
+  </div>
+
+  <!-- Alertas (solo si hay) -->
+  ${alertas.length?`<div style="margin-bottom:12px">${alertasHtml}</div>`:''}
+
+  <!-- Recomendaciones -->
+  <div class="card" style="margin-bottom:12px">
+    <p style="font-size:12px;font-weight:700;margin-bottom:2px">Acciones recomendadas</p>
+    <p style="font-size:10px;color:var(--text2);margin-bottom:6px">${isE?'Para conversar con tu jefe o con RRHH':'Para conversar con el colaborador en los próximos 30 días'}</p>
+    ${recsHtml}
+  </div>
+
+  <!-- Nota confidencialidad -->
+  <div class="alert alert-blue" style="margin-bottom:12px">
+    🔒 ${isE
+      ? 'Tu informe fue guardado. RRHH y tu jefe ven alertas agregadas del equipo, no tus respuestas individuales.'
+      : 'Este informe fue guardado. Se comparará con la autopercepción del colaborador cuando ambos completen el cuestionario.'
+    }
+  </div>
+
+  <div class="alert ${r.saved?'alert-green':'alert-red'}" style="margin-bottom:12px">
+    ${r.saved?'✓ Resultados guardados en Talento 3D':'⚠ No se pudo guardar. Mostrá este resultado a RRHH.'}
+  </div>
+
+  <button class="btn" style="width:100%" onclick="location.reload()">← Nueva evaluación</button>`;}
+
+// ── EVENTOS ───────────────────────────────────────────────────────────────────
+function ev(){
+  document.getElementById('btnEmpleado')?.addEventListener('click',()=>{ ST.modo='empleado'; ST.screen='datos'; ST.error=null; render(); });
+  document.getElementById('btnJefe')?.addEventListener('click',()=>{ ST.modo='jefe'; ST.screen='datos'; ST.error=null; render(); });
+  document.getElementById('btnBackModo')?.addEventListener('click',()=>{ ST.screen='modo'; ST.error=null; render(); });
+
+  document.getElementById('fEmpresa')?.addEventListener('input',e=>ST.form.empresa=e.target.value);
+  document.getElementById('fColab')?.addEventListener('input',e=>ST.form.colaborador=e.target.value);
+  document.getElementById('fJefe')?.addEventListener('input',e=>ST.form.jefe=e.target.value);
+  document.getElementById('fPeriodo')?.addEventListener('change',e=>ST.form.periodo=e.target.value);
+
+  document.getElementById('btnIniciar')?.addEventListener('click',()=>{
+    const f = ST.form;
+    if(!f.empresa.trim()||!f.colaborador.trim()||(ST.modo==='jefe'&&!f.jefe.trim())){
+      ST.error='Completá todos los campos obligatorios.'; render(); return;
+    }
+    ST.error=null; ST.screen='encuadre'; render();
+  });
+
+  document.getElementById('btnEmpezar')?.addEventListener('click',()=>{
+    ST.respuestas=Array(20).fill(null); ST.cur=0; ST.screen='q'; render();
+  });
+
+  // Frecuencia
+  document.querySelectorAll('.freq-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const val=parseInt(btn.dataset.val);
+      ST.respuestas[ST.cur]=val;
+      // Avanzar automáticamente después de 350ms
+      setTimeout(()=>{
+        if(ST.cur<19){ ST.cur++; render(); }
+        else{ finalizarIVL(); }
+      },350);
+    });
+  });
+
+  document.getElementById('btnPrevQ')?.addEventListener('click',()=>{ if(ST.cur>0){ ST.cur--; render(); } });
+  document.getElementById('btnNextQ')?.addEventListener('click',()=>{ if(ST.cur<19){ ST.cur++; render(); } });
+}
+
+// ── FINALIZAR ─────────────────────────────────────────────────────────────────
+async function finalizarIVL(){
+  ST.screen='saving'; render();
+
+  const scores = calcScores(ST.respuestas, ST.modo);
+  const isE = ST.modo==='empleado';
+  const alertas = calcAlertas(scores);
+
+  ST.result = { ...scores, saved:false };
+
+  try{
+    const fila = {
+      empresa:       ST.form.empresa,
+      colaborador:   ST.form.colaborador,
+      evaluador:     isE ? ST.form.colaborador : ST.form.jefe,
+      tipo:          ST.modo,          // 'empleado' | 'jefe'
+      periodo:       ST.form.periodo,
+      fecha:         today(),
+      ivl_general:   scores.ivl,
+      motivacion:    scores.dims.motivacion,
+      fit_entorno:   scores.dims.fit,
+      balance_dr:    scores.dims.balance,
+      proposito:     scores.dims.proposito,
+      alerta_nivel:  alertas[0]?.nivel || 'verde',
+      respuestas:    JSON.stringify(ST.respuestas),
+    };
+    await sbInsert('ivl_evaluaciones', fila);
+    ST.result.saved = true;
+  }catch(e){
+    console.error('Supabase IVL error:', e);
+    ST.result.saved = false;
+  }
+
+  ST.screen='result'; render();
+}
+
+render();
+</script>
+</body>
+</html>
