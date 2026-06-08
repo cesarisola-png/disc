@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fit Persona-Cultura — Talento 3D</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0F1117;
+    --surface: #181C27;
+    --surface2: #1E2334;
+    --surface3: #242A3E;
+    --ink: #EEF0F8;
+    --ink2: #9098B8;
+    --ink3: #565E7A;
+    --border: #2A3050;
+    --accent: #6C8EFF;
+    --accent2: #4A6FE8;
+    --accent-glow: rgba(108,142,255,0.15);
+
+    --clan-color: #52C4A0;
+    --clan-bg: rgba(82,196,160,0.1);
+    --adho-color: #FF8C5A;
+    --adho-bg: rgba(255,140,90,0.1);
+    --merc-color: #F5C842;
+    --merc-bg: rgba(245,200,66,0.1);
+    --jerar-color: #A78BFA;
+    --jerar-bg: rgba(167,139,250,0.1);
+
+    --green: #4ADE80;
+    --yellow: #F5C842;
+    --orange: #FF8C5A;
+    --red: #FF5E5E;
+
+    --radius: 12px;
+    --radius-lg: 18px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+  .header-brand span {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--ink2);
+    font-family: 'Inter', sans-serif;
+    margin-top: 1px;
+    letter-spacing: 0;
+  }
+  .header-badge {
+    background: var(--accent-glow);
+    border: 1px solid rgba(108,142,255,0.3);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 32px 12px;
+  }
+  .progress-bar-bg {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+  .progress-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--ink3);
+  }
+  .progress-steps span.active { color: var(--accent); }
+
+  /* ── MAIN ── */
+  .main {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 36px 24px 80px;
+  }
+
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── ENCUADRE ── */
+  .hero {
+    text-align: center;
+    padding: 48px 0 36px;
+  }
+  .hero-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(108,142,255,0.25);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 36px;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 14px;
+    letter-spacing: -0.5px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .hero p {
+    color: var(--ink2);
+    font-size: 16px;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.65;
+  }
+
+  /* ── CULTURAS GRID ── */
+  .culturas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 28px 0;
+  }
+  .cultura-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .cultura-card:hover { border-color: var(--border); }
+  .cultura-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+  }
+  .cultura-card h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .cultura-card p { font-size: 12px; color: var(--ink2); line-height: 1.5; }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin-bottom: 16px;
+  }
+  .card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .card p, .card li { font-size: 14px; color: var(--ink2); line-height: 1.65; }
+  .card ul { padding-left: 18px; }
+  .card ul li { margin-bottom: 5px; }
+
+  /* ── FORM ── */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink2);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .form-group input, .form-group select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+  .form-group input::placeholder { color: var(--ink3); }
+  .form-group select option { background: var(--surface2); }
+
+  /* ── SECCIÓN HEADER ── */
+  .seccion-header {
+    margin: 36px 0 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  .seccion-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .seccion-counter {
+    font-size: 12px;
+    color: var(--ink3);
+    background: var(--surface2);
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  /* ── ÍTEM LIKERT ── */
+  .item-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+  }
+  .item-card.answered { border-color: rgba(108,142,255,0.4); }
+  .item-card p {
+    font-size: 14px;
+    color: var(--ink);
+    margin-bottom: 14px;
+    line-height: 1.55;
+  }
+  .item-num {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink3);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+
+  .likert-wrap { display: flex; flex-direction: column; gap: 6px; }
+  .likert-scale { display: flex; gap: 6px; }
+  .likert-btn { flex: 1; }
+  .likert-btn input[type=radio] { display: none; }
+  .likert-btn label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 38px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink3);
+    transition: all 0.15s;
+  }
+  .likert-btn label:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-glow);
+  }
+  .likert-btn input[type=radio]:checked + label {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+  .likert-labels-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--ink3);
+    padding: 0 2px;
+  }
+
+  /* ── CULTURA TAG EN ÍTEMS ── */
+  .cultura-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .tag-clan  { background: var(--clan-bg);  color: var(--clan-color); }
+  .tag-adho  { background: var(--adho-bg);  color: var(--adho-color); }
+  .tag-merc  { background: var(--merc-bg);  color: var(--merc-color); }
+  .tag-jerar { background: var(--jerar-bg); color: var(--jerar-color); }
+
+  /* ── RADAR CHART ── */
+  .radar-container {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  .radar-container h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .radar-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .radar-bar-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .radar-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .radar-bar-label { font-size: 12px; font-weight: 500; }
+  .radar-bar-score { font-size: 13px; font-weight: 600; }
+  .radar-bar-track {
+    height: 6px;
+    background: var(--surface3);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .radar-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+
+  /* ── O-FIT SCORE ── */
+  .ofit-score-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    margin-bottom: 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .ofit-score-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+  }
+  .ofit-score-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink2);
+    margin-bottom: 12px;
+  }
+  .ofit-numero {
+    font-family: 'Syne', sans-serif;
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: -2px;
+  }
+  .ofit-interpretacion {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .ofit-descripcion {
+    font-size: 14px;
+    color: var(--ink2);
+    max-width: 380px;
+    margin: 0 auto;
+  }
+  .ofit-desglose {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--ink2);
+  }
+  .ofit-desglose strong { color: var(--ink); display: block; font-size: 16px; }
+
+  /* ── ALERTA KILL-SWITCH ── */
+  .alerta-rojo {
+    background: rgba(255,94,94,0.08);
+    border: 1.5px solid rgba(255,94,94,0.4);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .alerta-amarillo {
+    background: rgba(245,200,66,0.08);
+    border: 1.5px solid rgba(245,200,66,0.35);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .alerta-icon { font-size: 20px; flex-shrink: 0; }
+  .alerta-body { font-size: 14px; line-height: 1.6; }
+  .alerta-rojo    .alerta-titulo { font-weight: 600; color: var(--red);    margin-bottom: 4px; }
+  .alerta-amarillo .alerta-titulo { font-weight: 600; color: var(--yellow); margin-bottom: 4px; }
+  .alerta-body p { color: var(--ink2); }
+
+  /* ── COMPARATIVA CANDIDATO VS EMPRESA ── */
+  .comparativa-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  .comparativa-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .comp-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  .comp-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  .comp-label { font-weight: 500; }
+  .comp-scores { color: var(--ink2); }
+  .comp-track {
+    position: relative;
+    height: 8px;
+    background: var(--surface3);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .comp-bar-cand {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    border-radius: 4px;
+    opacity: 0.9;
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+  .comp-bar-emp {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    border-radius: 4px;
+    opacity: 0.4;
+    border: none;
+    background: repeating-linear-gradient(
+      45deg, transparent, transparent 3px, rgba(255,255,255,0.2) 3px, rgba(255,255,255,0.2) 6px
+    );
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+  .comp-leyenda {
+    display: flex;
+    gap: 16px;
+    font-size: 11px;
+    color: var(--ink2);
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .comp-leyenda span { display: flex; align-items: center; gap: 6px; }
+  .leyenda-dot { width: 10px; height: 6px; border-radius: 3px; }
+
+  /* ── RECOMENDACIONES ── */
+  .rec-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  .rec-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+  .rec-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .rec-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .rec-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .rec-body { font-size: 13px; color: var(--ink2); line-height: 1.6; }
+  .rec-body strong { color: var(--ink); display: block; margin-bottom: 3px; font-size: 14px; }
+
+  /* ── RESULTADO HERO ── */
+  .resultado-header {
+    padding: 36px 0 28px;
+    text-align: center;
+  }
+  .resultado-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  .resultado-header p { color: var(--ink2); font-size: 15px; }
+
+  /* ── LOADING ── */
+  .loading-screen {
+    text-align: center;
+    padding: 100px 24px;
+  }
+  .spinner {
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+    margin: 0 auto 20px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-screen p { color: var(--ink2); font-size: 14px; }
+
+  /* ── BOTONES ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 13px 26px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(108,142,255,0.3); }
+  .btn-primary:disabled { background: var(--surface3); color: var(--ink3); cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-secondary {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--ink2);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-group {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .btn-full { width: 100%; }
+
+  /* ── INFO CHIPS ── */
+  .chips-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0 28px;
+  }
+  .chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--ink2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .chip strong { color: var(--ink); }
+
+  /* ── FOOTER ── */
+  .footer-note {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--ink3);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .header { padding: 14px 16px; }
+    .main { padding: 20px 14px 60px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .culturas-grid { grid-template-columns: 1fr; }
+    .radar-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 26px; }
+    .btn-group { flex-direction: column-reverse; }
+    .btn-group .btn { width: 100%; justify-content: center; }
+    .ofit-numero { font-size: 56px; }
+    .ofit-desglose { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    Talento 3D
+    <span>Fit Persona-Cultura</span>
+  </div>
+  <div class="header-badge">🏛 Cameron & Quinn</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progressBar"></div>
+  </div>
+  <div class="progress-steps">
+    <span id="step-0">Inicio</span>
+    <span id="step-1">Datos</span>
+    <span id="step-2">Cuestionario</span>
+    <span id="step-3">Resultados</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ══════════════════════════════════
+       PANTALLA 0: ENCUADRE
+  ══════════════════════════════════ -->
+  <div class="screen active" id="screen-encuadre">
+    <div class="hero">
+      <div class="hero-icon">🏛</div>
+      <h1>¿Cuál es tu <em>cultura</em><br>natural de trabajo?</h1>
+      <p>Este cuestionario analiza tu perfil cultural y calcula qué tan bien encajás con la cultura de tu organización.</p>
+    </div>
+
+    <div class="culturas-grid">
+      <div class="cultura-card">
+        <div class="cultura-dot" style="background: var(--clan-color)"></div>
+        <h4 style="color: var(--clan-color)">Clan</h4>
+        <p>Colaboración, mentoría, sentido de familia. El equipo primero.</p>
+      </div>
+      <div class="cultura-card">
+        <div class="cultura-dot" style="background: var(--adho-color)"></div>
+        <h4 style="color: var(--adho-color)">Adhocracia</h4>
+        <p>Innovación, creatividad, emprendimiento. Romper moldes.</p>
+      </div>
+      <div class="cultura-card">
+        <div class="cultura-dot" style="background: var(--merc-color)"></div>
+        <h4 style="color: var(--merc-color)">Mercado</h4>
+        <p>Competencia, resultados, logro. Ganar importa.</p>
+      </div>
+      <div class="cultura-card">
+        <div class="cultura-dot" style="background: var(--jerar-color)"></div>
+        <h4 style="color: var(--jerar-color)">Jerarquía</h4>
+        <p>Procesos, control, estabilidad. Hacer las cosas bien.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Cómo funciona</h3>
+      <ul>
+        <li>24 preguntas sobre cómo preferís trabajar y qué valorás en un equipo.</li>
+        <li>Tu perfil DISC (si ya lo tenés) enriquece el análisis automáticamente.</li>
+        <li>Al final calculamos tu encaje con la cultura de tu organización.</li>
+        <li>Sin respuestas correctas — respondé según lo que realmente preferís.</li>
+      </ul>
+    </div>
+
+    <div class="chips-row">
+      <div class="chip">⏱ <strong>4–5 min</strong></div>
+      <div class="chip">📋 <strong>24 preguntas</strong></div>
+      <div class="chip">🔒 <strong>Confidencial</strong></div>
+    </div>
+
+    <button class="btn btn-primary btn-full" onclick="irADatos()">Comenzar →</button>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PANTALLA 1: DATOS
+  ══════════════════════════════════ -->
+  <div class="screen" id="screen-datos">
+    <div class="card" style="margin-top: 8px;">
+      <h3>Tus datos</h3>
+      <p style="margin-bottom: 20px; font-size: 13px; color: var(--ink2);">Para identificarte y vincular tu resultado a tu perfil.</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre y apellido *</label>
+          <input type="text" id="inp-nombre" placeholder="García, María">
+        </div>
+        <div class="form-group">
+          <label>Empresa *</label>
+          <input type="text" id="inp-empresa" placeholder="Nombre empresa">
+        </div>
+        <div class="form-group">
+          <label>Unidad / área</label>
+          <input type="text" id="inp-unidad" placeholder="Comercial, Operaciones…">
+        </div>
+        <div class="form-group">
+          <label>Período</label>
+          <input type="text" id="inp-periodo" placeholder="Ej: 2025-Q2">
+        </div>
+        <div class="form-group">
+          <label>Legajo (opcional)</label>
+          <input type="text" id="inp-legajo" placeholder="Solo empleados">
+        </div>
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="inp-tipo">
+            <option value="empleado">Empleado</option>
+            <option value="candidato">Candidato</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Scores DISC (opcional)</h3>
+      <p style="margin-bottom: 16px; font-size: 13px; color: var(--ink2);">Si ya completaste el DISC Assessment, ingresá tus scores para un análisis más preciso. Si no los tenés, dejá en blanco — el sistema calculará la proyección solo desde el cuestionario.</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>D — Dominancia (0–100)</label>
+          <input type="number" id="inp-d" min="0" max="100" placeholder="Ej: 72">
+        </div>
+        <div class="form-group">
+          <label>I — Influencia (0–100)</label>
+          <input type="number" id="inp-i" min="0" max="100" placeholder="Ej: 85">
+        </div>
+        <div class="form-group">
+          <label>S — Estabilidad (0–100)</label>
+          <input type="number" id="inp-s" min="0" max="100" placeholder="Ej: 40">
+        </div>
+        <div class="form-group">
+          <label>C — Cumplimiento (0–100)</label>
+          <input type="number" id="inp-c" min="0" max="100" placeholder="Ej: 30">
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="irAPantalla('screen-encuadre')">← Atrás</button>
+      <button class="btn btn-primary" onclick="validarDatosYContinuar()">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PANTALLA 2: CUESTIONARIO
+  ══════════════════════════════════ -->
+  <div class="screen" id="screen-cuestionario">
+    <div id="items-container"></div>
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="irAPantalla('screen-datos')">← Atrás</button>
+      <button class="btn btn-primary" id="btn-calcular" onclick="calcularResultados()" disabled>Ver mi análisis →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PANTALLA 3: GUARDANDO
+  ══════════════════════════════════ -->
+  <div class="screen" id="screen-loading">
+    <div class="loading-screen">
+      <div class="spinner"></div>
+      <p>Calculando tu O-Fit cultural…</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PANTALLA 4: RESULTADOS
+  ══════════════════════════════════ -->
+  <div class="screen" id="screen-resultados">
+    <div class="resultado-header">
+      <div style="font-size: 40px; margin-bottom: 12px;">🏛</div>
+      <h1 id="res-titulo">Tu fit cultural</h1>
+      <p>Basado en el modelo de Cameron &amp; Quinn</p>
+    </div>
+
+    <div id="ofit-score-card"></div>
+    <div id="alertas-container"></div>
+    <div id="comparativa-card"></div>
+    <div id="recomendaciones-card"></div>
+
+    <div class="footer-note">
+      Resultados guardados en tu perfil · <strong>Talento 3D</strong>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  CONFIG SUPABASE
+// ═══════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://kiwzvpqdwunkajupyzyu.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtpd3p2cHFkd3Vua2FqdXB5enl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4NDI5NTUsImV4cCI6MjA5NTQxODk1NX0.VNfVERMNTu8J9VBEjdjJfgRTpPsqS7f_pZ7OFdL5MB8';
+
+// ═══════════════════════════════════════════════════════
+//  MATRIZ DE AFINIDAD CONDUCTUAL-CULTURAL (Documento Maestro)
+// ═══════════════════════════════════════════════════════
+const MATRIZ = {
+  D: { Clan: 0.0, Adho: 0.8, Merc: 1.0, Jerar: 0.2 },
+  I: { Clan: 0.8, Adho: 1.0, Merc: 0.5, Jerar: -0.5 },
+  S: { Clan: 1.0, Adho: -0.2, Merc: -0.5, Jerar: 0.8 },
+  C: { Clan: 0.2, Adho: -0.5, Merc: 0.6, Jerar: 1.0 },
+};
+const CULTURAS = ['Clan','Adho','Merc','Jerar'];
+const CULTURA_NOMBRES = { Clan:'Clan', Adho:'Adhocracia', Merc:'Mercado', Jerar:'Jerarquía' };
+const CULTURA_COLORES = {
+  Clan: 'var(--clan-color)', Adho: 'var(--adho-color)',
+  Merc: 'var(--merc-color)', Jerar: 'var(--jerar-color)'
+};
+const CULTURA_EMOJIS = { Clan:'🤝', Adho:'🚀', Merc:'🏆', Jerar:'⚖️' };
+
+// ═══════════════════════════════════════════════════════
+//  BANCO DE ÍTEMS — 24 preguntas (6 por cultura)
+// ═══════════════════════════════════════════════════════
+const ITEMS = [
+  // CLAN
+  { id:'C1',  cult:'Clan',  texto:'Prefiero trabajar en un equipo unido donde todos se apoyan, antes que en uno muy competitivo.' },
+  { id:'C2',  cult:'Clan',  texto:'Me importa mucho tener una buena relación con mis compañeros y mi jefe.' },
+  { id:'C3',  cult:'Clan',  texto:'En un equipo ideal, el bienestar de las personas importa tanto como los resultados.' },
+  { id:'C4',  cult:'Clan',  texto:'Disfruto cuando puedo mentorear o ser mentorado/a — el desarrollo humano me motiva.' },
+  { id:'C5',  cult:'Clan',  texto:'Me siento más cómodo/a cuando hay consenso y las decisiones se toman entre todos.' },
+  { id:'C6',  cult:'Clan',  texto:'La lealtad y el compromiso con el equipo son valores que no negocio.' },
+  // ADHOCRACIA
+  { id:'A1',  cult:'Adho',  texto:'Me entusiasma trabajar en proyectos nuevos donde no hay un manual de cómo hacerlos.' },
+  { id:'A2',  cult:'Adho',  texto:'Prefiero organizaciones que innovan constantemente aunque implique más incertidumbre.' },
+  { id:'A3',  cult:'Adho',  texto:'Me aburro en contextos donde todo está muy estructurado y predefinido.' },
+  { id:'A4',  cult:'Adho',  texto:'Valoro la creatividad y la originalidad más que seguir los procedimientos establecidos.' },
+  { id:'A5',  cult:'Adho',  texto:'Me atrae trabajar en el límite de lo conocido — donde hay que inventar las soluciones.' },
+  { id:'A6',  cult:'Adho',  texto:'Disfruto cuando puedo experimentar y testear ideas aunque muchas fallen.' },
+  // MERCADO
+  { id:'M1',  cult:'Merc',  texto:'Me motiva superar objetivos y ser reconocido/a por mis resultados concretos.' },
+  { id:'M2',  cult:'Merc',  texto:'Prefiero trabajar en organizaciones donde los mejores se destacan y progresan más rápido.' },
+  { id:'M3',  cult:'Merc',  texto:'Me gusta la competencia — me hace dar más y rendir mejor.' },
+  { id:'M4',  cult:'Merc',  texto:'Lo que más me importa al evaluar un trabajo es cuánto impacto concreto genera.' },
+  { id:'M5',  cult:'Merc',  texto:'Prefiero equipos enfocados en ganar antes que en mantener la armonía.' },
+  { id:'M6',  cult:'Merc',  texto:'Me siento bien cuando mis logros son medibles y visibles para toda la organización.' },
+  // JERARQUÍA
+  { id:'J1',  cult:'Jerar', texto:'Trabajo mejor cuando tengo roles y responsabilidades claramente definidos.' },
+  { id:'J2',  cult:'Jerar', texto:'Los procesos y procedimientos me dan seguridad y me ayudan a ser más eficiente.' },
+  { id:'J3',  cult:'Jerar', texto:'Me importa que las cosas se hagan de la manera correcta, siguiendo las reglas establecidas.' },
+  { id:'J4',  cult:'Jerar', texto:'Prefiero organizaciones con estructuras claras y cadenas de mando bien definidas.' },
+  { id:'J5',  cult:'Jerar', texto:'La estabilidad y la previsibilidad en mi trabajo son más importantes que la emoción.' },
+  { id:'J6',  cult:'Jerar', texto:'Valoro cuando hay criterios objetivos y consistentes para evaluar el desempeño.' },
+];
+
+// ═══════════════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ═══════════════════════════════════════════════════════
+let state = {
+  nombre:'', empresa:'', unidad:'', periodo:'',
+  legajo:'', tipo:'empleado',
+  disc: { D: null, I: null, S: null, C: null },
+  respuestas: {},
+  proyCandidato: {},
+  culturaEmpresa: {},
+  ofitDistancia: 0,
+  ofitFinal: 0,
+  alertas: [],
+  tiempoInicio: null,
+  tiempoEvaluacion: 0,
+};
+
+// ═══════════════════════════════════════════════════════
+//  NAVEGACIÓN Y PROGRESO
+// ═══════════════════════════════════════════════════════
+const PASOS = ['screen-encuadre','screen-datos','screen-cuestionario','screen-resultados'];
+
+function irAPantalla(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  actualizarProgress(id);
+}
+
+function actualizarProgress(id) {
+  const idx = PASOS.indexOf(id);
+  const pct = idx <= 0 ? 0 : Math.round((idx / (PASOS.length - 1)) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  for(let i = 0; i < 4; i++) {
+    const el = document.getElementById('step-' + i);
+    if(el) el.classList.toggle('active', i === idx);
+  }
+}
+
+function irADatos() {
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('colaborador')) document.getElementById('inp-nombre').value = p.get('colaborador');
+  if (p.get('empresa'))     document.getElementById('inp-empresa').value = p.get('empresa');
+  if (p.get('unidad'))      document.getElementById('inp-unidad').value = p.get('unidad');
+  if (p.get('legajo'))      document.getElementById('inp-legajo').value = p.get('legajo');
+  if (p.get('tipo'))        document.getElementById('inp-tipo').value = p.get('tipo');
+  // DISC desde URL
+  if (p.get('d')) document.getElementById('inp-d').value = p.get('d');
+  if (p.get('i')) document.getElementById('inp-i').value = p.get('i');
+  if (p.get('s')) document.getElementById('inp-s').value = p.get('s');
+  if (p.get('c')) document.getElementById('inp-c').value = p.get('c');
+  irAPantalla('screen-datos');
+}
+
+function validarDatosYContinuar() {
+  const nombre  = document.getElementById('inp-nombre').value.trim();
+  const empresa = document.getElementById('inp-empresa').value.trim();
+  if (!nombre || !empresa) {
+    alert('Por favor completá nombre y empresa.');
+    return;
+  }
+  state.nombre  = nombre;
+  state.empresa = empresa;
+  state.unidad  = document.getElementById('inp-unidad').value.trim();
+  state.periodo = document.getElementById('inp-periodo').value.trim();
+  state.legajo  = document.getElementById('inp-legajo').value.trim();
+  state.tipo    = document.getElementById('inp-tipo').value;
+
+  const d = parseFloat(document.getElementById('inp-d').value);
+  const i = parseFloat(document.getElementById('inp-i').value);
+  const s = parseFloat(document.getElementById('inp-s').value);
+  const c = parseFloat(document.getElementById('inp-c').value);
+  state.disc = {
+    D: isNaN(d) ? null : Math.min(100, Math.max(0, d)),
+    I: isNaN(i) ? null : Math.min(100, Math.max(0, i)),
+    S: isNaN(s) ? null : Math.min(100, Math.max(0, s)),
+    C: isNaN(c) ? null : Math.min(100, Math.max(0, c)),
+  };
+
+  state.tiempoInicio = Date.now();
+  renderCuestionario();
+  irAPantalla('screen-cuestionario');
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER CUESTIONARIO
+// ═══════════════════════════════════════════════════════
+const TAG_CLASS = { Clan:'tag-clan', Adho:'tag-adho', Merc:'tag-merc', Jerar:'tag-jerar' };
+
+function renderCuestionario() {
+  const container = document.getElementById('items-container');
+  container.innerHTML = '';
+  let currentCult = '';
+  let cultCount = 0;
+
+  ITEMS.forEach((item, idx) => {
+    if (item.cult !== currentCult) {
+      currentCult = item.cult;
+      cultCount++;
+      const header = document.createElement('div');
+      header.className = 'seccion-header';
+      header.innerHTML = `
+        <h2>${CULTURA_EMOJIS[item.cult]} ${CULTURA_NOMBRES[item.cult]}</h2>
+        <span class="seccion-counter">${cultCount} de 4</span>`;
+      container.appendChild(header);
+    }
+
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.id = 'card-' + item.id;
+
+    let btns = '';
+    for (let v = 1; v <= 5; v++) {
+      btns += `<div class="likert-btn">
+        <input type="radio" name="${item.id}" id="${item.id}-${v}" value="${v}"
+          onchange="registrarRespuesta('${item.id}',${v})">
+        <label for="${item.id}-${v}">${v}</label>
+      </div>`;
+    }
+
+    card.innerHTML = `
+      <div class="item-num">Pregunta ${idx+1} de 24</div>
+      <div class="cultura-tag ${TAG_CLASS[item.cult]}">${CULTURA_NOMBRES[item.cult]}</div>
+      <p>${item.texto}</p>
+      <div class="likert-wrap">
+        <div class="likert-scale">${btns}</div>
+        <div class="likert-labels-row"><span>Nada de acuerdo</span><span>Totalmente de acuerdo</span></div>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+function registrarRespuesta(itemId, valor) {
+  state.respuestas[itemId] = valor;
+  const card = document.getElementById('card-' + itemId);
+  if (card) card.classList.add('answered');
+  verificarCompletitud();
+}
+
+function verificarCompletitud() {
+  const total = ITEMS.length;
+  const respondidas = Object.keys(state.respuestas).length;
+  const btn = document.getElementById('btn-calcular');
+  btn.disabled = respondidas < total;
+  btn.textContent = respondidas < total
+    ? `Faltan ${total - respondidas} respuestas`
+    : 'Ver mi análisis →';
+}
+
+// ═══════════════════════════════════════════════════════
+//  ALGORITMO O-FIT
+// ═══════════════════════════════════════════════════════
+
+// Paso 1: Proyección desde cuestionario (scores por cultura)
+function calcularProyeccionCuestionario() {
+  const raw = {};
+  CULTURAS.forEach(cult => {
+    const items = ITEMS.filter(i => i.cult === cult);
+    const suma = items.reduce((acc, i) => acc + (state.respuestas[i.id] || 0), 0);
+    raw[cult] = Math.round((suma / (items.length * 5)) * 100);
+  });
+  // Normalizar a suma=100
+  const total = Object.values(raw).reduce((a,b) => a+b, 0) || 1;
+  const norm = {};
+  CULTURAS.forEach(c => norm[c] = Math.round(raw[c] / total * 100));
+  // Ajustar para que sume exactamente 100
+  const diff = 100 - Object.values(norm).reduce((a,b) => a+b, 0);
+  const maxKey = Object.entries(norm).sort((a,b) => b[1]-a[1])[0][0];
+  norm[maxKey] += diff;
+  return norm;
+}
+
+// Paso 2: Proyección desde DISC (si disponible)
+function proyectarDesdeDISC(d, i, s, c) {
+  const scores = { D: d/100, I: i/100, S: s/100, C: c/100 };
+  const raw = {};
+  CULTURAS.forEach(cult => {
+    raw[cult] = Object.entries(scores).reduce((acc, [f, v]) => acc + v * MATRIZ[f][cult], 0);
+  });
+  const total = CULTURAS.reduce((acc, c) => acc + Math.max(0, raw[c]), 0) || 1;
+  const norm = {};
+  CULTURAS.forEach(c => norm[c] = Math.round(Math.max(0, raw[c]) / total * 100));
+  const diff2 = 100 - Object.values(norm).reduce((a,b) => a+b, 0);
+  const maxK = Object.entries(norm).sort((a,b) => b[1]-a[1])[0][0];
+  norm[maxK] += diff2;
+  return norm;
+}
+
+// Paso 3: Fusión DISC + Cuestionario (si hay DISC: 50/50; si no: solo cuestionario)
+function calcularProyeccionFinal() {
+  const projCuest = calcularProyeccionCuestionario();
+  const { D, I, S, C } = state.disc;
+  if (D !== null && I !== null && S !== null && C !== null) {
+    const projDisc = proyectarDesdeDISC(D, I, S, C);
+    const fusion = {};
+    CULTURAS.forEach(c => fusion[c] = Math.round(projCuest[c] * 0.5 + projDisc[c] * 0.5));
+    const d2 = 100 - Object.values(fusion).reduce((a,b) => a+b, 0);
+    const mk = Object.entries(fusion).sort((a,b) => b[1]-a[1])[0][0];
+    fusion[mk] += d2;
+    return fusion;
+  }
+  return projCuest;
+}
+
+// Paso 4: Distancia euclidiana → O-Fit
+function calcularOFitDistancia(candidato, empresa) {
+  const dist = Math.sqrt(CULTURAS.reduce((acc, c) => {
+    return acc + Math.pow((candidato[c]/100) - (empresa[c]/100), 2);
+  }, 0));
+  const maxDist = Math.sqrt(2);
+  return Math.round((1 - dist / maxDist) * 100);
+}
+
+// Paso 5: Score final 70/30
+function calcularScoreFinal(ofitDist, disc, empresa) {
+  let penalizacion = 0;
+  if (disc.I !== null && disc.C !== null) {
+    if (disc.I > 70 && empresa.Jerar > 50) penalizacion += 15;
+    if (disc.S !== null && disc.S > 70 && empresa.Adho > 50) penalizacion += 10;
+    if (disc.S !== null && disc.S > 70 && empresa.Merc > 50) penalizacion += 10;
+    if (disc.C > 70 && empresa.Clan > 50) penalizacion += 8;
+  }
+  const ajusteDisc = Math.max(0, 100 - penalizacion);
+  return Math.round(ofitDist * 0.70 + ajusteDisc * 0.30);
+}
+
+// Kill-switch
+function evaluarKillSwitch(disc, empresa) {
+  const alertas = [];
+  if (disc.I === null) return alertas;
+  if (disc.I > 85 && disc.C !== null && disc.C < 20 && empresa.Jerar >= 60) {
+    alertas.push({
+      nivel: 'rojo',
+      titulo: 'Riesgo alto de desmotivación',
+      detalle: 'Alta Influencia y baja Conformidad en cultura Jerárquica. Riesgo de choque con procedimientos y autoridad formal.'
+    });
+  }
+  if (disc.S !== null && disc.S > 80 && (empresa.Adho + empresa.Merc) > 70) {
+    alertas.push({
+      nivel: 'amarillo',
+      titulo: 'Posible resistencia al cambio',
+      detalle: 'Alta Estabilidad en cultura de innovación y resultados. Puede necesitar acompañamiento en contextos de alta velocidad y cambio.'
+    });
+  }
+  if (disc.D !== null && disc.D > 85 && empresa.Clan >= 60) {
+    alertas.push({
+      nivel: 'amarillo',
+      titulo: 'Tensión con dinámica colaborativa',
+      detalle: 'Alta Dominancia en cultura Clan puede generar fricciones en equipos muy colaborativos y consensuados.'
+    });
+  }
+  return alertas;
+}
+
+function interpretarOFit(score) {
+  if (score >= 80) return { nivel:'alto',    label:'Encaje sólido',     color:'var(--green)',  desc:'El perfil conductual es muy compatible con la cultura organizacional.' };
+  if (score >= 60) return { nivel:'medio',   label:'Encaje moderado',   color:'var(--yellow)', desc:'Hay compatibilidad razonable con algunas áreas de tensión a monitorear.' };
+  if (score >= 40) return { nivel:'bajo',    label:'Encaje bajo',       color:'var(--orange)', desc:'Diferencias culturales significativas. Requiere plan de integración activo.' };
+  return             { nivel:'critico',  label:'Choque cultural',   color:'var(--red)',    desc:'Alta incompatibilidad. Evaluar con cuidado antes de incorporar.' };
+}
+
+// ═══════════════════════════════════════════════════════
+//  CALCULAR RESULTADOS
+// ═══════════════════════════════════════════════════════
+async function calcularResultados() {
+  state.tiempoEvaluacion = Math.round((Date.now() - state.tiempoInicio) / 1000);
+  irAPantalla('screen-loading');
+
+  // Proyección candidato
+  state.proyCandidato = calcularProyeccionFinal();
+
+  // Obtener cultura empresa desde Supabase
+  state.culturaEmpresa = await obtenerCulturaEmpresa(state.empresa);
+
+  // O-Fit
+  state.ofitDistancia = calcularOFitDistancia(state.proyCandidato, state.culturaEmpresa);
+  state.ofitFinal     = calcularScoreFinal(state.ofitDistancia, state.disc, state.culturaEmpresa);
+  state.alertas       = evaluarKillSwitch(state.disc, state.culturaEmpresa);
+
+  await guardarEnSupabase();
+  renderResultados();
+  irAPantalla('screen-resultados');
+}
+
+// ═══════════════════════════════════════════════════════
+//  SUPABASE
+// ═══════════════════════════════════════════════════════
+async function obtenerCulturaEmpresa(empresa) {
+  try {
+    const resp = await fetch(
+      `${SUPABASE_URL}/rest/v1/cultura_empresa?empresa=eq.${encodeURIComponent(empresa)}&activo=eq.true&order=created_at.desc&limit=1`,
+      { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+    );
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data && data.length > 0) {
+        const row = data[0];
+        return { Clan: row.clan, Adho: row.adhocracia, Merc: row.mercado, Jerar: row.jerarquia };
+      }
+    }
+  } catch(e) { console.warn('No se pudo obtener cultura empresa:', e); }
+  // Fallback neutro si no hay cultura cargada
+  return { Clan: 25, Adho: 25, Merc: 25, Jerar: 25 };
+}
+
+async function guardarEnSupabase() {
+  const emp = state.culturaEmpresa;
+  const alertaNivel = state.alertas.length > 0
+    ? (state.alertas.some(a => a.nivel === 'rojo') ? 'rojo' : 'amarillo')
+    : null;
+  const alertaDetalle = state.alertas.map(a => a.titulo).join(' | ') || null;
+
+  const payload = {
+    empresa:            state.empresa,
+    unidad_de_negocio:  state.unidad || null,
+    colaborador:        state.nombre,
+    employee_id_number: state.legajo || null,
+    tipo:               state.tipo,
+    fecha:              new Date().toISOString().split('T')[0],
+    periodo:            state.periodo || null,
+    d_score:            state.disc.D,
+    i_score:            state.disc.I,
+    s_score:            state.disc.S,
+    c_score:            state.disc.C,
+    proy_clan:          state.proyCandidato.Clan,
+    proy_adhocracia:    state.proyCandidato.Adho,
+    proy_mercado:       state.proyCandidato.Merc,
+    proy_jerarquia:     state.proyCandidato.Jerar,
+    emp_clan:           emp.Clan,
+    emp_adhocracia:     emp.Adho,
+    emp_mercado:        emp.Merc,
+    emp_jerarquia:      emp.Jerar,
+    o_fit_score:        state.ofitFinal,
+    alerta_nivel:       alertaNivel,
+    alerta_detalle:     alertaDetalle,
+    tiempo_evaluacion_seg: state.tiempoEvaluacion,
+    respuestas:         JSON.stringify(state.respuestas),
+  };
+
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/cultura_evaluaciones`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch(e) { console.warn('Error guardando:', e); }
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER RESULTADOS
+// ═══════════════════════════════════════════════════════
+function renderResultados() {
+  const interp = interpretarOFit(state.ofitFinal);
+  const nombre = state.nombre.split(',')[0].trim();
+  document.getElementById('res-titulo').textContent = `Fit cultural de ${nombre}`;
+
+  // ── O-FIT SCORE CARD ──
+  const cultDominante = Object.entries(state.proyCandidato).sort((a,b) => b[1]-a[1])[0][0];
+  document.getElementById('ofit-score-card').innerHTML = `
+    <div class="ofit-score-card">
+      <div class="ofit-score-label">Score O-Fit</div>
+      <div class="ofit-numero" style="color:${interp.color}">${state.ofitFinal}</div>
+      <div class="ofit-interpretacion" style="color:${interp.color}">${interp.label}</div>
+      <div class="ofit-descripcion">${interp.desc}</div>
+      <div class="ofit-desglose">
+        <div><strong>${state.proyCandidato[cultDominante]}%</strong>Tu cultura dominante: ${CULTURA_NOMBRES[cultDominante]}</div>
+        <div><strong>${state.ofitDistancia}</strong>Score por distancia (70%)</div>
+        <div><strong>${state.tiempoEvaluacion}s</strong>Tiempo evaluación</div>
+      </div>
+    </div>`;
+
+  // ── ALERTAS KILL-SWITCH ──
+  const alertCont = document.getElementById('alertas-container');
+  alertCont.innerHTML = '';
+  state.alertas.forEach(a => {
+    const cls = a.nivel === 'rojo' ? 'alerta-rojo' : 'alerta-amarillo';
+    const icon = a.nivel === 'rojo' ? '🔴' : '🟡';
+    alertCont.innerHTML += `
+      <div class="${cls}">
+        <div class="alerta-icon">${icon}</div>
+        <div class="alerta-body">
+          <div class="alerta-titulo">${a.titulo}</div>
+          <p>${a.detalle}</p>
+        </div>
+      </div>`;
+  });
+
+  // ── COMPARATIVA CANDIDATO vs EMPRESA ──
+  const emp = state.culturaEmpresa;
+  const cand = state.proyCandidato;
+  let compHtml = `
+    <div class="comparativa-card">
+      <h3>Candidato vs Cultura de la organización</h3>`;
+  CULTURAS.forEach(c => {
+    const color = CULTURA_COLORES[c].replace('var(--','').replace(')','');
+    const hexColor = { 'clan-color':'#52C4A0','adho-color':'#FF8C5A','merc-color':'#F5C842','jerar-color':'#A78BFA' }[color] || '#888';
+    compHtml += `
+      <div class="comp-row">
+        <div class="comp-header">
+          <span class="comp-label" style="color:${hexColor}">${CULTURA_EMOJIS[c]} ${CULTURA_NOMBRES[c]}</span>
+          <span class="comp-scores">Vos: ${cand[c]}% · Empresa: ${emp[c]}%</span>
+        </div>
+        <div class="comp-track">
+          <div class="comp-bar-cand" style="background:${hexColor};width:0%" data-target="${cand[c]}"></div>
+          <div class="comp-bar-emp" style="background:${hexColor};width:0%" data-target="${emp[c]}"></div>
+        </div>
+      </div>`;
+  });
+  compHtml += `
+      <div class="comp-leyenda">
+        <span><div class="leyenda-dot" style="background:#6C8EFF;opacity:0.9"></div>Tu proyección</span>
+        <span><div class="leyenda-dot" style="background:#6C8EFF;opacity:0.4;background-image:repeating-linear-gradient(45deg,transparent,transparent 2px,rgba(255,255,255,0.3) 2px,rgba(255,255,255,0.3) 4px)"></div>Cultura empresa</span>
+      </div>
+    </div>`;
+  document.getElementById('comparativa-card').innerHTML = compHtml;
+
+  // Animar barras
+  setTimeout(() => {
+    document.querySelectorAll('.comp-bar-cand, .comp-bar-emp').forEach(bar => {
+      bar.style.width = bar.dataset.target + '%';
+    });
+  }, 150);
+
+  // ── RECOMENDACIONES ──
+  const cultDom = Object.entries(cand).sort((a,b) => b[1]-a[1])[0][0];
+  const cultEmpDom = Object.entries(emp).sort((a,b) => b[1]-a[1])[0][0];
+  const mismatch = cultDom !== cultEmpDom;
+  const recs = generarRecomendaciones(cultDom, cultEmpDom, interp.nivel, state.alertas);
+  let recHtml = '<div class="rec-card"><h3>💡 Recomendaciones</h3>';
+  recs.forEach(r => {
+    recHtml += `<div class="rec-item">
+      <div class="rec-icon-wrap">${r.icon}</div>
+      <div class="rec-body"><strong>${r.titulo}</strong>${r.texto}</div>
+    </div>`;
+  });
+  recHtml += '</div>';
+  document.getElementById('recomendaciones-card').innerHTML = recHtml;
+}
+
+function generarRecomendaciones(cultCand, cultEmp, nivel, alertas) {
+  const recs = [];
+  const coincide = cultCand === cultEmp;
+
+  if (coincide) {
+    recs.push({ icon:'✅', titulo:'Cultura alineada', texto:`Tu perfil natural (${CULTURA_NOMBRES[cultCand]}) coincide con la cultura dominante de la organización. Es un buen punto de partida para la integración.` });
+  } else {
+    recs.push({ icon:'🔍', titulo:'Diferencia cultural a trabajar', texto:`Tu cultura natural (${CULTURA_NOMBRES[cultCand]}) difiere de la dominante en la empresa (${CULTURA_NOMBRES[cultEmp]}). Conocer esta diferencia es el primer paso para navegar la organización efectivamente.` });
+  }
+
+  if (nivel === 'alto') {
+    recs.push({ icon:'🚀', titulo:'Incorporación recomendada', texto:'El encaje cultural es alto. Podés incorporarte con confianza — la adaptación al estilo de trabajo será fluida.' });
+  } else if (nivel === 'medio') {
+    recs.push({ icon:'📋', titulo:'Plan de adaptación sugerido', texto:'Encaje moderado. Recomendamos una conversación inicial sobre expectativas culturales y un seguimiento en los primeros 60 días.' });
+  } else if (nivel === 'bajo') {
+    recs.push({ icon:'⚠️', titulo:'Integración activa necesaria', texto:'Encaje bajo. El ingreso puede funcionar si hay un plan de integración estructurado — mentoría, reuniones 1:1 frecuentes y claridad de expectativas desde el día 1.' });
+  } else {
+    recs.push({ icon:'🛑', titulo:'Evaluar con cuidado', texto:'Choque cultural significativo. Antes de proceder, verificar si el candidato tiene alta adaptabilidad cultural y disposición al cambio.' });
+  }
+
+  if (alertas.length > 0) {
+    recs.push({ icon:'💬', titulo:'Conversación específica recomendada', texto:'Las alertas detectadas sugieren explorar en la entrevista cómo el candidato maneja los aspectos específicos de tensión cultural identificados.' });
+  }
+
+  recs.push({ icon:'📈', titulo:'Combiná con DISC e IVL', texto:'Para una visión completa, cruzá este resultado con el perfil DISC (cómo actúa) y el IVL (cuán motivado está). La tríada da una imagen mucho más precisa.' });
+
+  return recs;
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  actualizarProgress('screen-encuadre');
+});
+</script>
+</body>
+</html>
