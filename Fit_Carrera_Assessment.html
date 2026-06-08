@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fit Persona-Carrera — Talento 3D</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F4EE;
+    --surface: #FFFFFF;
+    --surface2: #F0EDE6;
+    --ink: #1A1714;
+    --ink2: #5C5650;
+    --ink3: #9C9690;
+    --accent: #2D5016;
+    --accent2: #4A7C2F;
+    --accent-light: #E8F0E0;
+    --gold: #B8960C;
+    --gold-light: #FAF3D8;
+    --warn: #C44B1A;
+    --warn-light: #FDF0EA;
+    --border: #E2DDD6;
+    --radius: 12px;
+    --radius-lg: 20px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--accent);
+    color: #fff;
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    letter-spacing: -0.3px;
+  }
+  .header-brand span { opacity: 0.65; font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 300; display: block; margin-top: 2px; }
+  .header-badge {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    background: var(--accent);
+    padding: 0 32px 16px;
+  }
+  .progress-bar-bg {
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: #fff;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+  .progress-label {
+    color: rgba(255,255,255,0.7);
+    font-size: 12px;
+    margin-top: 6px;
+    text-align: right;
+  }
+
+  /* ── CONTENEDOR PRINCIPAL ── */
+  .main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* ── PANTALLAS ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── ENCUADRE ── */
+  .encuadre-hero {
+    text-align: center;
+    padding: 40px 24px 32px;
+  }
+  .encuadre-icon {
+    width: 72px;
+    height: 72px;
+    background: var(--accent-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 32px;
+  }
+  .encuadre-hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .encuadre-hero p {
+    color: var(--ink2);
+    font-size: 16px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  .card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+  .card p, .card li {
+    color: var(--ink2);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+  .card ul { padding-left: 20px; }
+  .card ul li { margin-bottom: 6px; }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .info-item {
+    background: var(--surface2);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .info-item-icon { font-size: 22px; }
+  .info-item-text { font-size: 14px; color: var(--ink2); }
+  .info-item-text strong { display: block; color: var(--ink); font-size: 15px; font-weight: 600; }
+
+  /* ── DATOS PERSONALES ── */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: 13px; font-weight: 600; color: var(--ink2); letter-spacing: 0.3px; text-transform: uppercase; }
+  .form-group input, .form-group select {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 11px 14px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    background: var(--surface);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--accent2); }
+  .form-group input::placeholder { color: var(--ink3); }
+
+  /* ── ÍTEM LIKERT ── */
+  .seccion-header {
+    margin: 32px 0 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent-light);
+  }
+  .seccion-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--accent);
+  }
+  .seccion-header p { font-size: 14px; color: var(--ink3); margin-top: 4px; }
+
+  .item-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .item-card.answered { border-color: var(--accent2); box-shadow: 0 0 0 3px var(--accent-light); }
+  .item-card p {
+    font-size: 15px;
+    color: var(--ink);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .likert-scale {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  .likert-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--ink3);
+  }
+  .likert-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .likert-btn input[type=radio] { display: none; }
+  .likert-btn label {
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: 52px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink3);
+    transition: all 0.15s;
+    background: var(--surface);
+  }
+  .likert-btn input[type=radio]:checked + label {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    transform: scale(1.08);
+  }
+  .likert-btn label:hover { border-color: var(--accent2); color: var(--accent); }
+
+  /* escala de tamaños por valor */
+  .likert-btn:nth-child(1) label { max-width: 38px; opacity: 0.75; }
+  .likert-btn:nth-child(2) label { max-width: 44px; opacity: 0.85; }
+  .likert-btn:nth-child(3) label { max-width: 48px; }
+  .likert-btn:nth-child(4) label { max-width: 52px; opacity: 0.9; }
+  .likert-btn:nth-child(5) label { max-width: 58px; }
+
+  /* ── PANTALLA DESEMPATE ── */
+  .desempate-card {
+    background: var(--gold-light);
+    border: 1.5px solid var(--gold);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .desempate-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .desempate-card p { color: var(--ink2); font-size: 15px; max-width: 480px; margin: 0 auto; }
+
+  .desempate-opciones {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .desempate-opcion {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .desempate-opcion:hover { border-color: var(--accent2); background: var(--accent-light); }
+  .desempate-opcion.selected { border-color: var(--accent); background: var(--accent-light); }
+  .desempate-opcion-codigo {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent2);
+    margin-bottom: 8px;
+  }
+  .desempate-opcion h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  .desempate-opcion p { font-size: 14px; color: var(--ink2); line-height: 1.5; }
+
+  /* ── RESULTADOS ── */
+  .resultado-hero {
+    text-align: center;
+    padding: 40px 0 32px;
+  }
+  .resultado-hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 30px;
+    margin-bottom: 8px;
+  }
+  .resultado-hero p { color: var(--ink2); font-size: 16px; }
+
+  .ancla-principal-card {
+    background: var(--accent);
+    color: #fff;
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .ancla-principal-card::before {
+    content: '⚓';
+    position: absolute;
+    right: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 80px;
+    opacity: 0.12;
+  }
+  .ancla-principal-card .tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+  .ancla-principal-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+  .ancla-principal-card p { opacity: 0.85; font-size: 15px; line-height: 1.6; max-width: 480px; }
+
+  .ancla-secundaria-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .ancla-secundaria-badge {
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .ancla-secundaria-card .tag { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--ink3); }
+  .ancla-secundaria-card h3 { font-family: 'DM Serif Display', serif; font-size: 20px; margin: 4px 0 6px; }
+  .ancla-secundaria-card p { font-size: 14px; color: var(--ink2); }
+
+  .radar-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  .radar-wrap h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: var(--ink);
+  }
+  .ancla-bar-list { display: flex; flex-direction: column; gap: 10px; }
+  .ancla-bar-item { display: flex; align-items: center; gap: 12px; }
+  .ancla-bar-label { font-size: 13px; color: var(--ink2); width: 180px; flex-shrink: 0; }
+  .ancla-bar-track { flex: 1; height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .ancla-bar-fill { height: 100%; border-radius: 4px; background: var(--accent2); transition: width 1s ease; }
+  .ancla-bar-fill.principal { background: var(--accent); }
+  .ancla-bar-score { font-size: 13px; font-weight: 600; color: var(--ink); width: 36px; text-align: right; }
+
+  .recomendaciones-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    margin-bottom: 16px;
+  }
+  .recomendaciones-card h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+  .rec-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .rec-item:last-child { border-bottom: none; }
+  .rec-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .rec-text { font-size: 14px; color: var(--ink2); line-height: 1.6; }
+  .rec-text strong { color: var(--ink); display: block; margin-bottom: 2px; }
+
+  .confiabilidad-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--ink2);
+    margin-bottom: 24px;
+  }
+
+  /* ── BOTONES ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-primary:disabled { background: var(--ink3); cursor: not-allowed; transform: none; }
+  .btn-secondary { background: var(--surface); border: 1.5px solid var(--border); color: var(--ink2); }
+  .btn-secondary:hover { border-color: var(--accent2); color: var(--accent); }
+  .btn-full { width: 100%; }
+
+  .btn-group {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── LOADING ── */
+  .loading-screen {
+    text-align: center;
+    padding: 80px 24px;
+  }
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 20px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-screen p { color: var(--ink2); font-size: 15px; }
+
+  /* ── ALERTA ── */
+  .alerta-warn {
+    background: var(--warn-light);
+    border: 1.5px solid var(--warn);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--warn);
+    margin-bottom: 16px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .header { padding: 16px 20px; }
+    .main { padding: 20px 16px 60px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .info-grid { grid-template-columns: 1fr; }
+    .desempate-opciones { grid-template-columns: 1fr; }
+    .encuadre-hero h1 { font-size: 26px; }
+    .likert-scale { gap: 4px; }
+    .ancla-bar-label { width: 130px; font-size: 12px; }
+    .btn-group { flex-direction: column-reverse; }
+    .btn-group .btn { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-brand">
+    Talento 3D
+    <span>Fit Persona-Carrera</span>
+  </div>
+  <div class="header-badge">⚓ Anclas de Schein</div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progressBar"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">Inicio</div>
+</div>
+
+<div class="main">
+
+  <!-- ══════════════════════════════════
+       PANTALLA 0: ENCUADRE
+  ══════════════════════════════════ -->
+  <div class="screen active" id="screen-encuadre">
+    <div class="encuadre-hero">
+      <div class="encuadre-icon">⚓</div>
+      <h1>¿Qué ancla<br>tu carrera?</h1>
+      <p>Este cuestionario identifica tu ancla de carrera — el conjunto de valores y necesidades que, cuando los resignás, sentís que algo esencial de vos se pierde.</p>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-item-icon">🕐</div>
+        <div class="info-item-text"><strong>3–4 minutos</strong>24 preguntas breves</div>
+      </div>
+      <div class="info-item">
+        <div class="info-item-icon">🎯</div>
+        <div class="info-item-text"><strong>Sin respuestas correctas</strong>Respondé según lo que realmente sentís</div>
+      </div>
+      <div class="info-item">
+        <div class="info-item-icon">⚓</div>
+        <div class="info-item-text"><strong>8 anclas de carrera</strong>Modelo de Edgar Schein</div>
+      </div>
+      <div class="info-item">
+        <div class="info-item-icon">🔒</div>
+        <div class="info-item-text"><strong>Confidencial</strong>Usada para tu desarrollo</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Cómo responder bien</h3>
+      <ul>
+        <li>Pensá en tu carrera <strong>completa</strong>, no solo en tu trabajo actual.</li>
+        <li>Elegí lo que <em>realmente te importa</em>, no lo que creés que debería importarte.</li>
+        <li>Si una afirmación te genera indiferencia, está bien marcar 1 o 2.</li>
+        <li>Al final puede haber una pregunta de desempate — es parte del proceso.</li>
+      </ul>
+    </div>
+
+    <div class="btn-group" style="border-top: none; margin-top: 0;">
+      <button class="btn btn-primary" onclick="irADatos()">Comenzar →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PANTALLA 1: DATOS
+  ══════════════════════════════════ -->
+  <div class="screen" id="screen-datos">
+    <div class="card">
+      <h3>Tus datos</h3>
+      <p style="margin-bottom: 20px; font-size: 14px;">Necesitamos identificarte para guardarlo en tu perfil.</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre y apellido *</label>
+          <input type="text" id="inp-nombre" placeholder="García, María" required>
+        </div>
+        <div class="form-group">
+          <label>Empresa *</label>
+          <input type="text" id="inp-empresa" placeholder="Nombre empresa">
+        </div>
+        <div class="form-group">
+          <label>Unidad / área</label>
+          <input type="text" id="inp-unidad" placeholder="Comercial, Operaciones…">
+        </div>
+        <div class="form-group">
+          <label>Período</label>
+          <input type="text" id="inp-periodo" placeholder="Ej: 2025-Q2">
+        </div>
+        <div class="form-group">
+          <label>Legajo (opcional)</label>
+          <input type="text" id="inp-legajo" placeholder="Solo empleados">
+        </div>
+        <div class="form-group">
+          <label>Tipo</label>
+          <select id="inp-tipo">
+            <option value="empleado">Empleado</option>
+            <option value="candidato">Candidato</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Puesto actual *</label>
+          <input type="text" id="inp-puesto" placeholder="Ej: Gerente comercial, Analista de sistemas…">
+        </div>
+      </div>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="irAPantalla('screen-encuadre')">← Atrás</button>
+      <button class="btn btn-primary" onclick="validarDatosYContinuar()">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PANTALLA 2: CUESTIONARIO
+  ══════════════════════════════════ -->
+  <div class="screen" id="screen-cuestionario">
+    <div id="items-container"></div>
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="irAPantalla('screen-datos')">← Atrás</button>
+      <button class="btn btn-primary" id="btn-calcular" onclick="calcularResultados()" disabled>Ver mis resultados →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PANTALLA 3: DESEMPATE
+  ══════════════════════════════════ -->
+  <div class="screen" id="screen-desempate">
+    <div class="desempate-card">
+      <div style="font-size: 36px; margin-bottom: 12px;">⚖️</div>
+      <h2>Momento de elegir</h2>
+      <p>Tus dos anclas principales están muy parejas. Necesitamos que elijas: si tuvieras que quedarte con <strong>una sola</strong> para el resto de tu carrera, ¿cuál sería?</p>
+    </div>
+    <div class="desempate-opciones" id="desempate-opciones"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" id="btn-confirmar-desempate" onclick="confirmarDesempate()" disabled>Confirmar elección →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PANTALLA 4: GUARDANDO
+  ══════════════════════════════════ -->
+  <div class="screen" id="screen-loading">
+    <div class="loading-screen">
+      <div class="spinner"></div>
+      <p>Guardando tu perfil de carrera…</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       PANTALLA 5: RESULTADOS
+  ══════════════════════════════════ -->
+  <div class="screen" id="screen-resultados">
+    <div class="resultado-hero">
+      <div style="font-size: 48px; margin-bottom: 12px;">⚓</div>
+      <h1 id="res-nombre-titulo">Tu perfil de carrera</h1>
+      <p>Basado en las Anclas de Carrera de Edgar Schein</p>
+    </div>
+
+    <div id="ancla-principal-card"></div>
+    <div id="ancla-secundaria-card"></div>
+
+    <div class="radar-wrap">
+      <h3>Tus 8 anclas</h3>
+      <div class="ancla-bar-list" id="ancla-bars"></div>
+    </div>
+
+    <div id="recomendaciones-card"></div>
+
+    <div style="text-align:center; margin-top: 12px;">
+      <div class="confiabilidad-badge" id="badge-confiabilidad"></div>
+    </div>
+
+    <div style="text-align:center; margin-top: 24px; color: var(--ink3); font-size: 13px;">
+      <p>Tus resultados fueron guardados en tu perfil · <strong>Talento 3D</strong></p>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  CONFIGURACIÓN SUPABASE
+// ═══════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://kiwzvpqdwunkajupyzyu.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtpd3p2cHFkd3Vua2FqdXB5enl1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4NDI5NTUsImV4cCI6MjA5NTQxODk1NX0.VNfVERMNTu8J9VBEjdjJfgRTpPsqS7f_pZ7OFdL5MB8';
+
+// ═══════════════════════════════════════════════════════
+//  BANCO DE ÍTEMS — 24 preguntas (3 por ancla)
+// ═══════════════════════════════════════════════════════
+const ITEMS = [
+  // TF — Competencia Técnica/Funcional
+  { id:'TF1', ancla:'TF', texto:'Me siento más satisfecho/a cuando domino una habilidad técnica o funcional muy específica.' },
+  { id:'TF2', ancla:'TF', texto:'Prefiero ser el/la mejor en mi área de especialidad antes que ocupar un cargo gerencial.' },
+  { id:'TF3', ancla:'TF', texto:'Me incomoda alejarme demasiado de mi campo de expertise para hacer tareas de gestión.' },
+  // GM — Competencia Gerencial General
+  { id:'GM1', ancla:'GM', texto:'Me motiva más coordinar el trabajo de otros que hacer yo mismo/a el trabajo técnico.' },
+  { id:'GM2', ancla:'GM', texto:'Me veo liderando organizaciones o áreas grandes donde pueda integrar múltiples funciones.' },
+  { id:'GM3', ancla:'GM', texto:'Lo que más me importa es tener responsabilidad sobre resultados de negocio amplios.' },
+  // AU — Autonomía/Independencia
+  { id:'AU1', ancla:'AU', texto:'Necesito organizar mi trabajo a mi manera — las reglas y procedimientos me resultan limitantes.' },
+  { id:'AU2', ancla:'AU', texto:'Prefiero proyectos en los que pueda decidir cuándo, cómo y dónde trabajar.' },
+  { id:'AU3', ancla:'AU', texto:'Renunciaría a una promoción si implicara perder mi autonomía de trabajo.' },
+  // SE — Seguridad/Estabilidad
+  { id:'SE1', ancla:'SE', texto:'Un trabajo estable con beneficios claros y predecibles vale más para mí que uno emocionante pero incierto.' },
+  { id:'SE2', ancla:'SE', texto:'Me importa mucho saber que voy a tener trabajo a largo plazo en la organización.' },
+  { id:'SE3', ancla:'SE', texto:'Prefiero un crecimiento gradual y seguro antes que un camino rápido pero arriesgado.' },
+  // EC — Creatividad Emprendedora
+  { id:'EC1', ancla:'EC', texto:'Sueño con crear mi propio negocio o proyecto desde cero.' },
+  { id:'EC2', ancla:'EC', texto:'Me aburro si no puedo innovar, crear cosas nuevas o construir algo propio.' },
+  { id:'EC3', ancla:'EC', texto:'El éxito para mí es haber creado algo — un producto, empresa o servicio — que lleva mi impronta.' },
+  // SV — Servicio/Dedicación a una Causa
+  { id:'SV1', ancla:'SV', texto:'Es fundamental para mí que mi trabajo contribuya a algo que importa más allá del negocio.' },
+  { id:'SV2', ancla:'SV', texto:'Preferiría ganar menos si eso me permite trabajar en una organización con propósito claro.' },
+  { id:'SV3', ancla:'SV', texto:'Me motiva saber que estoy ayudando a mejorar la vida de personas concretas.' },
+  // CH — Desafío Puro
+  { id:'CH1', ancla:'CH', texto:'Me atraen los problemas que parecen imposibles — cuanto más difícil, más me motiva.' },
+  { id:'CH2', ancla:'CH', texto:'Necesito sentir constantemente que estoy superando obstáculos o competidores.' },
+  { id:'CH3', ancla:'CH', texto:'Una tarea rutinaria me desmotiva profundamente, incluso si es bien pagada.' },
+  // LS — Estilo de Vida
+  { id:'LS1', ancla:'LS', texto:'Que mi trabajo me permita balancear vida personal y profesional es tan importante como el cargo o el sueldo.' },
+  { id:'LS2', ancla:'LS', texto:'Rechazaría una oportunidad excelente si requiere sacrificar mi calidad de vida o la de mi familia.' },
+  { id:'LS3', ancla:'LS', texto:'Mi identidad no está definida solo por mi carrera — necesito espacio para desarrollarme como persona.' },
+];
+
+// ═══════════════════════════════════════════════════════
+//  DEFINICIÓN DE ANCLAS (para resultados)
+// ═══════════════════════════════════════════════════════
+const ANCLAS_DEF = {
+  TF: {
+    nombre: 'Competencia Técnica/Funcional',
+    emoji: '🔬',
+    descripcion: 'Tu ancla es la excelencia en tu área de especialidad. Preferís ser la persona de referencia en tu campo antes que ascender a roles de gestión alejados de lo técnico.',
+    recomendaciones: [
+      { titulo: 'Roles ideales', texto: 'Especialista senior, consultor experto, arquitecto técnico, referente de área. Cargos con profundidad antes que amplitud.' },
+      { titulo: 'Cuidado con', texto: 'Promociones que te alejen demasiado de tu especialidad. El "síndrome de promoción forzada" a gerencias es tu mayor riesgo de desmotivación.' },
+      { titulo: 'Palanca de desarrollo', texto: 'Certificaciones, congresos de especialidad, proyectos de alta complejidad técnica y mentoría de otros en tu disciplina.' },
+    ]
+  },
+  GM: {
+    nombre: 'Competencia Gerencial General',
+    emoji: '🏛',
+    descripcion: 'Te motiva integrar funciones, liderar equipos y ser responsable de resultados amplios. La gestión de personas y el impacto organizacional son tu motor.',
+    recomendaciones: [
+      { titulo: 'Roles ideales', texto: 'Gerencias, direcciones, jefaturas que integren múltiples disciplinas. Roles donde la coordinación y la visión de negocio sean centrales.' },
+      { titulo: 'Cuidado con', texto: 'Roles de contribuidor individual sin perspectiva de crecimiento hacia responsabilidades mayores. La falta de desafíos de liderazgo te genera estancamiento.' },
+      { titulo: 'Palanca de desarrollo', texto: 'Programas de liderazgo, exposición a decisiones de negocio, proyectos cross-funcionales y coaching ejecutivo.' },
+    ]
+  },
+  AU: {
+    nombre: 'Autonomía/Independencia',
+    emoji: '🦅',
+    descripcion: 'Necesitás libertad para decidir cómo hacés tu trabajo. Las estructuras rígidas y el micromanagement son tu mayor fuente de frustración.',
+    recomendaciones: [
+      { titulo: 'Roles ideales', texto: 'Consultor independiente, profesional freelance, roles con alta autonomía de ejecución. Emprendimiento o intrapreneurship.' },
+      { titulo: 'Cuidado con', texto: 'Culturas muy jerárquicas o procedimentales. La burocracia excesiva puede llevarte a la desvinculación aunque el trabajo sea interesante.' },
+      { titulo: 'Palanca de desarrollo', texto: 'Negociá acuerdos de trabajo flexible desde el inicio. Buscá roles con objetivos claros pero libertad de método.' },
+    ]
+  },
+  SE: {
+    nombre: 'Seguridad/Estabilidad',
+    emoji: '🛡',
+    descripcion: 'Valorás la predictibilidad, la continuidad y la estabilidad económica. El largo plazo y la lealtad organizacional son valores centrales para vos.',
+    recomendaciones: [
+      { titulo: 'Roles ideales', texto: 'Organizaciones establecidas, sector público o grandes corporaciones con carreras definidas y beneficios sólidos.' },
+      { titulo: 'Cuidado con', texto: 'Startups o entornos de alta incertidumbre pueden generarte ansiedad y bajo rendimiento aunque el proyecto sea atractivo.' },
+      { titulo: 'Palanca de desarrollo', texto: 'Planes de carrera formales, feedback estructurado y claridad en criterios de evaluación y progresión.' },
+    ]
+  },
+  EC: {
+    nombre: 'Creatividad Emprendedora',
+    emoji: '🚀',
+    descripcion: 'Necesitás crear algo propio. La propiedad intelectual, el riesgo calculado y ver crecer algo que construiste son lo que te da sentido.',
+    recomendaciones: [
+      { titulo: 'Roles ideales', texto: 'Fundador o cofundador de startups, intrapreneur en corporaciones, responsable de nuevos negocios o unidades.' },
+      { titulo: 'Cuidado con', texto: 'Roles de ejecución rutinaria sin posibilidad de innovar. Si no podés construir algo, te frustrás rápido.' },
+      { titulo: 'Palanca de desarrollo', texto: 'Proyectos de innovación, hackathons, incubadoras corporativas. Si podés, probá emprender un proyecto paralelo.' },
+    ]
+  },
+  SV: {
+    nombre: 'Servicio/Dedicación a una Causa',
+    emoji: '❤️',
+    descripcion: 'Tu motor es el impacto en otros. Trabajar en algo que importa — una causa social, de salud, educación u otro propósito — es lo que te hace levantarte.',
+    recomendaciones: [
+      { titulo: 'Roles ideales', texto: 'ONGs, sector social, salud, educación o empresas con propósito claro y alineado a tus valores.' },
+      { titulo: 'Cuidado con', texto: 'Organizaciones que priorizan el lucro por sobre el impacto. La desconexión entre los valores declarados y los reales te desgasta.' },
+      { titulo: 'Palanca de desarrollo', texto: 'Actividades de voluntariado corporativo, proyectos de impacto social interno y roles en RSE o sostenibilidad.' },
+    ]
+  },
+  CH: {
+    nombre: 'Desafío Puro',
+    emoji: '⚡',
+    descripcion: 'Necesitás competir, superar lo difícil y resolver lo que nadie puede. El reto en sí mismo es tu combustible — sin desafío, te apagás.',
+    recomendaciones: [
+      { titulo: 'Roles ideales', texto: 'Ventas de alto rendimiento, turnarounds, consultoría estratégica, negociación compleja, roles con metas ambiciosas.' },
+      { titulo: 'Cuidado con', texto: 'Rutina, procesos repetitivos y objetivos fácilmente alcanzables. La comodidad es tu enemiga.' },
+      { titulo: 'Palanca de desarrollo', texto: 'Buscá proyectos que otros evitan por su complejidad. Exponete a problemas de negocio sin solución clara.' },
+    ]
+  },
+  LS: {
+    nombre: 'Estilo de Vida',
+    emoji: '⚖️',
+    descripcion: 'La integración entre trabajo, familia y vida personal es tu prioridad. No vas a sacrificar tu calidad de vida por ningún cargo o sueldo.',
+    recomendaciones: [
+      { titulo: 'Roles ideales', texto: 'Trabajo híbrido o remoto, horarios flexibles, culturas que respetan los límites. Organizaciones con políticas de bienestar reales.' },
+      { titulo: 'Cuidado con', texto: 'Culturas de trabajo 24/7 o jefes que no respetan el tiempo personal. La sobreexigencia crónica te lleva al burnout o la desvinculación.' },
+      { titulo: 'Palanca de desarrollo', texto: 'Negociá modalidades de trabajo desde el inicio. Buscá organizaciones que midan resultados, no presencialismo.' },
+    ]
+  },
+};
+
+// ═══════════════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ═══════════════════════════════════════════════════════
+let state = {
+  nombre: '', empresa: '', unidad: '', periodo: '',
+  legajo: '', tipo: 'empleado', puesto: '',
+  respuestas: {},
+  scores: {},
+  ancla1: null, ancla2: null,
+  desempateActivado: false,
+  desempateEleccion: null,
+  tiempoInicio: null,
+  tiempoEvaluacion: 0,
+};
+
+// ═══════════════════════════════════════════════════════
+//  NAVEGACIÓN
+// ═══════════════════════════════════════════════════════
+function irAPantalla(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+  actualizarProgress(id);
+}
+
+function actualizarProgress(screenId) {
+  const pasos = ['screen-encuadre','screen-datos','screen-cuestionario','screen-desempate','screen-resultados'];
+  const idx = pasos.indexOf(screenId);
+  const pct = idx <= 0 ? 0 : Math.round((idx / (pasos.length - 1)) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  const labels = ['','Datos personales','Cuestionario','Desempate','Resultados'];
+  document.getElementById('progressLabel').textContent = labels[idx] || '';
+}
+
+function irADatos() {
+  // Pre-cargar desde URL params
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('colaborador')) document.getElementById('inp-nombre').value = p.get('colaborador');
+  if (p.get('empresa'))     document.getElementById('inp-empresa').value = p.get('empresa');
+  if (p.get('unidad'))      document.getElementById('inp-unidad').value = p.get('unidad');
+  if (p.get('legajo'))      document.getElementById('inp-legajo').value = p.get('legajo');
+  if (p.get('tipo'))        document.getElementById('inp-tipo').value = p.get('tipo');
+  irAPantalla('screen-datos');
+}
+
+function validarDatosYContinuar() {
+  const nombre  = document.getElementById('inp-nombre').value.trim();
+  const empresa = document.getElementById('inp-empresa').value.trim();
+  const puesto  = document.getElementById('inp-puesto').value.trim();
+  if (!nombre || !empresa || !puesto) {
+    alert('Por favor completá nombre, empresa y puesto actual.');
+    return;
+  }
+  state.nombre  = nombre;
+  state.empresa = empresa;
+  state.unidad  = document.getElementById('inp-unidad').value.trim();
+  state.periodo = document.getElementById('inp-periodo').value.trim();
+  state.legajo  = document.getElementById('inp-legajo').value.trim();
+  state.tipo    = document.getElementById('inp-tipo').value;
+  state.puesto  = puesto;
+  state.tiempoInicio = Date.now();
+  renderCuestionario();
+  irAPantalla('screen-cuestionario');
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER CUESTIONARIO
+// ═══════════════════════════════════════════════════════
+const ANCLAS_ORDEN = ['TF','GM','AU','SE','EC','SV','CH','LS'];
+const ANCLAS_NOMBRES_CORTOS = {
+  TF:'Competencia Técnica', GM:'Gestión General', AU:'Autonomía',
+  SE:'Seguridad', EC:'Creatividad Emprendedora', SV:'Servicio/Causa',
+  CH:'Desafío Puro', LS:'Estilo de Vida'
+};
+
+function renderCuestionario() {
+  const container = document.getElementById('items-container');
+  container.innerHTML = '';
+  let currentAncla = '';
+  ITEMS.forEach((item, idx) => {
+    if (item.ancla !== currentAncla) {
+      currentAncla = item.ancla;
+      const header = document.createElement('div');
+      header.className = 'seccion-header';
+      header.innerHTML = `<h2>${ANCLAS_NOMBRES_CORTOS[item.ancla]}</h2><p>Preguntas ${ANCLAS_ORDEN.indexOf(item.ancla)*3+1}–${ANCLAS_ORDEN.indexOf(item.ancla)*3+3} de 24</p>`;
+      container.appendChild(header);
+    }
+    const card = document.createElement('div');
+    card.className = 'item-card';
+    card.id = 'card-' + item.id;
+    let btns = '';
+    for (let v = 1; v <= 5; v++) {
+      btns += `<div class="likert-btn">
+        <input type="radio" name="${item.id}" id="${item.id}-${v}" value="${v}" onchange="registrarRespuesta('${item.id}', ${v})">
+        <label for="${item.id}-${v}">${v}</label>
+      </div>`;
+    }
+    card.innerHTML = `
+      <p><strong>${idx+1}.</strong> ${item.texto}</p>
+      <div class="likert-scale">${btns}</div>
+      <div class="likert-labels"><span>Nada importante</span><span>Muy importante</span></div>`;
+    container.appendChild(card);
+  });
+}
+
+function registrarRespuesta(itemId, valor) {
+  state.respuestas[itemId] = valor;
+  const card = document.getElementById('card-' + itemId);
+  if (card) card.classList.add('answered');
+  verificarCompletitud();
+}
+
+function verificarCompletitud() {
+  const total = ITEMS.length;
+  const respondidas = Object.keys(state.respuestas).length;
+  const btn = document.getElementById('btn-calcular');
+  btn.disabled = respondidas < total;
+  if (respondidas === total) {
+    btn.textContent = '¡Listo! Ver mis resultados →';
+  } else {
+    btn.textContent = `Faltan ${total - respondidas} respuestas`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  CÁLCULO DE SCORES
+// ═══════════════════════════════════════════════════════
+function calcularScores() {
+  const scores = {};
+  ANCLAS_ORDEN.forEach(ancla => {
+    const items = ITEMS.filter(i => i.ancla === ancla);
+    const suma = items.reduce((acc, i) => acc + (state.respuestas[i.id] || 0), 0);
+    scores[ancla] = Math.round((suma / (items.length * 5)) * 100);
+  });
+  return scores;
+}
+
+function calcularResultados() {
+  state.tiempoEvaluacion = Math.round((Date.now() - state.tiempoInicio) / 1000);
+  state.scores = calcularScores();
+
+  // Ordenar anclas por score
+  const ordenadas = Object.entries(state.scores).sort((a,b) => b[1]-a[1]);
+  state.ancla1 = ordenadas[0][0];
+  state.ancla2 = ordenadas[1][0];
+
+  // ¿Desempate?
+  const diff = ordenadas[0][1] - ordenadas[1][1];
+  if (diff <= 5) {
+    state.desempateActivado = true;
+    renderDesempate(state.ancla1, state.ancla2);
+    irAPantalla('screen-desempate');
+  } else {
+    guardarYMostrar();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+//  DESEMPATE
+// ═══════════════════════════════════════════════════════
+function renderDesempate(a1, a2) {
+  const container = document.getElementById('desempate-opciones');
+  container.innerHTML = '';
+  [a1, a2].forEach(ancla => {
+    const def = ANCLAS_DEF[ancla];
+    const div = document.createElement('div');
+    div.className = 'desempate-opcion';
+    div.id = 'desemp-' + ancla;
+    div.innerHTML = `
+      <div class="desempate-opcion-codigo">${ancla}</div>
+      <h3>${def.emoji} ${def.nombre}</h3>
+      <p>${def.descripcion.substring(0, 120)}…</p>`;
+    div.onclick = () => seleccionarDesempate(ancla);
+    container.appendChild(div);
+  });
+}
+
+function seleccionarDesempate(ancla) {
+  document.querySelectorAll('.desempate-opcion').forEach(d => d.classList.remove('selected'));
+  document.getElementById('desemp-' + ancla).classList.add('selected');
+  state.desempateEleccion = ancla;
+  document.getElementById('btn-confirmar-desempate').disabled = false;
+}
+
+function confirmarDesempate() {
+  if (!state.desempateEleccion) return;
+  // Reordenar: la elección de desempate es ancla1
+  if (state.desempateEleccion === state.ancla2) {
+    [state.ancla1, state.ancla2] = [state.ancla2, state.ancla1];
+  }
+  guardarYMostrar();
+}
+
+// ═══════════════════════════════════════════════════════
+//  GUARDAR EN SUPABASE
+// ═══════════════════════════════════════════════════════
+async function guardarYMostrar() {
+  irAPantalla('screen-loading');
+  const payload = {
+    empresa: state.empresa,
+    unidad_de_negocio: state.unidad || null,
+    colaborador: state.nombre,
+    employee_id_number: state.legajo || null,
+    tipo: state.tipo,
+    fecha: new Date().toISOString().split('T')[0],
+    periodo: state.periodo || null,
+    ancla_tf: state.scores.TF,
+    ancla_gm: state.scores.GM,
+    ancla_au: state.scores.AU,
+    ancla_se: state.scores.SE,
+    ancla_ec: state.scores.EC,
+    ancla_sv: state.scores.SV,
+    ancla_ch: state.scores.CH,
+    ancla_ls: state.scores.LS,
+    ancla_principal: state.ancla1,
+    ancla_secundaria: state.ancla2,
+    desempate_activado: state.desempateActivado,
+    desempate_eleccion: state.desempateEleccion,
+    tiempo_evaluacion_seg: state.tiempoEvaluacion,
+    respuestas: JSON.stringify(state.respuestas),
+  };
+
+  try {
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/carrera_evaluaciones`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!resp.ok) console.warn('Supabase error:', resp.status);
+  } catch(e) {
+    console.warn('Error guardando:', e);
+  }
+
+  renderResultados();
+  irAPantalla('screen-resultados');
+}
+
+// ═══════════════════════════════════════════════════════
+//  RENDER RESULTADOS
+// ═══════════════════════════════════════════════════════
+function renderResultados() {
+  const a1 = ANCLAS_DEF[state.ancla1];
+  const a2 = ANCLAS_DEF[state.ancla2];
+  const nombre = state.nombre.split(' ')[0];
+
+  // Título
+  document.getElementById('res-nombre-titulo').textContent = `Tu ancla: ${a1.nombre}`;
+
+  // Card ancla principal
+  document.getElementById('ancla-principal-card').innerHTML = `
+    <div class="ancla-principal-card">
+      <div class="tag">Ancla principal</div>
+      <h2>${a1.emoji} ${a1.nombre}</h2>
+      <p>${a1.descripcion}</p>
+    </div>`;
+
+  // Card ancla secundaria
+  document.getElementById('ancla-secundaria-card').innerHTML = `
+    <div class="ancla-secundaria-card">
+      <div class="ancla-secundaria-badge">${a2.emoji}</div>
+      <div>
+        <div class="tag">Ancla secundaria</div>
+        <h3>${a2.nombre}</h3>
+        <p>Tu segunda motivación más fuerte. Complementa y enriquece tu ancla principal.</p>
+      </div>
+    </div>`;
+
+  // Barras
+  const ordenadas = Object.entries(state.scores).sort((a,b) => b[1]-a[1]);
+  const barsContainer = document.getElementById('ancla-bars');
+  barsContainer.innerHTML = '';
+  ordenadas.forEach(([ancla, score]) => {
+    const esPrincipal = ancla === state.ancla1;
+    const def = ANCLAS_DEF[ancla];
+    barsContainer.innerHTML += `
+      <div class="ancla-bar-item">
+        <div class="ancla-bar-label">${def.emoji} ${ANCLAS_NOMBRES_CORTOS[ancla]}</div>
+        <div class="ancla-bar-track">
+          <div class="ancla-bar-fill ${esPrincipal ? 'principal' : ''}" style="width:0%" data-target="${score}"></div>
+        </div>
+        <div class="ancla-bar-score">${score}</div>
+      </div>`;
+  });
+  // Animar barras
+  setTimeout(() => {
+    document.querySelectorAll('.ancla-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.target + '%';
+    });
+  }, 100);
+
+  // Recomendaciones
+  const recs = a1.recomendaciones;
+  let recsHtml = '<div class="recomendaciones-card"><h3>💡 Recomendaciones para tu carrera</h3>';
+  const icons = ['🎯','⚠️','📈'];
+  recs.forEach((r, i) => {
+    recsHtml += `<div class="rec-item"><div class="rec-icon">${icons[i]}</div><div class="rec-text"><strong>${r.titulo}</strong>${r.texto}</div></div>`;
+  });
+  recsHtml += '</div>';
+  document.getElementById('recomendaciones-card').innerHTML = recsHtml;
+
+  // Badge confiabilidad
+  const mins = Math.floor(state.tiempoEvaluacion / 60);
+  const segs = state.tiempoEvaluacion % 60;
+  const tiempoStr = mins > 0 ? `${mins}m ${segs}s` : `${segs}s`;
+  const desempateStr = state.desempateActivado ? ' · Desempate activado' : '';
+  document.getElementById('badge-confiabilidad').innerHTML =
+    `⏱ Tiempo: ${tiempoStr}${desempateStr}`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  actualizarProgress('screen-encuadre');
+});
+</script>
+</body>
+</html>
