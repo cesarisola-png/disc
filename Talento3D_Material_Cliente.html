@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Talento 3D — Material para el equipo de RRHH</title>
+<title>Talento 3D — Suite de Gestión de Talento para Pymes</title>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -12,6 +12,8 @@
   --verde:   #27ae60;
   --naranja: #e67e22;
   --rojo:    #c0392b;
+  --violeta: #7c3aed;
+  --teal:    #0d9488;
   --gris:    #6b7280;
   --bg:      #ffffff;
   --bg2:     #f8fafc;
@@ -21,307 +23,196 @@
   --text2:   #64748b;
 }
 html { scroll-behavior: smooth; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--bg2);
-  color: var(--text);
-  font-size: 14px;
-  line-height: 1.6;
-}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg2); color: var(--text); font-size: 14px; line-height: 1.6; }
 
 /* NAV */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  background: rgba(255,255,255,.97); backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--border);
-  padding: 0 2rem;
-  display: flex; align-items: center; justify-content: space-between;
-  height: 56px;
-}
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,.97); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 56px; }
 .nav-brand { font-size: 15px; font-weight: 700; color: var(--azul); letter-spacing: -.3px; }
 .nav-brand span { color: var(--azul2); }
-.nav-links { display: flex; gap: 6px; }
-.nav-links a {
-  font-size: 12px; font-weight: 500; color: var(--text2);
-  text-decoration: none; padding: 5px 10px;
-  border-radius: 6px; transition: all .15s;
-}
+.nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+.nav-links a { font-size: 12px; font-weight: 500; color: var(--text2); text-decoration: none; padding: 5px 9px; border-radius: 6px; transition: all .15s; }
 .nav-links a:hover { background: var(--bg3); color: var(--azul); }
 
-/* SECTIONS */
+/* LAYOUT */
 section { padding: 5rem 2rem; max-width: 900px; margin: 0 auto; }
 section:first-of-type { padding-top: 7rem; }
 
 /* HERO */
-.hero {
-  min-height: 90vh; display: flex; flex-direction: column;
-  justify-content: center; align-items: center; text-align: center;
-  padding: 7rem 2rem 4rem; max-width: 100%;
-  background: linear-gradient(160deg, #f0f7ff 0%, #fafffe 50%, #fff8f0 100%);
-  border-bottom: 1px solid var(--border);
-}
-.hero-badge {
-  display: inline-block; background: var(--azul2); color: #fff;
-  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-  text-transform: uppercase; padding: 5px 14px; border-radius: 20px;
-  margin-bottom: 1.5rem;
-}
-.hero h1 {
-  font-size: clamp(28px, 5vw, 48px); font-weight: 800;
-  color: var(--azul); line-height: 1.15; margin-bottom: 1.2rem;
-  max-width: 700px;
-}
+.hero { min-height: 92vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 7rem 2rem 4rem; max-width: 100%; background: linear-gradient(160deg, #f0f7ff 0%, #fafffe 50%, #fff8f0 100%); border-bottom: 1px solid var(--border); }
+.hero-badge { display: inline-block; background: var(--azul2); color: #fff; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1.5rem; }
+.hero h1 { font-size: clamp(28px, 5vw, 48px); font-weight: 800; color: var(--azul); line-height: 1.15; margin-bottom: 1.2rem; max-width: 700px; }
 .hero h1 em { font-style: normal; color: var(--azul2); }
-.hero p {
-  font-size: clamp(15px, 2vw, 18px); color: var(--text2);
-  max-width: 540px; margin-bottom: 2.5rem; line-height: 1.7;
-}
-.hero-cta {
-  display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
-}
-.btn-primary {
-  background: var(--azul); color: #fff; padding: 13px 28px;
-  border-radius: 8px; font-size: 14px; font-weight: 600;
-  text-decoration: none; transition: all .15s;
-}
+.hero p { font-size: clamp(15px, 2vw, 18px); color: var(--text2); max-width: 560px; margin-bottom: 2.5rem; line-height: 1.7; }
+.hero-cta { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.btn-primary { background: var(--azul); color: #fff; padding: 13px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; transition: all .15s; }
 .btn-primary:hover { background: var(--azul2); transform: translateY(-1px); }
-.btn-ghost {
-  border: 1.5px solid var(--azul); color: var(--azul); padding: 12px 28px;
-  border-radius: 8px; font-size: 14px; font-weight: 600;
-  text-decoration: none; transition: all .15s;
-}
+.btn-ghost { border: 1.5px solid var(--azul); color: var(--azul); padding: 12px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; transition: all .15s; }
 .btn-ghost:hover { background: var(--azul); color: #fff; }
-.hero-stats {
-  display: flex; gap: 3rem; margin-top: 3.5rem; flex-wrap: wrap;
-  justify-content: center;
-}
+.hero-stats { display: flex; gap: 2.5rem; margin-top: 3.5rem; flex-wrap: wrap; justify-content: center; }
 .stat { text-align: center; }
 .stat strong { display: block; font-size: 32px; font-weight: 800; color: var(--azul2); }
 .stat span { font-size: 11px; color: var(--text2); font-weight: 500; }
 
-/* SECTION TITLES */
-.section-label {
-  font-size: 10px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--azul2); margin-bottom: .5rem;
-}
-.section-title {
-  font-size: clamp(22px, 3.5vw, 32px); font-weight: 800;
-  color: var(--azul); line-height: 1.2; margin-bottom: .8rem;
-}
-.section-sub {
-  font-size: 15px; color: var(--text2); max-width: 540px; line-height: 1.7;
-}
+/* PHASE STRIP */
+.phase-strip { display: flex; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-top: 2.5rem; }
+.phase-block { flex: 1; min-width: 140px; padding: 1.2rem 1rem; background: var(--bg); border-right: 1px solid var(--border); text-align: center; }
+.phase-block:last-child { border-right: none; }
+.ph-num { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text2); margin-bottom: 3px; }
+.ph-badge { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-bottom: 6px; }
+.ph-done { background: rgba(39,174,96,.12); color: var(--verde); }
+.ph-new  { background: rgba(124,58,237,.12); color: var(--violeta); }
+.ph-icon { font-size: 22px; display: block; margin-bottom: 4px; }
+.ph-name { font-size: 12px; font-weight: 700; color: var(--azul); margin-bottom: 3px; }
+.ph-items { font-size: 10px; color: var(--text2); line-height: 1.5; }
 
-/* PAIN CARDS */
-.pain-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px; margin-top: 2.5rem;
-}
-.pain-card {
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 12px; padding: 1.4rem;
-  border-left: 4px solid var(--rojo);
-  transition: box-shadow .15s;
-}
+/* SECTION TITLES */
+.section-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--azul2); margin-bottom: .5rem; }
+.section-title { font-size: clamp(22px, 3.5vw, 32px); font-weight: 800; color: var(--azul); line-height: 1.2; margin-bottom: .8rem; }
+.section-sub { font-size: 15px; color: var(--text2); max-width: 560px; line-height: 1.7; }
+
+/* PAIN */
+.pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 2.5rem; }
+.pain-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; border-left: 4px solid var(--rojo); transition: box-shadow .15s; }
 .pain-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); }
 .pain-icon { font-size: 24px; margin-bottom: .6rem; }
 .pain-card h3 { font-size: 14px; font-weight: 700; color: var(--azul); margin-bottom: .4rem; }
 .pain-card p { font-size: 12px; color: var(--text2); line-height: 1.6; }
 
-/* SOLUTION REVEAL */
-.reveal-box {
-  background: linear-gradient(135deg, var(--azul) 0%, #1e5f8e 100%);
-  border-radius: 16px; padding: 3rem 2.5rem; text-align: center;
-  margin: 3rem 0; color: #fff;
-}
+/* REVEAL */
+.reveal-box { background: linear-gradient(135deg, var(--azul) 0%, #1e5f8e 100%); border-radius: 16px; padding: 3rem 2.5rem; text-align: center; margin: 3rem 0; color: #fff; }
 .reveal-box h2 { font-size: clamp(20px, 3vw, 28px); font-weight: 800; margin-bottom: 1rem; }
 .reveal-box p { font-size: 15px; opacity: .88; max-width: 520px; margin: 0 auto 2rem; line-height: 1.7; }
-.reveal-pillars {
-  display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
-}
-.pillar {
-  background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
-  border-radius: 10px; padding: 1rem 1.4rem; min-width: 160px;
-}
+.reveal-pillars { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.pillar { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 10px; padding: 1rem 1.4rem; min-width: 160px; }
 .pillar .p-icon { font-size: 28px; margin-bottom: .4rem; }
 .pillar .p-name { font-size: 13px; font-weight: 700; }
 .pillar .p-sub { font-size: 11px; opacity: .75; }
 
+/* MODULE GROUP HEADER */
+.mod-header { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.4rem; border-radius: 12px; margin: 2.5rem 0 1.5rem; }
+.mod-header-icon { font-size: 26px; }
+.mod-header-title { font-size: 16px; font-weight: 800; color: var(--azul); }
+.mod-header-sub { font-size: 12px; color: var(--text2); margin-top: 1px; }
+
 /* PRODUCT CARDS */
-.product-section { margin-top: 3rem; }
-.product-card {
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 16px; padding: 2rem 2.2rem;
-  margin-bottom: 1.5rem; display: grid;
-  grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;
-  transition: box-shadow .15s;
-}
+.product-card { background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 2rem 2.2rem; margin-bottom: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; transition: box-shadow .15s; }
 .product-card:hover { box-shadow: 0 6px 30px rgba(0,0,0,.08); }
-.product-card.accent-blue { border-top: 4px solid var(--azul2); }
-.product-card.accent-green { border-top: 4px solid var(--verde); }
-.product-card.accent-orange { border-top: 4px solid var(--naranja); }
-.prod-badge {
-  display: inline-block; font-size: 10px; font-weight: 700;
-  letter-spacing: 1px; text-transform: uppercase;
-  padding: 4px 10px; border-radius: 20px; margin-bottom: .8rem;
-}
-.badge-blue   { background: rgba(41,128,185,.12); color: var(--azul2); }
-.badge-green  { background: rgba(39,174,96,.12); color: var(--verde); }
-.badge-orange { background: rgba(230,126,34,.12); color: var(--naranja); }
+.product-card.top-blue   { border-top: 4px solid var(--azul2); }
+.product-card.top-green  { border-top: 4px solid var(--verde); }
+.product-card.top-orange { border-top: 4px solid var(--naranja); }
+.product-card.top-violet { border-top: 4px solid var(--violeta); }
+.product-card.top-teal   { border-top: 4px solid var(--teal); }
+.product-card.top-azul   { border-top: 4px solid var(--azul); }
+.prod-badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; margin-bottom: .8rem; }
+.bg-blue   { background: rgba(41,128,185,.12); color: var(--azul2); }
+.bg-green  { background: rgba(39,174,96,.12); color: var(--verde); }
+.bg-orange { background: rgba(230,126,34,.12); color: var(--naranja); }
+.bg-violet { background: rgba(124,58,237,.12); color: var(--violeta); }
+.bg-teal   { background: rgba(13,148,136,.12); color: var(--teal); }
+.bg-azul   { background: rgba(26,58,92,.1); color: var(--azul); }
 .prod-title { font-size: 20px; font-weight: 800; color: var(--azul); margin-bottom: .4rem; }
 .prod-desc { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 1.2rem; }
 .feat-list { list-style: none; }
-.feat-list li {
-  font-size: 13px; color: var(--text);
-  padding: 6px 0; border-bottom: 1px solid var(--border);
-  display: flex; align-items: flex-start; gap: 8px;
-}
+.feat-list li { font-size: 13px; color: var(--text); padding: 6px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 8px; }
 .feat-list li:last-child { border-bottom: none; }
-.feat-list li::before {
-  content: '✓'; color: var(--verde); font-weight: 700;
-  flex-shrink: 0; margin-top: 1px;
-}
+.feat-list li::before { content: '✓'; color: var(--verde); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
 .prod-right { display: flex; flex-direction: column; gap: 10px; }
-.result-chip {
-  background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 10px; padding: 12px 14px;
-}
-.result-chip .rc-label {
-  font-size: 9px; font-weight: 700; letter-spacing: 1px;
-  text-transform: uppercase; color: var(--text2); margin-bottom: 4px;
-}
-.result-chip .rc-text { font-size: 13px; font-weight: 600; color: var(--azul); }
+.rc { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.rc-label { font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); margin-bottom: 4px; }
+.rc-text { font-size: 13px; font-weight: 600; color: var(--azul); }
+.rc-text.light { font-weight: 400; line-height: 1.6; color: var(--text); }
+
+/* FIT INTRO */
+.fit-intro { background: linear-gradient(135deg, #f5f3ff, #eff6ff); border: 1px solid rgba(124,58,237,.2); border-radius: 16px; padding: 2rem 2.4rem; margin-bottom: 1.5rem; }
+.fit-intro h3 { font-size: 17px; font-weight: 800; color: var(--violeta); margin-bottom: .6rem; }
+.fit-intro p  { font-size: 13px; color: var(--text2); line-height: 1.7; }
+.fit-formula { display: flex; gap: .7rem; flex-wrap: wrap; margin-top: 1rem; align-items: center; }
+.fit-pill { background: #fff; border: 1px solid rgba(124,58,237,.25); border-radius: 8px; padding: 7px 13px; font-size: 12px; font-weight: 600; color: var(--violeta); }
+.fit-sym { font-size: 18px; font-weight: 800; color: var(--text2); }
+.fit-result { background: var(--violeta); color: #fff; border-radius: 8px; padding: 7px 13px; font-size: 12px; font-weight: 700; }
+
+/* ANCHOR / CULTURA CHIPS */
+.chip-grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 7px; margin-top: 1rem; }
+.chip-grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; margin-top: 1rem; }
+.anchor-chip { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 8px 6px; text-align: center; font-size: 11px; font-weight: 600; color: var(--azul); }
+.anchor-chip span { display: block; font-size: 16px; margin-bottom: 2px; }
+.cult-chip { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+.cult-chip .ci { font-size: 20px; margin-bottom: 3px; }
+.cult-chip .cn { font-size: 12px; font-weight: 700; color: var(--azul); }
+.cult-chip .cd { font-size: 11px; color: var(--text2); }
+
+/* TEAM BUILDER */
+.team-card { background: linear-gradient(135deg,#f0fdf4,#eff6ff); border: 1px solid rgba(13,148,136,.25); border-radius: 16px; padding: 2rem 2.4rem; margin-top: 1rem; }
+.team-card h3 { font-size: 17px; font-weight: 800; color: var(--teal); margin-bottom: .5rem; }
+.team-card p  { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 1rem; }
+.proj-types { display: grid; grid-template-columns: repeat(2,1fr); gap: 9px; }
+.proj-type { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 12px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.score-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 1rem; }
+.score-box { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center; }
+.score-num { font-size: 22px; font-weight: 800; line-height: 1; margin-bottom: 3px; }
+.score-lbl { font-size: 10px; color: var(--text2); }
 
 /* HOW IT WORKS */
 .steps { counter-reset: step; margin-top: 2.5rem; }
-.step {
-  display: flex; gap: 1.2rem; margin-bottom: 1.5rem;
-  align-items: flex-start;
-}
-.step-num {
-  counter-increment: step;
-  width: 36px; height: 36px; border-radius: 50%;
-  background: var(--azul); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 800; flex-shrink: 0;
-}
+.step { display: flex; gap: 1.2rem; margin-bottom: 1.5rem; align-items: flex-start; }
+.step-num { counter-increment: step; width: 36px; height: 36px; border-radius: 50%; background: var(--azul); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; flex-shrink: 0; }
 .step-body h3 { font-size: 14px; font-weight: 700; color: var(--azul); margin-bottom: .2rem; }
 .step-body p { font-size: 13px; color: var(--text2); line-height: 1.6; }
-.step-connector {
-  width: 2px; height: 20px; background: var(--border);
-  margin-left: 17px;
-}
+.step-conn { width: 2px; height: 20px; background: var(--border); margin-left: 17px; }
 
-/* TRANSFORMATION */
-.transform-grid {
-  display: grid; grid-template-columns: 1fr auto 1fr;
-  gap: 1rem; align-items: center; margin-top: 2.5rem;
-}
-.transform-col { }
-.transform-col h3 {
-  font-size: 12px; font-weight: 700; letter-spacing: 1px;
-  text-transform: uppercase; margin-bottom: 1rem;
-}
+/* TRANSFORM */
+.transform-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: center; margin-top: 2.5rem; }
+.transform-col h3 { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem; }
 .transform-col.before h3 { color: var(--rojo); }
-.transform-col.after h3  { color: var(--verde); }
-.t-item {
-  display: flex; align-items: flex-start; gap: 8px;
-  padding: 10px 12px; border-radius: 8px; margin-bottom: 8px;
-  font-size: 13px;
-}
+.transform-col.after  h3 { color: var(--verde); }
+.t-item { display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
 .t-item.neg { background: rgba(192,57,43,.06); color: var(--text); border: 1px solid rgba(192,57,43,.15); }
 .t-item.pos { background: rgba(39,174,96,.06); color: var(--text); border: 1px solid rgba(39,174,96,.15); }
 .transform-arrow { font-size: 28px; color: var(--azul2); text-align: center; }
 
 /* ROI */
-.roi-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px; margin-top: 2.5rem;
-}
-.roi-card {
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: 12px; padding: 1.4rem; text-align: center;
-}
-.roi-card .roi-num {
-  font-size: 36px; font-weight: 800; color: var(--azul2);
-  line-height: 1; margin-bottom: .4rem;
-}
-.roi-card .roi-label { font-size: 12px; color: var(--text2); }
-.roi-highlight {
-  background: linear-gradient(135deg, #e8f5e9, #f0f7ff);
-  border: 1px solid rgba(39,174,96,.3);
-  border-radius: 12px; padding: 1.8rem 2rem; text-align: center;
-  margin-top: 1.5rem;
-}
+.roi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 2.5rem; }
+.roi-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 1.4rem; text-align: center; }
+.roi-num { font-size: 36px; font-weight: 800; color: var(--azul2); line-height: 1; margin-bottom: .4rem; }
+.roi-label { font-size: 12px; color: var(--text2); }
+.roi-highlight { background: linear-gradient(135deg,#e8f5e9,#f0f7ff); border: 1px solid rgba(39,174,96,.3); border-radius: 12px; padding: 1.8rem 2rem; text-align: center; margin-top: 1.5rem; }
 .roi-highlight p { font-size: 14px; color: var(--azul); line-height: 1.7; }
 .roi-highlight strong { color: var(--verde); font-size: 16px; }
 
 /* QUOTE */
-.quote-box {
-  background: var(--azul2); color: #fff;
-  border-radius: 12px; padding: 2rem 2.4rem;
-  margin: 3rem 0; position: relative;
-}
-.quote-box::before {
-  content: '"'; font-size: 80px; color: rgba(255,255,255,.15);
-  position: absolute; top: -10px; left: 16px; line-height: 1;
-  font-family: Georgia, serif;
-}
-.quote-box p {
-  font-size: clamp(15px, 2.5vw, 18px); font-weight: 500;
-  line-height: 1.7; position: relative; z-index: 1;
-}
+.quote-box { background: var(--azul2); color: #fff; border-radius: 12px; padding: 2rem 2.4rem; margin: 3rem 0; position: relative; }
+.quote-box::before { content: '"'; font-size: 80px; color: rgba(255,255,255,.15); position: absolute; top: -10px; left: 16px; line-height: 1; font-family: Georgia,serif; }
+.quote-box p { font-size: clamp(15px,2.5vw,18px); font-weight: 500; line-height: 1.7; position: relative; z-index: 1; }
 
 /* FAQ */
-.faq-item {
-  border: 1px solid var(--border); border-radius: 10px;
-  margin-bottom: 10px; overflow: hidden;
-}
-.faq-q {
-  padding: 14px 16px; font-size: 14px; font-weight: 600;
-  color: var(--azul); cursor: pointer;
-  display: flex; justify-content: space-between; align-items: center;
-  background: var(--bg); user-select: none;
-}
+.faq-item { border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+.faq-q { padding: 14px 16px; font-size: 14px; font-weight: 600; color: var(--azul); cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: var(--bg); user-select: none; }
 .faq-q:hover { background: var(--bg3); }
 .faq-q .arrow { transition: transform .2s; font-size: 12px; color: var(--text2); }
 .faq-q.open .arrow { transform: rotate(180deg); }
-.faq-a {
-  display: none; padding: 0 16px 14px;
-  font-size: 13px; color: var(--text2); line-height: 1.7;
-  background: var(--bg);
-}
+.faq-a { display: none; padding: 0 16px 14px; font-size: 13px; color: var(--text2); line-height: 1.7; background: var(--bg); }
 .faq-a.visible { display: block; }
 
-/* CTA FINAL */
-.cta-final {
-  background: linear-gradient(135deg, var(--azul) 0%, #1e5f8e 100%);
-  border-radius: 20px; padding: 4rem 2rem;
-  text-align: center; color: #fff; margin: 3rem 0;
-}
-.cta-final h2 { font-size: clamp(22px, 4vw, 34px); font-weight: 800; margin-bottom: 1rem; }
+/* CTA */
+.cta-final { background: linear-gradient(135deg, var(--azul) 0%, #1e5f8e 100%); border-radius: 20px; padding: 4rem 2rem; text-align: center; color: #fff; margin: 3rem 0; }
+.cta-final h2 { font-size: clamp(22px,4vw,34px); font-weight: 800; margin-bottom: 1rem; }
 .cta-final p { font-size: 15px; opacity: .88; max-width: 480px; margin: 0 auto 2rem; line-height: 1.7; }
 
 /* FOOTER */
-footer {
-  text-align: center; padding: 2rem;
-  font-size: 11px; color: var(--text2);
-  border-top: 1px solid var(--border);
-}
+footer { text-align: center; padding: 2rem; font-size: 11px; color: var(--text2); border-top: 1px solid var(--border); }
 
-/* UTILS */
-.tag {
-  display: inline-block; font-size: 10px; font-weight: 600;
-  padding: 2px 8px; border-radius: 4px;
-  background: rgba(41,128,185,.1); color: var(--azul2);
-}
-.divider { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+/* RESPONSIVE */
 @media (max-width: 640px) {
   .product-card { grid-template-columns: 1fr; }
   .transform-grid { grid-template-columns: 1fr; }
   .transform-arrow { transform: rotate(90deg); }
   nav .nav-links { display: none; }
   section { padding: 3rem 1.2rem; }
+  .phase-strip { flex-direction: column; }
+  .phase-block { border-right: none; border-bottom: 1px solid var(--border); }
+  .chip-grid-4 { grid-template-columns: repeat(2,1fr); }
+  .proj-types { grid-template-columns: 1fr; }
+  .score-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -332,8 +223,9 @@ footer {
   <div class="nav-brand">Talento <span>3D</span></div>
   <div class="nav-links">
     <a href="#problema">El problema</a>
-    <a href="#solucion">La solución</a>
     <a href="#suite">La suite</a>
+    <a href="#fit">Módulos FIT</a>
+    <a href="#equipos">Armado de equipos</a>
     <a href="#como">Cómo funciona</a>
     <a href="#roi">El impacto</a>
     <a href="#faq">Preguntas</a>
@@ -342,18 +234,18 @@ footer {
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-badge">Para equipos de RRHH de Pymes</div>
+  <div class="hero-badge">Suite completa de gestión de talento · Para equipos de RRHH de Pymes</div>
   <h1>El talento de tu empresa,<br><em>gestionado con datos</em></h1>
-  <p>Talento 3D le da al Gerente de RRHH las herramientas para liderar la transformación más importante de la empresa: convertir a las personas en el motor del crecimiento.</p>
+  <p>Talento 3D integra evaluación conductual, vitalidad laboral, encaje de carrera, encaje cultural y formación de equipos de proyecto — en una plataforma diseñada para el día a día de RRHH en pymes.</p>
   <div class="hero-cta">
-    <a href="#suite" class="btn-primary">Conocer la suite →</a>
-    <a href="#como" class="btn-ghost">Ver cómo funciona</a>
+    <a href="#suite" class="btn-primary">Ver la suite completa →</a>
+    <a href="#como" class="btn-ghost">Cómo funciona</a>
   </div>
   <div class="hero-stats">
-    <div class="stat"><strong>3</strong><span>Herramientas integradas</span></div>
-    <div class="stat"><strong>25'</strong><span>Para evaluar a alguien</span></div>
+    <div class="stat"><strong>5</strong><span>Assessments integrados</span></div>
+    <div class="stat"><strong>360°</strong><span>Perfil de cada persona</span></div>
     <div class="stat"><strong>300</strong><span>Personas gestionadas</span></div>
-    <div class="stat"><strong>1</strong><span>Plataforma unificada</span></div>
+    <div class="stat"><strong>25'</strong><span>Para evaluar a alguien</span></div>
   </div>
 </div>
 
@@ -361,222 +253,361 @@ footer {
 <section id="problema">
   <div class="section-label">El problema real</div>
   <h2 class="section-title">Tu equipo de RRHH hace malabares.<br>Y los jefes no tienen datos.</h2>
-  <p class="section-sub">En una pyme de hasta 300 personas, el equipo de RRHH tiene 3 personas para hacer el trabajo de 10. El resultado: se apaga incendios y se pierde de vista lo que más importa.</p>
+  <p class="section-sub">En una pyme de hasta 300 personas, el equipo de RRHH tiene 3 personas para hacer el trabajo de 10. El resultado: se apagan incendios y se pierde de vista lo que más importa.</p>
 
   <div class="pain-grid">
-    <div class="pain-card">
-      <div class="pain-icon">🎯</div>
-      <h3>Jefes que no conocen su equipo</h3>
-      <p>Saben quién cumple, pero no entienden cómo piensan, qué los motiva o por qué algunos rinden menos de lo que podrían.</p>
-    </div>
-    <div class="pain-card">
-      <div class="pain-icon">📊</div>
-      <h3>Decisiones sin datos</h3>
-      <p>¿Quién puede asumir más responsabilidad? ¿A quién promover? ¿Quién está en riesgo de irse? Hoy se responde con intuición.</p>
-    </div>
-    <div class="pain-card">
-      <div class="pain-icon">🔄</div>
-      <h3>Rotación que no se anticipa</h3>
-      <p>Las personas se van y nadie lo vio venir. El costo de reemplazarlas es entre 6 y 12 meses de su sueldo. Siempre es caro.</p>
-    </div>
-    <div class="pain-card">
-      <div class="pain-icon">⏱️</div>
-      <h3>RRHH desbordado</h3>
-      <p>Con 3 personas en el equipo no alcanza para hacer selección, desarrollo, clima, liquidación y todo lo demás al mismo tiempo.</p>
-    </div>
-    <div class="pain-card">
-      <div class="pain-icon">🌱</div>
-      <h3>El talento no se desarrolla</h3>
-      <p>Hay personas con potencial que nunca crecen porque nadie tiene el mapa claro de quiénes son y a dónde pueden llegar.</p>
-    </div>
-    <div class="pain-card">
-      <div class="pain-icon">🤝</div>
-      <h3>Incorporaciones que no funcionan</h3>
-      <p>Se contrata por intuición o por CV. No hay una forma sistemática de saber si alguien va a encajar con el equipo existente.</p>
-    </div>
+    <div class="pain-card"><div class="pain-icon">🎯</div><h3>Jefes que no conocen su equipo</h3><p>Saben quién cumple, pero no entienden cómo piensan, qué los motiva o por qué algunos rinden menos de lo que podrían.</p></div>
+    <div class="pain-card"><div class="pain-icon">📊</div><h3>Decisiones sin datos</h3><p>¿Quién puede asumir más responsabilidad? ¿A quién promover? ¿Quién está en riesgo de irse? Hoy se responde con intuición.</p></div>
+    <div class="pain-card"><div class="pain-icon">🔄</div><h3>Rotación que no se anticipa</h3><p>Las personas se van y nadie lo vio venir. El costo de reemplazarlas es entre 6 y 12 meses de su sueldo. Siempre es caro.</p></div>
+    <div class="pain-card"><div class="pain-icon">⏱️</div><h3>RRHH desbordado</h3><p>Con 3 personas en el equipo no alcanza para hacer selección, desarrollo, clima, liquidación y todo lo demás al mismo tiempo.</p></div>
+    <div class="pain-card"><div class="pain-icon">🌱</div><h3>El talento no se desarrolla</h3><p>Hay personas con potencial que nunca crecen porque nadie tiene el mapa claro de quiénes son y a dónde pueden llegar.</p></div>
+    <div class="pain-card"><div class="pain-icon">🤝</div><h3>Incorporaciones que no funcionan</h3><p>Se contrata por intuición o CV. No hay forma de saber si alguien va a encajar con el equipo, el puesto y la cultura de la empresa.</p></div>
   </div>
 </section>
 
 <!-- REVEAL -->
-<div style="background: var(--bg3); padding: 2rem;">
-  <div style="max-width:900px; margin: 0 auto;">
+<div style="background:var(--bg3);padding:2rem;">
+  <div style="max-width:900px;margin:0 auto;">
     <div class="reveal-box">
       <h2>El problema no es la falta de personas.<br>Es la falta de herramientas.</h2>
       <p>Con las herramientas correctas, un equipo de RRHH de 3 personas puede gestionar el talento de 300 con la precisión de una empresa de 1.000.</p>
       <div class="reveal-pillars">
-        <div class="pillar">
-          <div class="p-icon">🧬</div>
-          <div class="p-name">Descubrimos</div>
-          <div class="p-sub">Quiénes son las personas</div>
-        </div>
-        <div class="pillar">
-          <div class="p-icon">🎯</div>
-          <div class="p-name">Diseñamos</div>
-          <div class="p-sub">Los equipos con intención</div>
-        </div>
-        <div class="pillar">
-          <div class="p-icon">🚀</div>
-          <div class="p-name">Desarrollamos</div>
-          <div class="p-sub">El potencial de cada uno</div>
-        </div>
+        <div class="pillar"><div class="p-icon">🧬</div><div class="p-name">Descubrimos</div><div class="p-sub">Quiénes son las personas</div></div>
+        <div class="pillar"><div class="p-icon">🎯</div><div class="p-name">Diseñamos</div><div class="p-sub">Los equipos con intención</div></div>
+        <div class="pillar"><div class="p-icon">🚀</div><div class="p-name">Desarrollamos</div><div class="p-sub">El potencial de cada uno</div></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- SUITE -->
-<section id="solucion">
-  <div class="section-label">La solución</div>
-  <h2 class="section-title">Una suite. Tres herramientas.<br>Un solo objetivo.</h2>
-  <p class="section-sub">Talento 3D integra evaluación conductual, gestión del talento y análisis de equipos en una plataforma diseñada para el día a día de RRHH en pymes.</p>
-</section>
+<!-- SUITE / OVERVIEW -->
+<section id="suite">
+  <div class="section-label">La suite completa</div>
+  <h2 class="section-title">Cuatro fases. Un perfil 360°<br>de cada persona.</h2>
+  <p class="section-sub">Todas las herramientas de evaluación están terminadas y en producción. Se pueden usar por separado o en conjunto — el sistema integra los datos automáticamente.</p>
 
-<section id="suite" style="padding-top:0">
-  <div class="product-section">
-
-    <!-- DISC ASSESSMENT -->
-    <div class="product-card accent-blue">
-      <div class="prod-left">
-        <div class="prod-badge badge-blue">Módulo 1</div>
-        <div class="prod-title">DISC Assessment</div>
-        <div class="prod-desc">Evalúa el perfil conductual de cualquier persona en 25 minutos — empleados y candidatos. Sin instalaciones, sin papel, desde cualquier dispositivo.</div>
-        <ul class="feat-list">
-          <li>24 preguntas validadas psicométricamente</li>
-          <li>Perfil Natural y Perfil bajo presión laboral</li>
-          <li>12 rasgos de personalidad con descripción</li>
-          <li>Indicadores de confiabilidad del resultado</li>
-          <li>Link para enviar al candidato por WhatsApp</li>
-          <li>Los datos llegan solos — sin carga manual</li>
-        </ul>
-      </div>
-      <div class="prod-right">
-        <div class="result-chip">
-          <div class="rc-label">Lo que obtiene RRHH</div>
-          <div class="rc-text">El perfil conductual completo de cualquier persona — en minutos, con datos y sin depender de nadie.</div>
-        </div>
-        <div class="result-chip">
-          <div class="rc-label">Lo que obtiene el jefe</div>
-          <div class="rc-text">Entiende cómo piensan, qué los motiva y cómo comunicarse mejor con cada integrante del equipo.</div>
-        </div>
-        <div class="result-chip">
-          <div class="rc-label">Diferencial clave</div>
-          <div class="rc-text">¿Ya tenés DISC con otro proveedor? Se puede integrar. Los datos son compatibles — no perdés lo que ya tenés.</div>
-        </div>
-      </div>
+  <div class="phase-strip">
+    <div class="phase-block">
+      <div class="ph-num">Fase I</div>
+      <div class="ph-badge ph-done">✅ Activa</div>
+      <span class="ph-icon">🧬</span>
+      <div class="ph-name">Perfil Conductual</div>
+      <div class="ph-items">DISC · 12 rasgos · Perfil natural y bajo presión</div>
     </div>
-
-    <!-- TALENT EQUIPOS -->
-    <div class="product-card accent-green">
-      <div class="prod-left">
-        <div class="prod-badge badge-green">Módulo 2</div>
-        <div class="prod-title">Talent Equipos</div>
-        <div class="prod-desc">El motor de análisis. Toma los perfiles DISC del equipo y los convierte en inteligencia accionable: diagnósticos, compatibilidades, incorporaciones y desarrollo.</div>
-        <ul class="feat-list">
-          <li>Diagnóstico de disfunciones del equipo</li>
-          <li>Matriz de compatibilidad entre personas</li>
-          <li>Análisis de encaje antes de contratar</li>
-          <li>Plan de desarrollo individual con IA</li>
-          <li>Adecuación a +300 perfiles de puestos</li>
-          <li>Consultor de IA con contexto del equipo</li>
-        </ul>
-      </div>
-      <div class="prod-right">
-        <div class="result-chip">
-          <div class="rc-label">Lo que obtiene RRHH</div>
-          <div class="rc-text">Un diagnóstico completo del equipo — quién es quién, dónde están los riesgos, qué roles faltan.</div>
-        </div>
-        <div class="result-chip">
-          <div class="rc-label">Lo que obtiene el jefe</div>
-          <div class="rc-text">Entiende la dinámica de su equipo antes de que los problemas aparezcan. Actúa con anticipación.</div>
-        </div>
-        <div class="result-chip">
-          <div class="rc-label">Diferencial clave</div>
-          <div class="rc-text">No es un reporte estático. Es un sistema vivo que se actualiza cada vez que alguien nuevo entra al equipo.</div>
-        </div>
-      </div>
+    <div class="phase-block">
+      <div class="ph-num">Fase II</div>
+      <div class="ph-badge ph-done">✅ Activa</div>
+      <span class="ph-icon">❤️‍🔥</span>
+      <div class="ph-name">Vitalidad Laboral</div>
+      <div class="ph-items">IVL · Motivación · Burnout · Riesgo de salida</div>
     </div>
-
-    <!-- TALENTFLOW -->
-    <div class="product-card accent-orange">
-      <div class="prod-left">
-        <div class="prod-badge badge-orange">Módulo 3</div>
-        <div class="prod-title">TalentFlow</div>
-        <div class="prod-desc">La capa de gestión del desempeño y el desarrollo. Conecta el perfil conductual con los resultados, el potencial y los objetivos de cada persona.</div>
-        <ul class="feat-list">
-          <li>Evaluación de desempeño por competencias</li>
-          <li>Mapa de potencial (9-Box) enriquecido con DISC</li>
-          <li>Objetivos individuales y de equipo (OKR)</li>
-          <li>Planes de desarrollo personalizados</li>
-          <li>Sesiones de calibración del liderazgo</li>
-          <li>Dashboard ejecutivo para la Dirección</li>
-        </ul>
-      </div>
-      <div class="prod-right">
-        <div class="result-chip">
-          <div class="rc-label">Lo que obtiene RRHH</div>
-          <div class="rc-text">El ciclo completo de gestión del talento en una sola plataforma — sin hojas de cálculo ni información dispersa.</div>
-        </div>
-        <div class="result-chip">
-          <div class="rc-label">Lo que obtiene el jefe</div>
-          <div class="rc-text">Ve quién tiene potencial para crecer, quién necesita apoyo y cómo alinear a su equipo con los objetivos del negocio.</div>
-        </div>
-        <div class="result-chip">
-          <div class="rc-label">Diferencial clave</div>
-          <div class="rc-text">El 9-Box no es una grilla vacía — cada casillero tiene el perfil conductual, las fortalezas y los riesgos de la persona.</div>
-        </div>
-      </div>
+    <div class="phase-block">
+      <div class="ph-num">Fase III</div>
+      <div class="ph-badge ph-new">🆕 Nuevo</div>
+      <span class="ph-icon">⚓</span>
+      <div class="ph-name">Fit Carrera & Cultura</div>
+      <div class="ph-items">Anclas Schein · O-Fit Cameron &amp; Quinn</div>
     </div>
-
+    <div class="phase-block">
+      <div class="ph-num">Fase IV</div>
+      <div class="ph-badge ph-new">🆕 Nuevo</div>
+      <span class="ph-icon">🏗️</span>
+      <div class="ph-name">Formación de Equipos</div>
+      <div class="ph-items">Match DISC + Anclas + Cultura · Top candidatos por proyecto</div>
+    </div>
   </div>
 </section>
 
+<!-- ASSESSMENTS: DISC + IVL -->
+<section style="padding-top:0">
+
+  <div class="mod-header" style="background:var(--bg3);border-left:4px solid var(--azul2);">
+    <div class="mod-header-icon">🧬</div>
+    <div>
+      <div class="mod-header-title">Evaluación de la persona — Fases I y II</div>
+      <div class="mod-header-sub">Los dos assessments base que todo equipo completa primero</div>
+    </div>
+  </div>
+
+  <!-- DISC -->
+  <div class="product-card top-blue">
+    <div>
+      <div class="prod-badge bg-blue">Assessment · Fase I</div>
+      <div class="prod-title">DISC Assessment</div>
+      <div class="prod-desc">Evalúa el perfil conductual de cualquier persona en 25 minutos — empleados y candidatos. Sin instalaciones, sin papel, desde cualquier dispositivo.</div>
+      <ul class="feat-list">
+        <li>24 preguntas validadas psicométricamente</li>
+        <li>Perfil Natural y Perfil bajo presión laboral</li>
+        <li>12 rasgos de personalidad derivados (D·I·S·C)</li>
+        <li>Indicadores de confiabilidad del resultado</li>
+        <li>Link para enviar por WhatsApp en 1 clic</li>
+        <li>Los datos llegan solos al sistema — sin carga manual</li>
+      </ul>
+    </div>
+    <div class="prod-right">
+      <div class="rc"><div class="rc-label">Lo que obtiene RRHH</div><div class="rc-text">El perfil conductual completo en minutos, con datos y sin depender de nadie.</div></div>
+      <div class="rc"><div class="rc-label">Lo que obtiene el jefe</div><div class="rc-text">Entiende cómo piensan, qué los motiva y cómo comunicarse mejor con cada uno.</div></div>
+      <div class="rc"><div class="rc-label">Diferencial clave</div><div class="rc-text">¿Ya usás DISC con otro proveedor? Los datos son compatibles — no perdés lo que tenés.</div></div>
+    </div>
+  </div>
+
+  <!-- IVL -->
+  <div class="product-card top-orange">
+    <div>
+      <div class="prod-badge bg-orange">Assessment · Fase II</div>
+      <div class="prod-title">IVL — Índice de Vitalidad Laboral</div>
+      <div class="prod-desc">Mide el estado de motivación y vínculo de cada persona con su trabajo. Detecta riesgos de burnout y desvinculación antes de que se materialicen.</div>
+      <ul class="feat-list">
+        <li>20 preguntas en 4 dimensiones (5 c/u)</li>
+        <li>Motivación &amp; proyecto profesional</li>
+        <li>Fit con el entorno: puesto, equipo, jefe, cultura</li>
+        <li>Balance demandas-recursos (riesgo de burnout)</li>
+        <li>Claridad de propósito e impacto percibido</li>
+        <li>Doble mirada: empleado y jefe sobre la misma persona</li>
+      </ul>
+    </div>
+    <div class="prod-right">
+      <div class="rc"><div class="rc-label">Lo que obtiene RRHH</div><div class="rc-text">Mapa de vitalidad del equipo — quién está comprometido, quién en riesgo y dónde actuar primero.</div></div>
+      <div class="rc"><div class="rc-label">Alertas automáticas</div><div class="rc-text rc-text" style="font-weight:400;line-height:1.6;font-size:12px;">🔴 IVL &lt; 25 → riesgo de renuncia en 90 días<br>🟡 IVL &lt; 40 → señal de desconexión<br>🟡 Brecha empleado–jefe &gt; 25 pts → desalineación</div></div>
+      <div class="rc"><div class="rc-label">Diferencial clave</div><div class="rc-text">El sistema alerta automáticamente. RRHH ve el semáforo sin tener que analizar número por número.</div></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- FIT MODULES -->
+<section id="fit" style="padding-top:0">
+
+  <div class="mod-header" style="background:linear-gradient(135deg,#f5f3ff,#eff6ff);border-left:4px solid var(--violeta);">
+    <div class="mod-header-icon">🔮</div>
+    <div>
+      <div class="mod-header-title" style="color:var(--violeta);">Módulos FIT — Encaje Persona · Carrera · Cultura</div>
+      <div class="mod-header-sub">Los módulos más potentes para incorporación, retención y desarrollo. Fase III completa.</div>
+    </div>
+  </div>
+
+  <div class="fit-intro">
+    <h3>¿Por qué alguien que es bueno en su trabajo puede no estar bien donde está?</h3>
+    <p>El DISC te dice <em>cómo actúa</em> una persona. Pero hay dos preguntas que el DISC solo no responde: ¿qué tipo de carrera la impulsa de verdad? ¿y cuánto encaja con la cultura de la organización? Los módulos FIT responden esas preguntas — y el sistema las integra en un único perfil 360°.</p>
+    <div class="fit-formula">
+      <div class="fit-pill">🧬 Perfil DISC</div>
+      <div class="fit-sym">+</div>
+      <div class="fit-pill">❤️‍🔥 Vitalidad IVL</div>
+      <div class="fit-sym">+</div>
+      <div class="fit-pill">⚓ Ancla de Carrera</div>
+      <div class="fit-sym">+</div>
+      <div class="fit-pill">🏢 Encaje Cultural</div>
+      <div class="fit-sym">=</div>
+      <div class="fit-result">Perfil Integrado 360°</div>
+    </div>
+  </div>
+
+  <!-- FIT CARRERA -->
+  <div class="product-card top-violet">
+    <div>
+      <div class="prod-badge bg-violet">Assessment · Fase III</div>
+      <div class="prod-title">Fit Persona–Carrera</div>
+      <div class="prod-desc">Basado en las 8 Anclas de Carrera de Edgar Schein. Identifica qué tipo de trabajo y desarrollo profesional impulsa de verdad a cada persona — más allá de lo que dice en una entrevista.</div>
+      <ul class="feat-list">
+        <li>24 ítems en escala Likert 1–5</li>
+        <li>Pantalla de desempate forzado si hay empate cercano</li>
+        <li>Ancla principal y secundaria identificadas</li>
+        <li>Interpretación cruzada DISC + Ancla automática</li>
+        <li>Vista de distribución de anclas del equipo completo</li>
+        <li>Detecta tensión entre el ancla y el rol actual</li>
+      </ul>
+      <div class="chip-grid-4">
+        <div class="anchor-chip"><span>🔬</span>Técnica</div>
+        <div class="anchor-chip"><span>🏛️</span>Gerencial</div>
+        <div class="anchor-chip"><span>🦅</span>Autonomía</div>
+        <div class="anchor-chip"><span>🛡️</span>Seguridad</div>
+        <div class="anchor-chip"><span>🚀</span>Emprendedora</div>
+        <div class="anchor-chip"><span>❤️</span>Servicio</div>
+        <div class="anchor-chip"><span>⚡</span>Desafío</div>
+        <div class="anchor-chip"><span>⚖️</span>Estilo de vida</div>
+      </div>
+    </div>
+    <div class="prod-right">
+      <div class="rc"><div class="rc-label">Lo que obtiene RRHH</div><div class="rc-text">Sabe qué tipo de rol, desafío y reconocimiento necesita cada persona para quedarse y crecer.</div></div>
+      <div class="rc"><div class="rc-label">Lo que obtiene el jefe</div><div class="rc-text">Entiende por qué alguien con buen desempeño igual no parece motivado — y cómo ajustar eso.</div></div>
+      <div class="rc"><div class="rc-label">Ejemplo en la práctica</div><div class="rc-text rc-text" style="font-weight:400;font-size:12px;">Una persona con ancla Técnica promovida a un rol gerencial va a sufrir — aunque lo acepte. El sistema lo detecta antes de que pase.</div></div>
+      <div class="rc"><div class="rc-label">Por qué es valioso</div><div class="rc-text rc-text" style="font-weight:400;font-size:12px;">El ancla de carrera no cambia con los años. Es el núcleo de lo que da sentido al trabajo. Por eso su valor para planificar desarrollo es estructural.</div></div>
+    </div>
+  </div>
+
+  <!-- FIT CULTURA -->
+  <div class="product-card top-teal">
+    <div>
+      <div class="prod-badge bg-teal">Assessment · Fase III</div>
+      <div class="prod-title">Fit Persona–Cultura (O-Fit)</div>
+      <div class="prod-desc">Basado en el modelo de Cameron &amp; Quinn. Calcula el Score de Encaje Organizacional (O-Fit) entre el perfil de la persona y la cultura real de la empresa. Detecta choques antes de incorporar.</div>
+      <ul class="feat-list">
+        <li>24 ítems que mapean las 4 culturas organizacionales</li>
+        <li>Fusión automática con el perfil DISC para mayor precisión</li>
+        <li>O-Fit Score: distancia persona–empresa, escala 0 a 100</li>
+        <li>Kill-switch: alertas de choque conductual extremo</li>
+        <li>Comparativa visual candidato vs cultura de la empresa</li>
+        <li>Configurás el perfil cultural de tu organización una vez</li>
+      </ul>
+      <div class="chip-grid-2">
+        <div class="cult-chip"><div class="ci">🤝</div><div class="cn">Clan</div><div class="cd">Colaboración, familia, mentoría</div></div>
+        <div class="cult-chip"><div class="ci">🚀</div><div class="cn">Adhocracia</div><div class="cd">Innovación, creatividad, riesgo</div></div>
+        <div class="cult-chip"><div class="ci">🏆</div><div class="cn">Mercado</div><div class="cd">Resultados, competencia, logro</div></div>
+        <div class="cult-chip"><div class="ci">⚖️</div><div class="cn">Jerarquía</div><div class="cd">Procesos, control, estabilidad</div></div>
+      </div>
+    </div>
+    <div class="prod-right">
+      <div class="rc"><div class="rc-label">Lo que obtiene RRHH</div><div class="rc-text">Un número concreto del encaje cultural de cada candidato — para comparar, filtrar y argumentar la decisión.</div></div>
+      <div class="rc"><div class="rc-label">Lo que obtiene el jefe</div><div class="rc-text">Ve si el nuevo integrante va a encajar con la forma de trabajar del equipo o va a generar fricción desde el día uno.</div></div>
+      <div class="rc"><div class="rc-label">Alerta clave</div><div class="rc-text rc-text" style="font-weight:400;font-size:12px;">Una persona muy autónoma (I alto) en una cultura muy jerárquica genera desmotivación en semanas. El sistema lo detecta antes.</div></div>
+      <div class="rc"><div class="rc-label">Diferencial</div><div class="rc-text rc-text" style="font-weight:400;font-size:12px;">El O-Fit se ajusta con el perfil DISC, haciendo la predicción más precisa que el cuestionario solo. Algoritmo 70/30.</div></div>
+    </div>
+  </div>
+
+  <!-- PERFIL 360 -->
+  <div class="product-card top-azul" style="background:linear-gradient(135deg,#f8fafc,#f0f7ff);">
+    <div>
+      <div class="prod-badge bg-azul">Módulo integrador · Fase III</div>
+      <div class="prod-title">Perfil Integrado 360°</div>
+      <div class="prod-desc">Combina los cuatro assessments en un diagnóstico unificado generado por IA. Con dos fuentes ya muestra el perfil. Con tres o más, la IA genera un análisis profundo y un plan de 90 días.</div>
+      <ul class="feat-list">
+        <li>Integra DISC · IVL · Anclas · O-Fit en un solo lugar</li>
+        <li>Chips de completitud — sabés qué falta y qué ya hay</li>
+        <li>Diagnóstico narrativo generado por IA contextualizada</li>
+        <li>Fortalezas, tensiones y recomendaciones concretas</li>
+        <li>Alertas de riesgo cruzadas entre todas las fuentes</li>
+        <li>Plan de acción para los próximos 90 días</li>
+      </ul>
+    </div>
+    <div class="prod-right">
+      <div class="rc" style="border-color:rgba(26,58,92,.2);">
+        <div class="rc-label">La regla de oro del perfil 360°</div>
+        <div class="rc-text light">
+          <strong>DISC</strong> — cómo actúa<br>
+          <strong>IVL</strong> — si va a seguir estando<br>
+          <strong>Ancla</strong> — qué lo moviliza<br>
+          <strong>O-Fit</strong> — cuánto encaja con la cultura
+        </div>
+      </div>
+      <div class="rc"><div class="rc-label">Lo que obtiene RRHH</div><div class="rc-text">Un diagnóstico completo de cada persona — para desarrollar, retener o incorporar con evidencia real.</div></div>
+      <div class="rc"><div class="rc-label">Lo que obtiene el jefe</div><div class="rc-text">Entiende a fondo a cada integrante del equipo sin necesidad de ser experto en psicometría.</div></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- FORMACIÓN DE EQUIPOS -->
+<section id="equipos" style="padding-top:0">
+
+  <div class="mod-header" style="background:linear-gradient(135deg,#f0fdf4,#f0fdfa);border-left:4px solid var(--teal);">
+    <div class="mod-header-icon">🏗️</div>
+    <div>
+      <div class="mod-header-title" style="color:var(--teal);">Formación de Equipos de Proyecto — Fase IV</div>
+      <div class="mod-header-sub">Para el gerente que arma equipos: el sistema hace el match, vos tomás la decisión</div>
+    </div>
+  </div>
+
+  <div class="team-card">
+    <h3>¿Quiénes son las personas correctas para este proyecto?</h3>
+    <p>El gerente describe el proyecto — qué tipo es, qué actitud requiere, qué habilidades técnicas necesita. El sistema cruza los perfiles de todos los colaboradores (DISC + ancla de carrera + encaje cultural) y devuelve un ranking con el porcentaje de match y el detalle de por qué encajan. Sin jerga técnica, sin hojas de cálculo, en minutos.</p>
+
+    <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:.6rem;">Tipos de proyecto</div>
+    <div class="proj-types">
+      <div class="proj-type">🗂️ Estandarizar y ordenar → perfiles metódicos + ancla técnica</div>
+      <div class="proj-type">🚀 Innovar y romper moldes → perfiles creativos + ancla emprendedora</div>
+      <div class="proj-type">⚡ Competir y acelerar → alto rendimiento + ancla desafío</div>
+      <div class="proj-type">🤝 Armonizar y capacitar → perfil colaborativo + ancla servicio</div>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin:.8rem 0 .4rem;">Algoritmo de match (100 puntos base)</div>
+    <div class="score-grid">
+      <div class="score-box"><div class="score-num" style="color:var(--azul2);">40 pts</div><div class="score-lbl">Actitud conductual (DISC)</div></div>
+      <div class="score-box"><div class="score-num" style="color:var(--violeta);">30 pts</div><div class="score-lbl">Motivación y ancla de carrera</div></div>
+      <div class="score-box"><div class="score-num" style="color:var(--teal);">30 pts</div><div class="score-lbl">Encaje cultural O-Fit</div></div>
+    </div>
+    <div style="margin-top:.7rem;font-size:12px;color:var(--text2);text-align:center;">+5 pts bonus si las habilidades técnicas coinciden · Output: top 6 candidatos rankeados con desglose por componente</div>
+  </div>
+
+</section>
+
+<!-- PLATAFORMAS: TALENT EQUIPOS + TALENTFLOW -->
+<section style="padding-top:0">
+
+  <div class="mod-header" style="background:var(--bg3);border-left:4px solid var(--verde);">
+    <div class="mod-header-icon">📈</div>
+    <div>
+      <div class="mod-header-title">Plataformas de análisis y gestión</div>
+      <div class="mod-header-sub">El motor que convierte los assessments en inteligencia accionable para RRHH y los jefes</div>
+    </div>
+  </div>
+
+  <!-- TALENT EQUIPOS -->
+  <div class="product-card top-green">
+    <div>
+      <div class="prod-badge bg-green">Plataforma central — Motor de análisis</div>
+      <div class="prod-title">Talento 3D Equipos</div>
+      <div class="prod-desc">Toma todos los assessments y los convierte en inteligencia accionable: diagnósticos de equipo, compatibilidades, formación de proyectos, incorporaciones y desarrollo con IA.</div>
+      <ul class="feat-list">
+        <li>Diagnóstico de 13 disfunciones del equipo</li>
+        <li>Matriz de compatibilidad entre personas</li>
+        <li>Formación de equipos de proyecto con algoritmo de match</li>
+        <li>Perfil Integrado 360° con IA por colaborador</li>
+        <li>Módulos Fit Carrera y Fit Cultura integrados</li>
+        <li>Adecuación a +300 perfiles de puestos</li>
+        <li>Plan de desarrollo individual con IA (PDI)</li>
+        <li>Consultor IA con contexto completo del equipo</li>
+      </ul>
+    </div>
+    <div class="prod-right">
+      <div class="rc"><div class="rc-label">Lo que obtiene RRHH</div><div class="rc-text">Diagnóstico completo del equipo — quién es quién, dónde están los riesgos y cómo armar el próximo proyecto.</div></div>
+      <div class="rc"><div class="rc-label">Lo que obtiene el jefe</div><div class="rc-text">Entiende la dinámica de su equipo antes de que los problemas aparezcan. Arma proyectos con datos.</div></div>
+      <div class="rc"><div class="rc-label">Diferencial clave</div><div class="rc-text">No es un reporte estático. Es un sistema vivo: cada persona que entra actualiza el diagnóstico en tiempo real.</div></div>
+    </div>
+  </div>
+
+  <!-- TALENTFLOW -->
+  <div class="product-card top-orange">
+    <div>
+      <div class="prod-badge bg-orange">Plataforma de gestión — Desempeño &amp; Desarrollo</div>
+      <div class="prod-title">TalentFlow</div>
+      <div class="prod-desc">La capa de gestión del desempeño y el desarrollo. Conecta el perfil conductual con los resultados, el potencial y los objetivos de cada persona.</div>
+      <ul class="feat-list">
+        <li>Evaluación de desempeño por competencias</li>
+        <li>Mapa de potencial (9-Box) enriquecido con DISC</li>
+        <li>Objetivos individuales y de equipo (OKR)</li>
+        <li>Planes de desarrollo personalizados</li>
+        <li>Sesiones de calibración del liderazgo</li>
+        <li>Dashboard ejecutivo para la Dirección</li>
+      </ul>
+    </div>
+    <div class="prod-right">
+      <div class="rc"><div class="rc-label">Lo que obtiene RRHH</div><div class="rc-text">El ciclo completo de gestión del talento en una sola plataforma — sin hojas de cálculo ni info dispersa.</div></div>
+      <div class="rc"><div class="rc-label">Lo que obtiene el jefe</div><div class="rc-text">Ve quién tiene potencial para crecer, quién necesita apoyo y cómo alinear al equipo con los objetivos del negocio.</div></div>
+      <div class="rc"><div class="rc-label">Diferencial clave</div><div class="rc-text">El 9-Box no es una grilla vacía — cada casillero tiene perfil conductual, fortalezas y riesgos de la persona.</div></div>
+    </div>
+  </div>
+
+</section>
+
 <!-- CÓMO FUNCIONA -->
-<section id="como" style="background: var(--bg3); max-width:100%; padding: 5rem 2rem;">
-  <div style="max-width:900px; margin:0 auto;">
+<section id="como" style="background:var(--bg3);max-width:100%;padding:5rem 2rem;">
+  <div style="max-width:900px;margin:0 auto;">
     <div class="section-label">El proceso</div>
     <h2 class="section-title">Cómo funciona en la práctica</h2>
-    <p class="section-sub">Talento 3D se integra al flujo de trabajo del equipo de RRHH sin interrumpirlo. No es un proyecto de implementación — es una herramienta que empieza a dar valor desde el primer día.</p>
+    <p class="section-sub">Talento 3D se integra al flujo de trabajo del equipo de RRHH sin interrumpirlo. No es un proyecto de implementación — empieza a dar valor desde el primer día.</p>
 
-    <div class="steps" style="margin-top:2.5rem;">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <h3>Se carga el equipo</h3>
-          <p>Los empleados se dan de alta desde TalentFlow. En un clic pasan a Talent Equipos listos para ser evaluados.</p>
-        </div>
-      </div>
-      <div class="step-connector"></div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <h3>Cada persona completa su DISC</h3>
-          <p>RRHH le envía el link. El empleado lo completa en 25 minutos desde su celular. Los resultados llegan automáticamente al sistema.</p>
-        </div>
-      </div>
-      <div class="step-connector"></div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <h3>El equipo cobra vida</h3>
-          <p>Con los perfiles cargados, Talent Equipos genera el diagnóstico del equipo: roles, compatibilidades, disfunciones y oportunidades de desarrollo.</p>
-        </div>
-      </div>
-      <div class="step-connector"></div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <h3>Los jefes toman mejores decisiones</h3>
-          <p>TalentFlow integra desempeño + potencial + perfil conductual. El jefe ve quién puede crecer, quién necesita apoyo y cómo gestionar a cada uno.</p>
-        </div>
-      </div>
-      <div class="step-connector"></div>
-      <div class="step">
-        <div class="step-num">5</div>
-        <div class="step-body">
-          <h3>El ciclo no para</h3>
-          <p>Cada vez que se incorpora alguien nuevo, el sistema analiza el encaje antes de contratar. El mapa de talento se actualiza solo.</p>
-        </div>
-      </div>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><div class="step-body"><h3>Se carga el equipo</h3><p>Los empleados se dan de alta desde TalentFlow. En un clic pasan a Talento 3D Equipos listos para ser evaluados.</p></div></div>
+      <div class="step-conn"></div>
+      <div class="step"><div class="step-num">2</div><div class="step-body"><h3>Cada persona completa sus assessments</h3><p>RRHH envía el link del DISC (25 min), el IVL (10 min) y los módulos FIT (10 min c/u). Todo desde el celular, sin instalar nada. Los resultados llegan solos al sistema.</p></div></div>
+      <div class="step-conn"></div>
+      <div class="step"><div class="step-num">3</div><div class="step-body"><h3>El sistema construye el Perfil 360°</h3><p>Con los datos disponibles, integra DISC + IVL + Ancla + O-Fit y genera el diagnóstico completo: quién es la persona, cómo actúa, qué la motiva, cuánto encaja y si está en riesgo de irse.</p></div></div>
+      <div class="step-conn"></div>
+      <div class="step"><div class="step-num">4</div><div class="step-body"><h3>El equipo cobra vida</h3><p>Talento 3D Equipos genera el diagnóstico colectivo: roles, compatibilidades, disfunciones activas, distribución de anclas y oportunidades de desarrollo.</p></div></div>
+      <div class="step-conn"></div>
+      <div class="step"><div class="step-num">5</div><div class="step-body"><h3>Los gerentes arman mejores equipos de proyecto</h3><p>El gerente describe el proyecto, el sistema rankea a los mejores candidatos internos cruzando perfil conductual, ancla de carrera y encaje cultural. Decisión con datos en minutos.</p></div></div>
+      <div class="step-conn"></div>
+      <div class="step"><div class="step-num">6</div><div class="step-body"><h3>El ciclo no para</h3><p>Cada vez que entra alguien nuevo, el sistema analiza el encaje antes de incorporarlo. El mapa de talento se actualiza solo.</p></div></div>
     </div>
   </div>
 </section>
@@ -594,59 +625,45 @@ footer {
       <div class="t-item neg">❌ El talento se va sin que nadie lo vea venir</div>
       <div class="t-item neg">❌ El 9-Box es una grilla que se llena una vez al año</div>
       <div class="t-item neg">❌ RRHH apaga incendios en lugar de desarrollar personas</div>
-      <div class="t-item neg">❌ Las decisiones de promoción son políticas, no basadas en datos</div>
+      <div class="t-item neg">❌ Los equipos de proyecto se arman por disponibilidad</div>
+      <div class="t-item neg">❌ No se sabe si alguien encaja culturalmente hasta que ya es tarde</div>
     </div>
     <div class="transform-arrow">→</div>
     <div class="transform-col after">
       <h3>Con Talento 3D</h3>
-      <div class="t-item pos">✅ El encaje del candidato se mide antes de contratarlo</div>
+      <div class="t-item pos">✅ El encaje conductual, de carrera y cultural se mide antes de contratar</div>
       <div class="t-item pos">✅ El jefe entiende cómo piensan y qué motiva a cada uno</div>
       <div class="t-item pos">✅ Las señales de riesgo aparecen antes de que sea tarde</div>
       <div class="t-item pos">✅ El 9-Box muestra desempeño + potencial + perfil conductual</div>
       <div class="t-item pos">✅ RRHH lidera el desarrollo con herramientas y con datos</div>
-      <div class="t-item pos">✅ Las promociones se basan en evidencia, no en favoritismos</div>
+      <div class="t-item pos">✅ Los proyectos se arman con un match de datos real</div>
+      <div class="t-item pos">✅ El O-Fit Score anticipa el encaje cultural antes del ingreso</div>
     </div>
   </div>
 
-  <div class="quote-box" style="margin-top: 3rem;">
+  <div class="quote-box" style="margin-top:3rem;">
     <p>Talento 3D no reemplaza al equipo de RRHH. Le multiplica la capacidad. Con las mismas 3 personas, ahora podés gestionar el talento de 300 con la precisión de una empresa de 1.000.</p>
   </div>
 </section>
 
 <!-- ROI -->
-<section id="roi" style="background: var(--bg3); max-width:100%; padding: 5rem 2rem;">
-  <div style="max-width:900px; margin:0 auto;">
+<section id="roi" style="background:var(--bg3);max-width:100%;padding:5rem 2rem;">
+  <div style="max-width:900px;margin:0 auto;">
     <div class="section-label">El argumento para la Dirección</div>
     <h2 class="section-title">Lo que le decís al Gerente General</h2>
     <p class="section-sub">Cuando el Gerente General pregunte por qué invertir en esto, estos son los números que respaldan la decisión.</p>
 
     <div class="roi-grid">
-      <div class="roi-card">
-        <div class="roi-num">$12k</div>
-        <div class="roi-label">Costo anual de un analista SR de RRHH dedicado al desarrollo (USD)</div>
-      </div>
-      <div class="roi-card">
-        <div class="roi-num">6–12x</div>
-        <div class="roi-label">El costo de reemplazar a alguien que se va: entre 6 y 12 meses de sueldo</div>
-      </div>
-      <div class="roi-card">
-        <div class="roi-num">25'</div>
-        <div class="roi-label">Tiempo para evaluar el perfil conductual completo de una persona</div>
-      </div>
-      <div class="roi-card">
-        <div class="roi-num">590%</div>
-        <div class="roi-label">ROI estimado en el primer año vs contratar una persona de RRHH adicional</div>
-      </div>
+      <div class="roi-card"><div class="roi-num">$12k</div><div class="roi-label">Costo anual de un analista SR de RRHH dedicado al desarrollo (USD)</div></div>
+      <div class="roi-card"><div class="roi-num">6–12x</div><div class="roi-label">El costo de reemplazar a alguien que se va: entre 6 y 12 meses de su sueldo</div></div>
+      <div class="roi-card"><div class="roi-num">25'</div><div class="roi-label">Tiempo para evaluar el perfil conductual completo de una persona</div></div>
+      <div class="roi-card"><div class="roi-num">590%</div><div class="roi-label">ROI estimado en el primer año vs contratar una persona adicional de RRHH</div></div>
     </div>
 
     <div class="roi-highlight">
-      <p>
-        <strong>El argumento simple:</strong><br><br>
-        Evitar la salida de una sola persona clave en tu empresa — con un sueldo promedio de $800.000 ARS —
-        le cuesta a la empresa entre $4.800.000 y $9.600.000 ARS en reemplazo, pérdida de conocimiento y caída de productividad.<br><br>
-        Talento 3D detecta las señales de riesgo antes de que eso pase.
-        <strong>El retorno se paga con el primer caso que se evita.</strong>
-      </p>
+      <p><strong>El argumento simple:</strong><br><br>
+      Evitar la salida de una sola persona clave en tu empresa — con un sueldo promedio de $800.000 ARS — le cuesta a la empresa entre $4.800.000 y $9.600.000 ARS en reemplazo, pérdida de conocimiento y caída de productividad.<br><br>
+      Talento 3D detecta las señales de riesgo antes de que eso pase. <strong>El retorno se paga con el primer caso que se evita.</strong></p>
     </div>
   </div>
 </section>
@@ -658,89 +675,73 @@ footer {
   <div style="margin-top:2rem;">
 
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        ¿Cuánto tiempo lleva implementarlo?
-        <span class="arrow">▼</span>
-      </div>
-      <div class="faq-a">
-        El primer día ya podés empezar a evaluar personas. No hay implementación técnica larga, no hay integración con sistemas existentes ni proyecto de meses. RRHH carga los empleados, les envía el link del DISC, y en 25 minutos tienen el primer perfil. El sistema empieza a mostrar valor desde la primera evaluación.
-      </div>
+      <div class="faq-q" onclick="toggleFaq(this)">¿Cuánto tiempo lleva implementarlo?<span class="arrow">▼</span></div>
+      <div class="faq-a">El primer día ya podés evaluar personas. No hay implementación técnica ni proyecto de meses. RRHH carga los empleados, les envía el link del DISC, y en 25 minutos tienen el primer perfil. Los módulos FIT se agregan al ritmo que el equipo decida — cada uno funciona de forma independiente y los datos se integran solos.</div>
     </div>
 
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        ¿Qué pasa si ya usamos DISC con otro proveedor?
-        <span class="arrow">▼</span>
-      </div>
-      <div class="faq-a">
-        No es un problema. Los scores DISC (D, I, S, C) son compatibles entre sistemas. Si ya tenés evaluaciones hechas, se pueden cargar directamente en Talento 3D y aprovechar todo el análisis de equipos, adecuación a puestos y desarrollo — sin repetir evaluaciones. Lo que tenés sigue siendo válido.
-      </div>
+      <div class="faq-q" onclick="toggleFaq(this)">¿Qué pasa si ya usamos DISC con otro proveedor?<span class="arrow">▼</span></div>
+      <div class="faq-a">No es un problema. Los scores DISC (D, I, S, C) son compatibles entre sistemas. Si ya tenés evaluaciones hechas, se cargan directamente en Talento 3D y podés aprovechar el análisis de equipos, el módulo Fit Cultura, la formación de proyectos y el desarrollo — sin repetir evaluaciones. Lo que tenés sigue siendo válido.</div>
     </div>
 
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        ¿Los empleados van a responder con honestidad?
-        <span class="arrow">▼</span>
-      </div>
-      <div class="faq-a">
-        El DISC Assessment incluye una pantalla de encuadre antes de las preguntas que explica que no hay respuestas correctas ni incorrectas — solo formas de ser. Además, el sistema mide indicadores de confiabilidad del resultado: tiempo de respuesta, consistencia interna y pausas en preguntas específicas. Si el resultado tiene señales de respuesta estratégica, RRHH lo ve claramente y puede validar en una conversación.
-      </div>
+      <div class="faq-q" onclick="toggleFaq(this)">¿Qué es el O-Fit Score y para qué sirve en la práctica?<span class="arrow">▼</span></div>
+      <div class="faq-a">El O-Fit Score mide cuánto encaja el perfil de una persona con la cultura de tu organización en una escala de 0 a 100. Un O-Fit alto significa que la persona va a sentirse cómoda y alineada con la forma de trabajar de tu empresa. Un O-Fit bajo no descalifica a la persona, pero es una señal de que hay que gestionar la incorporación con atención — para evitar fricciones culturales que terminan en salidas tempranas.</div>
     </div>
 
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        ¿Necesitamos capacitación técnica para usarlo?
-        <span class="arrow">▼</span>
-      </div>
-      <div class="faq-a">
-        No. El DISC Assessment funciona desde un link — cualquier persona con un celular puede completarlo. Talent Equipos y TalentFlow están diseñados para equipos de RRHH sin perfil técnico. Está incluido un proceso de onboarding y capacitación para que el equipo empiece a usar todo en menos de una semana.
-      </div>
+      <div class="faq-q" onclick="toggleFaq(this)">¿Para qué sirve conocer el ancla de carrera de alguien?<span class="arrow">▼</span></div>
+      <div class="faq-a">El ancla de carrera es el núcleo de lo que da sentido al trabajo para una persona — y no cambia con los años. Saber si alguien tiene ancla Técnica vs ancla Gerencial permite diseñar planes de carrera que realmente funcionan. Un error frecuente: promover a alguien bueno en su área a un rol gerencial porque "da el siguiente paso", cuando en realidad la persona pierde lo que más la motiva. El sistema lo detecta antes de que pase.</div>
     </div>
 
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        ¿Cómo se lo presento al Gerente General?
-        <span class="arrow">▼</span>
-      </div>
-      <div class="faq-a">
-        Con tres argumentos en este orden: primero el riesgo (cuánto cuesta perder a alguien clave), después la oportunidad (cómo se ve el equipo con datos en lugar de con intuición), y tercero el retorno (el costo de la suite vs el costo de una persona adicional en RRHH). Este material está diseñado exactamente para esa conversación — podés compartirlo como parte de tu presentación interna.
-      </div>
+      <div class="faq-q" onclick="toggleFaq(this)">¿La herramienta de Formación de Equipos reemplaza el criterio del gerente?<span class="arrow">▼</span></div>
+      <div class="faq-a">No, y no está pensada para eso. El sistema hace el análisis cuantitativo y presenta el ranking con el detalle de por qué cada persona encaja. El gerente sigue tomando la decisión final — ahora con información que antes no tenía. La herramienta no tiene jerga técnica ni terminología conductual: habla el idioma del gerente de negocio.</div>
     </div>
 
     <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">
-        ¿Funciona para empresas que ya tienen software de RRHH?
-        <span class="arrow">▼</span>
-      </div>
-      <div class="faq-a">
-        Sí. Talento 3D es una capa de talento — no reemplaza al sistema de administración de personal que ya tienen para liquidaciones, legajos y asistencia. Se complementa con él. El sistema admin dice quién cobra. Talento 3D dice quién crece.
-      </div>
+      <div class="faq-q" onclick="toggleFaq(this)">¿Los empleados van a responder con honestidad?<span class="arrow">▼</span></div>
+      <div class="faq-a">El DISC Assessment incluye una pantalla de encuadre antes de las preguntas que explica que no hay respuestas correctas ni incorrectas — solo formas de ser. El sistema mide indicadores de confiabilidad: tiempo de respuesta, consistencia interna y pausas. Si hay señales de respuesta estratégica, RRHH lo ve claramente. Los módulos FIT también están diseñados para reducir el sesgo de respuesta social.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿Necesitamos capacitación técnica para usarlo?<span class="arrow">▼</span></div>
+      <div class="faq-a">No. Todos los assessments funcionan desde un link — cualquier persona con un celular puede completarlos. Las plataformas de análisis están diseñadas para equipos de RRHH sin perfil técnico. Está incluido un proceso de onboarding y capacitación para que el equipo empiece a usar todo en menos de una semana.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿Funciona para empresas que ya tienen software de RRHH?<span class="arrow">▼</span></div>
+      <div class="faq-a">Sí. Talento 3D es una capa de talento — no reemplaza al sistema de administración de personal que ya tienen para liquidaciones, legajos y asistencia. Se complementa con él. El sistema admin dice quién cobra. Talento 3D dice quién crece, quién encaja y quién es el mejor candidato para el próximo proyecto.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">¿Cómo se lo presento al Gerente General?<span class="arrow">▼</span></div>
+      <div class="faq-a">Con tres argumentos en orden: primero el riesgo (cuánto cuesta perder a alguien clave), después la oportunidad (cómo se ve el equipo con datos en lugar de con intuición), y tercero el retorno (el costo de la suite vs el costo de una persona adicional en RRHH). Este material está diseñado exactamente para esa conversación — podés compartirlo como parte de tu presentación interna.</div>
     </div>
 
   </div>
 </section>
 
 <!-- CTA FINAL -->
-<section style="max-width:100%; padding: 4rem 2rem; background: var(--bg3);">
-  <div style="max-width:900px; margin:0 auto;">
+<section style="max-width:100%;padding:4rem 2rem;background:var(--bg3);">
+  <div style="max-width:900px;margin:0 auto;">
     <div class="cta-final">
       <h2>¿Cómo se ve realmente<br>tu equipo?</h2>
-      <p style="margin-bottom:1rem">Hacé el diagnóstico de un área o sucursal completa. En 30 minutos tenés el mapa de roles, las tensiones, las disfunciones y las oportunidades de desarrollo — con datos reales de tu equipo.</p>
-      <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:1.2rem 1.6rem;max-width:460px;margin:0 auto 2rem;text-align:left;">
+      <p>Hacé el diagnóstico de un área o sucursal completa. En 30 minutos tenés el mapa de roles, tensiones, disfunciones, encaje cultural y oportunidades de desarrollo — con datos reales de tu equipo.</p>
+      <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:1.2rem 1.6rem;max-width:480px;margin:0 auto 2rem;text-align:left;">
         <p style="font-size:13px;opacity:.9;margin-bottom:.6rem;font-weight:600;">El diagnóstico incluye:</p>
         <div style="font-size:13px;opacity:.85;display:grid;gap:6px;">
           <span>✓ Perfil DISC de cada integrante</span>
-          <span>✓ Mapa de roles del equipo</span>
-          <span>✓ Matriz de compatibilidad entre personas</span>
+          <span>✓ Índice de Vitalidad Laboral (IVL) por persona</span>
+          <span>✓ Mapa de roles y compatibilidades del equipo</span>
           <span>✓ Disfunciones activas y cómo resolverlas</span>
-          <span>✓ Oportunidades de desarrollo individual</span>
+          <span>✓ Anclas de carrera y encaje cultural O-Fit</span>
+          <span>✓ Plan de desarrollo individual con IA (PDI)</span>
         </div>
       </div>
-      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
         <a href="https://wa.me/5492615334983?text=Hola%20C%C3%A9sar%2C%20vi%20el%20material%20de%20Talento%203D%20y%20me%20interesa%20hacer%20el%20diagn%C3%B3stico%20de%20mi%20equipo.%20%C2%BFPodemos%20coordinar%20una%20sesi%C3%B3n%3F" target="_blank"
-           style="display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;
-                  padding:14px 28px;border-radius:10px;font-size:15px;font-weight:700;
-                  text-decoration:none;transition:all .15s;box-shadow:0 4px 20px rgba(37,211,102,.4)">
+           style="display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;padding:14px 28px;border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;box-shadow:0 4px 20px rgba(37,211,102,.4);">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
             <path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.555 4.122 1.528 5.855L.057 23.617a.75.75 0 00.921.921l5.762-1.471A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.726 9.726 0 01-4.964-1.361l-.356-.212-3.688.942.958-3.597-.231-.371A9.721 9.721 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/>
@@ -755,24 +756,19 @@ footer {
 
 <footer>
   <p><strong>Talento 3D</strong> · Descubrimos · Diseñamos · Desarrollamos</p>
-  <p style="margin-top:4px">Herramienta de gestión de talento para equipos de RRHH de Pymes · Argentina</p>
+  <p style="margin-top:4px">Suite de gestión de talento para equipos de RRHH de Pymes · Argentina</p>
 </footer>
 
 <script>
 function toggleFaq(el) {
   el.classList.toggle('open');
-  const answer = el.nextElementSibling;
-  answer.classList.toggle('visible');
+  el.nextElementSibling.classList.toggle('visible');
 }
-
-// Smooth active nav
 const sections = document.querySelectorAll('section[id], div[id]');
 const navLinks = document.querySelectorAll('.nav-links a');
 window.addEventListener('scroll', () => {
   let current = '';
-  sections.forEach(s => {
-    if (window.scrollY >= s.offsetTop - 100) current = s.id;
-  });
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
   navLinks.forEach(a => {
     a.style.color = a.getAttribute('href') === '#'+current ? 'var(--azul)' : '';
     a.style.background = a.getAttribute('href') === '#'+current ? 'var(--bg3)' : '';

@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talento 3D × Delta Teams — Propuesta de Alianza</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --azul:   #1a3a5c;
+  --azul2:  #2980b9;
+  --verde:  #3A7D2C;
+  --verde2: #27ae60;
+  --gris:   #64748b;
+  --bg:     #ffffff;
+  --bg2:    #f8fafc;
+  --bg3:    #f1f5f9;
+  --border: #e2e8f0;
+  --text:   #1e293b;
+  --text2:  #64748b;
+}
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.65; }
+
+/* HERO */
+.hero {
+  min-height: 100vh;
+  background: linear-gradient(150deg, #0f2540 0%, #1a3a5c 55%, #0d3320 100%);
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; padding: 5rem 2rem 4rem; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 30%, rgba(41,128,185,.15) 0%, transparent 60%),
+              radial-gradient(ellipse at 20% 70%, rgba(58,125,44,.12) 0%, transparent 55%);
+}
+.hero-logos {
+  display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2.5rem;
+  position: relative; z-index: 1;
+}
+.logo-box {
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
+  border-radius: 14px; padding: .9rem 1.6rem;
+  font-size: 17px; font-weight: 800; color: #fff; letter-spacing: -.3px;
+}
+.logo-box span { color: #5bc8f5; }
+.logo-box.dt span { color: #6ee7a0; }
+.logo-sep { font-size: 24px; color: rgba(255,255,255,.3); font-weight: 300; }
+.hero-tag {
+  display: inline-block; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+  color: rgba(255,255,255,.8); font-size: 11px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1.8rem;
+  position: relative; z-index: 1;
+}
+.hero h1 {
+  font-size: clamp(28px, 5vw, 52px); font-weight: 800; color: #fff;
+  line-height: 1.12; margin-bottom: 1.2rem; max-width: 740px;
+  position: relative; z-index: 1;
+}
+.hero h1 em { font-style: normal; color: #5bc8f5; }
+.hero p {
+  font-size: clamp(15px, 2vw, 18px); color: rgba(255,255,255,.72);
+  max-width: 560px; line-height: 1.75; margin-bottom: 3rem;
+  position: relative; z-index: 1;
+}
+.hero-kpis {
+  display: flex; gap: 2.5rem; flex-wrap: wrap; justify-content: center;
+  position: relative; z-index: 1;
+}
+.kpi { text-align: center; }
+.kpi strong { display: block; font-size: 34px; font-weight: 800; color: #5bc8f5; line-height: 1; }
+.kpi span { font-size: 11px; color: rgba(255,255,255,.55); font-weight: 500; margin-top: 3px; display: block; }
+
+/* LAYOUT */
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+.section { padding: 5rem 0; }
+.section-sm { padding: 3.5rem 0; }
+
+/* LABELS */
+.label { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: .5rem; }
+.label-blue  { color: var(--azul2); }
+.label-green { color: var(--verde2); }
+.h2 { font-size: clamp(22px, 3.5vw, 32px); font-weight: 800; color: var(--azul); line-height: 1.2; margin-bottom: .9rem; }
+.lead { font-size: 16px; color: var(--text2); line-height: 1.75; max-width: 600px; }
+
+/* DIVIDER */
+hr { border: none; border-top: 1px solid var(--border); }
+
+/* TWO COLUMN FIT */
+.fit-split {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 2px; margin-top: 2.5rem; border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.fit-col {
+  padding: 2rem 1.8rem; background: var(--bg);
+}
+.fit-col.left  { border-right: 1px solid var(--border); }
+.fit-col h3 { font-size: 14px; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+.fit-col h3 .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-blue  { background: var(--azul2); }
+.dot-green { background: var(--verde2); }
+.fit-item { font-size: 13px; color: var(--text2); padding: 7px 0; border-bottom: 1px solid var(--border); line-height: 1.6; display: flex; align-items: flex-start; gap: 8px; }
+.fit-item:last-child { border-bottom: none; }
+.fit-item::before { content: attr(data-icon); flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+
+/* COMPLEMENTARITY */
+.comp-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: stretch; margin-top: 2.5rem; }
+.comp-col { background: var(--bg3); border: 1px solid var(--border); border-radius: 14px; padding: 1.6rem 1.4rem; }
+.comp-col.center-col { display: flex; align-items: center; justify-content: center; }
+.comp-col h4 { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 1rem; }
+.comp-col.col-dt   h4 { color: var(--verde2); }
+.comp-col.col-t3d  h4 { color: var(--azul2); }
+.comp-item { font-size: 13px; color: var(--text); padding: 6px 0; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+.comp-item::before { content: attr(data-icon); flex-shrink: 0; }
+.plus-circle { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--azul2), var(--verde2)); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; font-weight: 700; flex-shrink: 0; }
+
+/* ARROW FLOW */
+.flow { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin-top: 2rem; }
+.flow-step { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; font-size: 13px; font-weight: 600; color: var(--azul); display: flex; align-items: center; gap: 8px; }
+.flow-arrow { color: var(--text2); font-size: 16px; }
+
+/* USE CASES */
+.case-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 2rem; }
+.case-card { background: var(--bg); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; transition: box-shadow .15s; }
+.case-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,.08); }
+.case-icon { font-size: 26px; margin-bottom: .7rem; }
+.case-card h4 { font-size: 14px; font-weight: 700; color: var(--azul); margin-bottom: .4rem; }
+.case-card p { font-size: 12px; color: var(--text2); line-height: 1.65; }
+
+/* FORMATS */
+.format-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 2rem; }
+.format-card { border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; background: var(--bg); }
+.format-card.recommended { border-color: var(--azul2); background: linear-gradient(135deg, #f0f7ff, #fff); }
+.format-tag { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 8px; border-radius: 8px; display: inline-block; margin-bottom: .7rem; }
+.tag-rec  { background: rgba(41,128,185,.12); color: var(--azul2); }
+.tag-opt  { background: rgba(100,116,139,.1); color: var(--gris); }
+.format-card h4 { font-size: 14px; font-weight: 700; color: var(--azul); margin-bottom: .4rem; }
+.format-card p  { font-size: 12px; color: var(--text2); line-height: 1.65; }
+
+/* FOOTER */
+footer { padding: 2rem; text-align: center; font-size: 11px; color: var(--text2); border-top: 1px solid var(--border); }
+
+/* RESPONSIVE */
+@media (max-width: 680px) {
+  .fit-split { grid-template-columns: 1fr; }
+  .fit-col.left { border-right: none; border-bottom: 1px solid var(--border); }
+  .comp-grid { grid-template-columns: 1fr; }
+  .comp-col.center-col { display: none; }
+  .format-grid { grid-template-columns: 1fr; }
+  .flow { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-logos">
+    <div class="logo-box">Talento <span>3D</span></div>
+    <div class="logo-sep">×</div>
+    <div class="logo-box dt"><span>Delta</span> Teams</div>
+  </div>
+  <div class="hero-tag">Propuesta de alianza estratégica</div>
+  <h1>Cuando el equipo ejecuta bien<br><em>y está bien formado</em>,<br>la empresa crece más rápido.</h1>
+  <p>Delta Teams garantiza que el equipo esté alineado y ejecutando. Talento 3D garantiza que las personas correctas estén en los roles correctos. Juntos, cubrimos las dos preguntas que toda empresa necesita responder.</p>
+  <div class="hero-kpis">
+    <div class="kpi"><strong>+275k</strong><span>empresas en el ecosistema<br>de sistemas operativos LATAM</span></div>
+    <div class="kpi"><strong>360°</strong><span>perfil conductual,<br>motivacional y cultural</span></div>
+    <div class="kpi"><strong>179</strong><span>países con presencia<br>de metodologías EOS</span></div>
+  </div>
+</div>
+
+<!-- INTRO -->
+<div class="wrap">
+  <div class="section">
+    <div class="label label-blue">El punto de partida</div>
+    <h2 class="h2">Compartimos el mismo diagnóstico de negocio. Atacamos dimensiones distintas.</h2>
+    <p class="lead">Delta Teams trabaja en la alineación operativa: que el equipo tenga claridad de objetivos, reuniones que funcionan, cultura y ejecución semana a semana. Talento 3D trabaja en la capa conductual y de talento: quién es cada persona, qué la motiva, en qué rol rinde mejor y cómo encaja con el equipo y la cultura. Son capas complementarias, no superpuestas.</p>
+  </div>
+</div>
+
+<hr>
+
+<!-- WHAT EACH DOES -->
+<div class="wrap">
+  <div class="section">
+    <div class="label label-blue">Cada uno en lo suyo</div>
+    <h2 class="h2">Qué resuelve cada plataforma</h2>
+
+    <div class="fit-split">
+      <div class="fit-col left">
+        <h3><div class="dot dot-green"></div>Delta Teams responde:</h3>
+        <div class="fit-item" data-icon="📅">¿El equipo tiene reuniones que generan acuerdos y no pierden tiempo?</div>
+        <div class="fit-item" data-icon="🎯">¿Todos los miembros están alineados con los objetivos estratégicos de la semana?</div>
+        <div class="fit-item" data-icon="📊">¿Los KPIs del equipo son visibles y se revisan con la frecuencia correcta?</div>
+        <div class="fit-item" data-icon="🔁">¿Hay un sistema operativo que garantice ejecución consistente?</div>
+        <div class="fit-item" data-icon="🏛️">¿La cultura de la empresa se refleja en el comportamiento diario del equipo?</div>
+      </div>
+      <div class="fit-col">
+        <h3><div class="dot dot-blue"></div>Talento 3D responde:</h3>
+        <div class="fit-item" data-icon="🧬">¿Cómo actúa cada persona bajo presión y en contextos de colaboración?</div>
+        <div class="fit-item" data-icon="⚓">¿Qué tipo de carrera y desarrollo impulsa realmente a esta persona?</div>
+        <div class="fit-item" data-icon="🏢">¿Cuánto encaja el candidato con la cultura organizacional de la empresa?</div>
+        <div class="fit-item" data-icon="❤️‍🔥">¿Hay señales de desmotivación o riesgo de desvinculación en el equipo?</div>
+        <div class="fit-item" data-icon="🏗️">¿Quiénes son las personas correctas para el próximo proyecto crítico?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- COMPLEMENTARITY -->
+<div style="background:var(--bg2); padding: 5rem 0;">
+  <div class="wrap">
+    <div class="label label-green">La complementariedad</div>
+    <h2 class="h2">Una capa que le falta al sistema operativo. Una capa que le falta al perfil de talento.</h2>
+    <p class="lead">Cuando Emily de Delta detecta underperformance en un KPI de equipo, la pregunta que queda abierta es el <em>por qué</em> conductual. Talento 3D lo responde. Cuando Talento 3D identifica el perfil ideal para un rol, la pregunta que queda abierta es cómo integrarlo al sistema de ejecución del equipo. Delta Teams lo resuelve.</p>
+
+    <div class="comp-grid" style="margin-top:2.5rem;">
+      <div class="comp-col col-dt">
+        <h4>Delta Teams sabe…</h4>
+        <div class="comp-item" data-icon="✅">Que el equipo A no está alcanzando sus metas de la semana</div>
+        <div class="comp-item" data-icon="✅">Que hay desalineación entre el líder y dos miembros del equipo</div>
+        <div class="comp-item" data-icon="✅">Que las reuniones de seguimiento no están generando compromisos claros</div>
+        <div class="comp-item" data-icon="❓">Pero <strong>no sabe por qué</strong> conductualmente — ni qué perfil necesita el equipo para compensar</div>
+      </div>
+      <div class="comp-col center-col">
+        <div class="plus-circle">+</div>
+      </div>
+      <div class="comp-col col-t3d">
+        <h4>Talento 3D sabe…</h4>
+        <div class="comp-item" data-icon="✅">El perfil conductual de cada integrante y sus rasgos bajo presión</div>
+        <div class="comp-item" data-icon="✅">Quién tiene riesgo de desmotivación y cuánto encaja con la cultura</div>
+        <div class="comp-item" data-icon="✅">Qué personas tienen el perfil correcto para liderar el próximo proyecto</div>
+        <div class="comp-item" data-icon="❓">Pero <strong>no tiene un sistema operativo</strong> que garantice que la ejecución semanal funcione</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- USE CASES -->
+<div class="wrap">
+  <div class="section">
+    <div class="label label-blue">Casos de uso conjuntos</div>
+    <h2 class="h2">Dónde la integración genera más valor</h2>
+    <p class="lead">Cuatro situaciones donde la combinación Delta Teams + Talento 3D produce resultados que ninguna de las dos herramientas alcanza por separado.</p>
+
+    <div class="case-grid">
+      <div class="case-card">
+        <div class="case-icon">📉</div>
+        <h4>Underperformance con diagnóstico</h4>
+        <p>Delta detecta que un equipo no alcanza metas. Talento 3D explica si la causa es conductual (perfiles incorrectos para el tipo de proyecto), motivacional (personas desconectadas) o de encaje cultural (alta fricción interna).</p>
+      </div>
+      <div class="case-card">
+        <div class="case-icon">🏗️</div>
+        <h4>Formación de equipos de proyecto</h4>
+        <p>Antes de asignar un proyecto, el sistema cruza el tipo de proyecto (ADN) con los perfiles conductual, motivacional y cultural de los candidatos. Delta garantiza la ejecución; Talento 3D garantiza la composición.</p>
+      </div>
+      <div class="case-card">
+        <div class="case-icon">🚪</div>
+        <h4>Onboarding con datos</h4>
+        <p>Al incorporar a alguien nuevo, Delta lo integra al sistema operativo del equipo. Talento 3D provee el perfil conductual y el O-Fit Score cultural para que el onboarding sea preciso desde el día uno.</p>
+      </div>
+      <div class="case-card">
+        <div class="case-icon">🔭</div>
+        <h4>Planificación anual de talento</h4>
+        <p>En el proceso de OKRs y planning estratégico de Delta, Talento 3D aporta el mapa de talento: quién puede asumir qué rol, quién necesita desarrollo y dónde hay riesgo de retención para el año siguiente.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- FLUJO DE INTEGRACIÓN -->
+<div style="background:var(--bg2); padding:5rem 0;">
+  <div class="wrap">
+    <div class="label label-green">Flujo de integración</div>
+    <h2 class="h2">Cómo funciona la experiencia para el cliente conjunto</h2>
+    <p class="lead">El cliente percibe una experiencia unificada: un diagnóstico completo de equipo que cubre tanto la capa operativa como la conductual, con datos que se alimentan mutuamente.</p>
+
+    <div class="flow">
+      <div class="flow-step">🧬 Diagnóstico conductual<br><span style="font-weight:400;font-size:11px;color:var(--text2)">Talento 3D — DISC + IVL + FIT</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">🏛️ Perfil cultural de la empresa<br><span style="font-weight:400;font-size:11px;color:var(--text2)">Talento 3D — O-Fit Score</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">🎯 Sistema operativo de ejecución<br><span style="font-weight:400;font-size:11px;color:var(--text2)">Delta Teams — EOS + reuniones + KPIs</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">📊 Señal de underperformance<br><span style="font-weight:400;font-size:11px;color:var(--text2)">Delta Teams — Emily + métricas</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">🔍 Diagnóstico causal conductual<br><span style="font-weight:400;font-size:11px;color:var(--text2)">Talento 3D — Perfil 360° + IA</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- FORMATOS DE ALIANZA -->
+<div class="wrap">
+  <div class="section">
+    <div class="label label-blue">Formatos de colaboración</div>
+    <h2 class="h2">Tres formas de avanzar juntos</h2>
+    <p class="lead">Proponemos empezar simple y escalar según el resultado. El formato inicial no requiere integración técnica ni acuerdo comercial complejo.</p>
+
+    <div class="format-grid">
+      <div class="format-card recommended">
+        <div class="format-tag tag-rec">Recomendado para empezar</div>
+        <h4>Co-diagnóstico piloto</h4>
+        <p>Seleccionamos un cliente compartido o uno de los nuestros. Corremos ambos diagnósticos en paralelo y presentamos los resultados integrados. Aprendemos la complementariedad en campo real antes de formalizar cualquier acuerdo.</p>
+      </div>
+      <div class="format-card">
+        <div class="format-tag tag-opt">Fase 2</div>
+        <h4>Referidos mutuos con contexto</h4>
+        <p>Delta recomienda Talento 3D a clientes que necesiten profundidad conductual para resolver underperformance detectado. Talento 3D recomienda Delta a clientes que necesiten un sistema operativo de ejecución.</p>
+      </div>
+      <div class="format-card">
+        <div class="format-tag tag-opt">Fase 3</div>
+        <h4>Bundle de producto LATAM</h4>
+        <p>Un paquete conjunto para el segmento pyme-empresa latinoamericana: sistema operativo de ejecución + capa de inteligencia conductual y de talento. Propuesta de valor diferenciada en el mercado regional.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr>
+
+<!-- SOBRE TALENTO 3D -->
+<div class="wrap">
+  <div class="section-sm">
+    <div class="label label-blue">Quiénes somos</div>
+    <h2 class="h2">Talento 3D en dos párrafos</h2>
+    <p class="lead" style="margin-bottom:1.2rem;">Somos una suite de gestión de talento para pymes latinoamericanas. Integramos evaluación conductual (DISC), vitalidad laboral (IVL), encaje de carrera (Anclas de Schein), encaje cultural (Cameron & Quinn) y formación de equipos de proyecto en una sola plataforma — sin necesidad de un departamento de RRHH especializado.</p>
+    <p class="lead">Nuestro algoritmo de formación de equipos cruza el perfil conductual, el ancla de carrera y el O-Fit Score de cada persona para identificar quiénes son los mejores candidatos para un proyecto específico. El output es un ranking con desglose por componente — en lenguaje gerencial, sin jerga psicométrica.</p>
+
+    <div style="display:flex;gap:2rem;flex-wrap:wrap;margin-top:2rem;">
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.5rem;flex:1;min-width:200px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:.4rem;">Fundador</div>
+        <div style="font-size:15px;font-weight:700;color:var(--azul);">César Isola</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px;">Consultor de talento y RRHH para pymes · Mendoza, Argentina</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.5rem;flex:1;min-width:200px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:.4rem;">Estado</div>
+        <div style="font-size:15px;font-weight:700;color:var(--verde2);">✅ En producción</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px;">4 fases completadas · Clientes activos · Suite desplegada en GitHub Pages + Streamlit</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.5rem;flex:1;min-width:200px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-bottom:.4rem;">Mercado objetivo</div>
+        <div style="font-size:15px;font-weight:700;color:var(--azul);">Pymes LATAM</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px;">10 a 300 empleados · Equipos de RRHH de 3 personas · Mismo segmento que Delta</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<footer>
+  <p><strong>Talento 3D</strong> · Descubrimos · Diseñamos · Desarrollamos · Argentina 2026</p>
+  <p style="margin-top:4px">Este material fue preparado específicamente para el equipo de Delta Teams / SquadS Ventures.</p>
+</footer>
+
+</body>
+</html>
