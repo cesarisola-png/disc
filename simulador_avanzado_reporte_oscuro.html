@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Analytics Premium - Diagnóstico de Mandos Medios</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            950: '#070a13',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #070a13;
+        }
+        
+        /* CONFIGURACIÓN EXACTA PARA IMPRESIÓN PDF EN MODO OSCURO */
+        @media print {
+            @page {
+                size: A4;
+                margin: 1cm;
+                background-color: #070a13; /* Forzar fondo oscuro en la página */
+            }
+            
+            * {
+                /* Ordenar al navegador que imprima los colores de fondo y gradientes tal cual se ven */
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            
+            body {
+                background-color: #070a13 !important;
+                color: #f1f5f9 !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            /* Evitar que los paneles se corten por la mitad entre páginas */
+            .print-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            
+            /* Ajustes menores de márgenes para la vista de impresión */
+            main {
+                padding: 0 !important;
+                gap: 15px !important;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between antialiased">
+
+    <!-- HEADER -->
+    <header class="no-print border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-teal-500/10 rounded-xl border border-teal-500/30 text-teal-400">
+                    <i class="fa-solid fa-chart-network text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-xl tracking-tight text-slate-100">TALENT<span class="text-teal-400">ANALYTICS</span></h1>
+                    <p class="text-xs text-slate-400">Modelo Predictivo de Sucesión y Diagnóstico de Liderazgo</p>
+                </div>
+            </div>
+            
+            <!-- Presets del Negocio -->
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mr-1">Casos Típicos:</span>
+                <button onclick="loadPreset('jefe_toxico')" class="px-2.5 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-slate-200 transition-all">
+                    😤 Jefe Controlador
+                </button>
+                <button onclick="loadPreset('carrera_bloqueada')" class="px-2.5 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-slate-200 transition-all">
+                    🛑 Techo de Cristal
+                </button>
+                <button onclick="loadPreset('lider_estrella')" class="px-2.5 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-slate-200 transition-all">
+                    👑 Líder Prometedor
+                </button>
+                <button onclick="buttonPrint()" class="ml-2 px-3 py-1.5 text-xs bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold rounded-lg flex items-center gap-1.5 shadow-lg shadow-teal-500/20 transition-all">
+                    <i class="fa-solid fa-file-pdf"></i> Imprimir Reporte
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HEADER SOLO PARA IMPRESIÓN -->
+    <div class="hidden print:block mb-6 pb-4 border-b border-slate-800">
+        <h1 class="font-display font-bold text-2xl tracking-tight text-slate-100 mb-1">TALENT<span class="text-teal-400">ANALYTICS</span> PREMIUM</h1>
+        <p class="text-sm text-slate-400">Diagnóstico Ejecutivo de Riesgo de Fuga y Sucesión de Mandos Medios</p>
+    </div>
+
+    <!-- CONTAINER PRINCIPAL -->
+    <main class="flex-grow p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- CONTROLES DE SIMULACIÓN (5 COLUMNAS) - OCULTOS EN IMPRESIÓN -->
+        <section class="no-print lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between shadow-2xl">
+            <div class="space-y-6">
+                <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+                    <i class="fa-solid fa-gears text-teal-400"></i>
+                    <h2 class="font-display font-semibold text-base text-slate-200">Palanca de Variables Predictivas</h2>
+                </div>
+
+                <!-- 1. Variables de Retención Crítica -->
+                <div class="space-y-4">
+                    <h3 class="text-xs font-bold text-teal-400 uppercase tracking-widest border-l-2 border-teal-500 pl-2">Desarrollo y Estilo Directivo</h3>
+                    
+                    <!-- Estilo del Jefe -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label for="inputBoss" class="text-xs font-medium text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-user-tie text-slate-400 w-4"></i> Liderazgo del Jefe Directo
+                            </label>
+                            <span id="labelBoss" class="text-xs font-bold text-teal-400">Desarrollador (80%)</span>
+                        </div>
+                        <input id="inputBoss" type="range" min="0" max="100" value="80" 
+                               class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-400"
+                               oninput="updateSimulation()">
+                        <div class="flex justify-between text-[9px] text-slate-500 mt-1">
+                            <span>Micromanagement (0)</span>
+                            <span>Directivo</span>
+                            <span>Coach/Inspirador (100)</span>
+                        </div>
+                    </div>
+
+                    <!-- Desarrollo de Carrera -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label for="inputCareer" class="text-xs font-medium text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-map-signs text-slate-400 w-4"></i> Proyección de Carrera
+                            </label>
+                            <span id="labelCareer" class="text-xs font-bold text-teal-400">Plan de Sucesión (70%)</span>
+                        </div>
+                        <input id="inputCareer" type="range" min="0" max="100" value="70" 
+                               class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-400"
+                               oninput="updateSimulation()">
+                        <div class="flex justify-between text-[9px] text-slate-500 mt-1">
+                            <span>Estancado (0)</span>
+                            <span>Crecimiento Medio</span>
+                            <span>Plan de Carrera Claro (100)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Compensación y Esfuerzo -->
+                <div class="space-y-4">
+                    <h3 class="text-xs font-bold text-teal-400 uppercase tracking-widest border-l-2 border-teal-500 pl-2">Factores de Compensación y Esfuerzo</h3>
+                    
+                    <!-- Salario -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label for="inputSalary" class="text-xs font-medium text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-money-bill-wave text-slate-400 w-4"></i> Relación Salarial vs Mercado
+                            </label>
+                            <span id="labelSalary" class="text-xs font-bold text-teal-400">1.00x</span>
+                        </div>
+                        <input id="inputSalary" type="range" min="0.60" max="1.40" step="0.05" value="0.95" 
+                               class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-400"
+                               oninput="updateSimulation()">
+                    </div>
+
+                    <!-- Horas Extras -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label for="inputOvertime" class="text-xs font-medium text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-user-clock text-slate-400 w-4"></i> Horas Extras Mensuales
+                            </label>
+                            <span id="labelOvertime" class="text-xs font-bold text-teal-400">12 hs</span>
+                        </div>
+                        <input id="inputOvertime" type="range" min="0" max="40" value="12" 
+                               class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-400"
+                               oninput="updateSimulation()">
+                    </div>
+                </div>
+
+                <!-- 3. Competencias y Perfil Conductual DISC -->
+                <div class="space-y-4">
+                    <h3 class="text-xs font-bold text-teal-400 uppercase tracking-widest border-l-2 border-teal-500 pl-2">Ajuste de Competencias y Perfil DISC</h3>
+                    
+                    <!-- Brecha de Habilidades -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label for="inputGap" class="text-xs font-medium text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-graduation-cap text-slate-400 w-4"></i> Brecha de Competencias Técnicas
+                            </label>
+                            <span id="labelGap" class="text-xs font-bold text-teal-400">15%</span>
+                        </div>
+                        <input id="inputGap" type="range" min="0" max="100" step="5" value="15" 
+                               class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-400"
+                               oninput="updateSimulation()">
+                    </div>
+
+                    <!-- Factores DISC Compactos -->
+                    <div class="grid grid-cols-2 gap-3 pt-1">
+                        <div>
+                            <div class="flex justify-between text-[10px] mb-1">
+                                <span class="text-red-400 font-bold">D - Dominancia</span>
+                                <span id="labelD">65</span>
+                            </div>
+                            <input id="inputD" type="range" min="0" max="100" value="65" class="w-full h-1 bg-slate-800 appearance-none cursor-pointer accent-red-500" oninput="updateSimulation()">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[10px] mb-1">
+                                <span class="text-yellow-400 font-bold">I - Influencia</span>
+                                <span id="labelI">45</span>
+                            </div>
+                            <input id="inputI" type="range" min="0" max="100" value="45" class="w-full h-1 bg-slate-800 appearance-none cursor-pointer accent-yellow-500" oninput="updateSimulation()">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[10px] mb-1">
+                                <span class="text-green-400 font-bold">S - Estabilidad</span>
+                                <span id="labelS">35</span>
+                            </div>
+                            <input id="inputS" type="range" min="0" max="100" value="35" class="w-full h-1 bg-slate-800 appearance-none cursor-pointer accent-green-500" oninput="updateSimulation()">
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-[10px] mb-1">
+                                <span class="text-blue-400 font-bold">C - Cumplimiento</span>
+                                <span id="labelC">60</span>
+                            </div>
+                            <input id="inputC" type="range" min="0" max="100" value="60" class="w-full h-1 bg-slate-800 appearance-none cursor-pointer accent-blue-500" oninput="updateSimulation()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón Restaurar -->
+            <button onclick="resetInputs()" class="w-full mt-6 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium rounded-xl text-xs border border-slate-700 transition-all">
+                <i class="fa-solid fa-rotate-left mr-1"></i> Reestablecer Datos Originales
+            </button>
+        </section>
+
+        <!-- DASHBOARD DE RESULTADOS (7 COLUMNAS) -->
+        <section class="lg:col-span-7 flex flex-col gap-6 w-full print:col-span-12">
+            
+            <!-- PANEL 1: KPI Y STATUS DE RIESGO -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl print-card">
+                <div class="flex items-center justify-between border-b border-slate-800/80 pb-3 mb-4">
+                    <h2 class="font-display font-bold text-sm tracking-wide text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line text-teal-400"></i> Scorecard de Diagnóstico Predictivo
+                    </h2>
+                    <span class="text-[10px] font-bold text-teal-400 border border-teal-500/20 bg-teal-500/5 px-2.5 py-1 rounded-full uppercase">
+                        Sucesión Asegurada (Meta 80%)
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                    
+                    <!-- Dial Circular -->
+                    <div class="md:col-span-4 flex justify-center">
+                        <div class="relative w-32 h-32 flex items-center justify-center">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="40" stroke="#1e293b" stroke-width="8" fill="transparent" />
+                                <circle id="riskCircle" cx="50" cy="50" r="40" stroke="#2dd4bf" stroke-width="8" fill="transparent" 
+                                        stroke-dasharray="251.2" stroke-dashoffset="100" stroke-linecap="round" class="transition-all duration-500" />
+                            </svg>
+                            <div class="absolute flex flex-col items-center">
+                                <span id="textProbability" class="text-3xl font-display font-extrabold text-white">18%</span>
+                                <span class="text-[9px] text-slate-400 uppercase tracking-widest font-semibold">Fuga</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Diagnóstico Técnico -->
+                    <div class="md:col-span-8 space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-400 font-medium">Índice de Retención:</span>
+                            <span id="badgeRiskLevel" class="text-[10px] font-bold px-2 py-0.5 rounded-full border">ALERTA</span>
+                        </div>
+                        <p id="riskDiagnostic" class="text-xs text-slate-300 leading-relaxed">
+                            Cargando análisis paramétrico del clima de liderazgo...
+                        </p>
+                        <div class="p-3 bg-teal-500/5 border border-teal-500/20 rounded-xl">
+                            <h4 class="text-[10px] font-bold text-teal-400 uppercase tracking-wider">Plan de Contingencia de Sucesión</h4>
+                            <p id="textQuickAction" class="text-[11px] text-slate-300 mt-0.5">Definir plan estratégico.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 2: SHAP Y MATRIZ -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- SHAP GRAPHS (EXPLICABILIDAD DE 6 VARIABLES) -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between print-card">
+                    <div>
+                        <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800/50">
+                            <h3 class="text-xs font-bold text-slate-200 flex items-center gap-2 uppercase tracking-wide">
+                                <i class="fa-solid fa-network-wired text-teal-400"></i> Explicabilidad SHAP
+                            </h3>
+                            <span class="text-[9px] text-slate-500 font-semibold uppercase">Impacto %</span>
+                        </div>
+                        
+                        <div class="space-y-3.5" id="shapContainer">
+                            <!-- Inyectado dinámicamente con JS -->
+                        </div>
+                    </div>
+                    <div class="text-[8px] text-slate-500 leading-relaxed border-t border-slate-800/80 pt-2.5 mt-4">
+                        * Los factores <span class="text-rose-400">positivos (+)</span> presionan la fuga; los <span class="text-emerald-400">negativos (-)</span> fidelizan la retención.
+                    </div>
+                </div>
+
+                <!-- MATRIZ ESTRATÉGICA 2x2 -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col justify-between print-card">
+                    <div class="flex items-center justify-between mb-3 border-b border-slate-800/50 pb-2">
+                        <h3 class="text-xs font-bold text-slate-200 flex items-center gap-2 uppercase tracking-wide">
+                            <i class="fa-solid fa-table-cells-large text-teal-400"></i> Matriz de Decisión Táctica
+                        </h3>
+                    </div>
+
+                    <div class="relative w-full aspect-square bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex flex-col p-1.5">
+                        <div class="grid grid-cols-2 grid-rows-2 gap-1 flex-grow">
+                            <!-- Q1 -->
+                            <div class="bg-red-500/5 rounded p-1.5 flex flex-col justify-between">
+                                <span class="text-[9px] font-bold text-red-400 uppercase">A: Reestructurar</span>
+                                <span class="text-[7px] text-slate-500">Riesgo / Brecha Técnica</span>
+                            </div>
+                            <!-- Q2 -->
+                            <div class="bg-amber-500/5 rounded p-1.5 flex flex-col justify-between">
+                                <span class="text-[9px] font-bold text-amber-400 uppercase">B: Retención Crítica</span>
+                                <span class="text-[7px] text-slate-500">Talento Estrella en Peligro</span>
+                            </div>
+                            <!-- Q3 -->
+                            <div class="bg-slate-800/20 rounded p-1.5 flex flex-col justify-between">
+                                <span class="text-[9px] font-bold text-slate-400 uppercase">C: Capacitar</span>
+                                <span class="text-[7px] text-slate-500">Brecha Técnica / Estable</span>
+                            </div>
+                            <!-- Q4 -->
+                            <div class="bg-emerald-500/5 rounded p-1.5 flex flex-col justify-between">
+                                <span class="text-[9px] font-bold text-emerald-400 uppercase">D: Sucesor Seguro</span>
+                                <span class="text-[7px] text-slate-500">Promover / Mentoring</span>
+                            </div>
+                        </div>
+
+                        <!-- Ejes -->
+                        <div class="absolute bottom-1 right-2 text-[7px] text-slate-500 font-bold tracking-widest">
+                            COMPETENCIAS →
+                        </div>
+                        <div class="absolute left-1 top-2 -rotate-90 origin-left text-[7px] text-slate-500 font-bold tracking-widest whitespace-nowrap">
+                            RIESGO FUGA →
+                        </div>
+
+                        <!-- Pin de ubicación -->
+                        <div id="matrixMarker" class="absolute w-4.5 h-4.5 -ml-2.25 -mb-2.25 transition-all duration-500" style="bottom: 50%; left: 50%;">
+                            <span class="absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75 animate-ping"></span>
+                            <span class="relative inline-flex rounded-full h-4 w-4 bg-teal-500 border-2 border-white shadow-lg flex items-center justify-center">
+                                <i class="fa-solid fa-user text-[8px] text-slate-950 font-black"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 text-center">
+                        <span class="text-[8px] text-slate-500 uppercase tracking-widest font-bold">Diagnóstico de Sucesión</span>
+                        <span id="textActiveQuadrant" class="text-xs font-bold text-teal-400">Calculando...</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- PLAN DE ACCIÓN RECOMENDADO -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl print-card">
+                <div class="flex items-center gap-2 mb-3 border-b border-slate-800 pb-2">
+                    <i class="fa-solid fa-list-check text-teal-400"></i>
+                    <h3 class="font-display font-semibold text-xs uppercase tracking-wide text-slate-200">Planes de Intervención Recomendados</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                        <div class="text-teal-400 font-bold text-[9px] uppercase tracking-wider mb-1">Estrategia Liderazgo</div>
+                        <p id="actionPeople" class="text-[10px] text-slate-300 leading-relaxed">Cargando...</p>
+                    </div>
+                    <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                        <div class="text-teal-400 font-bold text-[9px] uppercase tracking-wider mb-1">Estructura y Relevos</div>
+                        <p id="actionStructure" class="text-[10px] text-slate-300 leading-relaxed">Cargando...</p>
+                    </div>
+                    <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
+                        <div class="text-teal-400 font-bold text-[9px] uppercase tracking-wider mb-1">Retención y Carrera</div>
+                        <p id="actionFinance" class="text-[10px] text-slate-300 leading-relaxed">Cargando...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER DE IMPRESIÓN (SOLO VISIBLE AL IMPRIMIR) -->
+            <div class="hidden print:block mt-6 text-center text-xs text-slate-500">
+                <p>© 2026 Talent Analytics Premium • Modelo predictivo para procesos de consultoría estratégica en Mendoza, Argentina.</p>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER WEB -->
+    <footer class="no-print border-t border-slate-800 bg-slate-950 text-center py-4 text-xs text-slate-500">
+        <p>© 2026 Talent Analytics Premium • Modelo diseñado para la profesionalización de PYMEs.</p>
+    </footer>
+
+    <!-- LOGICA DE CONTROL INTERACTIVO -->
+    <script>
+        function updateSimulation() {
+            // Lectura de los controles deslizantes
+            const bossScore = parseFloat(document.getElementById('inputBoss').value);
+            const careerScore = parseFloat(document.getElementById('inputCareer').value);
+            const salaryRatio = parseFloat(document.getElementById('inputSalary').value);
+            const overtime = parseFloat(document.getElementById('inputOvertime').value);
+            const skillsGap = parseFloat(document.getElementById('inputGap').value);
+            
+            const d = parseFloat(document.getElementById('inputD').value);
+            const i = parseFloat(document.getElementById('inputI').value);
+            const s = parseFloat(document.getElementById('inputS').value);
+            const c = parseFloat(document.getElementById('inputC').value);
+
+            // Sincronizar UI
+            document.getElementById('labelBoss').innerText = bossScore > 75 ? `Coach/Inspirador (${bossScore}%)` : bossScore < 35 ? `Micromanagement (${bossScore}%)` : `Estilo Directivo (${bossScore}%)`;
+            document.getElementById('labelCareer').innerText = careerScore > 70 ? `Sucesión Clara (${careerScore}%)` : careerScore < 30 ? `Carrera Bloqueada (${careerScore}%)` : `Promoción Estándar (${careerScore}%)`;
+            document.getElementById('labelSalary').innerText = salaryRatio.toFixed(2) + 'x';
+            document.getElementById('labelOvertime').innerText = overtime + ' hs';
+            document.getElementById('labelGap').innerText = skillsGap + '%';
+            
+            document.getElementById('labelD').innerText = d;
+            document.getElementById('labelI').innerText = i;
+            document.getElementById('labelS').innerText = s;
+            document.getElementById('labelC').innerText = c;
+
+            // ---- LÓGICA DE MACHINE LEARNING DE RETENCIÓN (XGBOOST SIMULADOR) ----
+            let baseProb = 40; // Base de rotación típica en mandos medios sin incentivos
+
+            // 1. Impacto Liderazgo Jefe
+            let bossImpact = 0;
+            if (bossScore < 50) {
+                bossImpact = (1.0 - (bossScore / 50)) * 30;
+            } else {
+                bossImpact = -((bossScore - 50) / 50) * 15;
+            }
+
+            // 2. Impacto Desarrollo de Carrera
+            let careerImpact = 0;
+            if (careerScore < 40) {
+                careerImpact = (1.0 - (careerScore / 40)) * 25; 
+            } else {
+                careerImpact = -((careerScore - 40) / 60) * 20; 
+            }
+
+            // 3. Impacto Salarial
+            let salImpact = 0;
+            if (salaryRatio < 1.0) {
+                salImpact = (1.0 - salaryRatio) * 55;
+            } else {
+                salImpact = -(salaryRatio - 1.0) * 20;
+            }
+
+            // 4. Impacto Horas Extras
+            let otImpact = (overtime / 40) * 25 - 5;
+
+            // 5. Impacto Ajuste Técnico
+            let gapImpact = (skillsGap / 100) * 15 - 2;
+
+            // 6. Interacciones No Lineales DISC
+            let discImpact = 0;
+            
+            if (d > 60 && bossScore < 40) {
+                discImpact += ((d - 50) / 50) * (1.0 - (bossScore / 40)) * 20;
+            }
+            if (s > 60 && overtime > 20) {
+                discImpact += ((s - 50) / 50) * ((overtime - 20) / 20) * 15;
+            }
+
+            // Cálculo final de probabilidad de fuga
+            let finalProb = baseProb + bossImpact + careerImpact + salImpact + otImpact + gapImpact + discImpact;
+            finalProb = Math.max(1, Math.min(99, finalProb));
+            const roundedProb = Math.round(finalProb);
+
+            // Actualizar círculo y texto
+            document.getElementById('textProbability').innerText = roundedProb + '%';
+            const strokeDashoffset = 251.2 - (251.2 * roundedProb) / 100;
+            document.getElementById('riskCircle').setAttribute('stroke-dashoffset', strokeDashoffset);
+
+            // Alertas visuales
+            let riskLevelText = '';
+            let riskColorClass = '';
+            let strokeColor = '';
+
+            if (roundedProb < 30) {
+                riskLevelText = 'RIESGO BAJO';
+                riskColorClass = 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30';
+                strokeColor = '#10b981';
+            } else if (roundedProb >= 30 && roundedProb < 60) {
+                riskLevelText = 'RIESGO MODERADO';
+                riskColorClass = 'bg-amber-500/15 text-amber-400 border-amber-500/30';
+                strokeColor = '#f59e0b';
+            } else {
+                riskLevelText = 'RIESGO EXTREMO';
+                riskColorClass = 'bg-rose-500/15 text-rose-400 border-rose-500/30';
+                strokeColor = '#f43f5e';
+            }
+
+            document.getElementById('badgeRiskLevel').innerText = riskLevelText;
+            document.getElementById('badgeRiskLevel').className = `text-[10px] font-bold px-2 py-0.5 rounded-full border ${riskColorClass}`;
+            document.getElementById('riskCircle').setAttribute('stroke', strokeColor);
+
+            // Diagnósticos Tácticos
+            let diagMsg = '';
+            let quickActionText = '';
+
+            if (roundedProb > 60) {
+                diagMsg = `Fuga altamente probable. La combinación de ${bossScore < 30 ? "un liderazgo directivo/micromanagement" : "baja compensación"} y ${careerScore < 30 ? "bloqueo de crecimiento" : "sobrecarga"} genera un entorno insostenible. Su perfil DISC de alta dominancia (${d}%) acelerará la desvinculación activa.`;
+                quickActionText = "Intervención de urgencia: Ajuste de salario inmediato, mentoring para su jefe directo y flexibilizar carga horaria.";
+            } else if (roundedProb >= 30 && roundedProb <= 60) {
+                diagMsg = "Clima en alerta preventiva. El supervisor se encuentra estable pero demuestra vulnerabilidades en el mediano plazo debido a expectativas de carrera no gestionadas o brechas de alineación con su reporte directo.";
+                quickActionText = "Formalizar entrevista de feedback anual y plantear un cronograma estructurado de sucesión con hitos semestrales.";
+            } else {
+                diagMsg = "Estructura altamente alineada y de fidelidad óptima. Las variables conductuales operan como anclas efectivas de retención, convirtiendo a este supervisor en un activo prioritario para el plan de sucesión.";
+                quickActionText = "Consolidar como líder mentor. Integrar al supervisor en programas de conducción para mandos superiores.";
+            }
+
+            document.getElementById('riskDiagnostic').innerText = diagMsg;
+            document.getElementById('textQuickAction').innerText = quickActionText;
+
+            // Inyectar Barras de Impacto SHAP
+            const shapDataset = [
+                { name: 'Estilo del Jefe', val: bossImpact, icon: 'fa-user-tie' },
+                { name: 'Desarrollo de Carrera', val: careerImpact, icon: 'fa-map-signs' },
+                { name: 'Sueldo vs Mercado', val: salImpact, icon: 'fa-money-bill-wave' },
+                { name: 'Horas Extras', val: otImpact, icon: 'fa-clock' },
+                { name: 'Matriz DISC', val: discImpact, icon: 'fa-brain' },
+                { name: 'Brecha Competencias', val: gapImpact, icon: 'fa-graduation-cap' }
+            ];
+
+            let shapHTML = '';
+            shapDataset.forEach(item => {
+                const valAbs = Math.abs(item.val);
+                const isPositive = item.val >= 0;
+                const barColor = isPositive ? 'bg-rose-500' : 'bg-emerald-500';
+                const prefix = isPositive ? '+' : '-';
+                const widthPercent = Math.min(100, (valAbs / 30) * 100);
+
+                shapHTML += `
+                    <div class="text-[11px]">
+                        <div class="flex justify-between items-center mb-0.5">
+                            <span class="text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid ${item.icon} text-slate-500 w-3.5"></i> ${item.name}
+                            </span>
+                            <span class="font-bold ${isPositive ? 'text-rose-400' : 'text-emerald-400'}">${prefix}${Math.round(valAbs)}%</span>
+                        </div>
+                        <div class="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden flex ${!isPositive ? 'justify-end' : ''}">
+                            <div class="${barColor} h-full rounded-full transition-all duration-500" style="width: ${widthPercent}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('shapContainer').innerHTML = shapHTML;
+
+            // Matriz de Posicionamiento
+            const competenceFit = 100 - skillsGap;
+            document.getElementById('matrixMarker').style.left = `${competenceFit}%`;
+            document.getElementById('matrixMarker').style.bottom = `${roundedProb}%`;
+
+            let quadName = '';
+            let pPeople = '';
+            let pStructure = '';
+            let pFinance = '';
+
+            if (roundedProb >= 50 && competenceFit < 50) {
+                quadName = "CUADRANTE A: REUBICACIÓN O REDISEÑO";
+                pPeople = "Capacitar al jefe para mitigar el control tóxico. El supervisor no está alineado técnicamente y el desgaste del líder lo expulsa.";
+                pStructure = "Inhabilitar para sucesión directa. Diseñar relevos técnicos externos.";
+                pFinance = "Revisar bonos técnicos. No realizar incrementos de retención sin realinear competencias.";
+            } else if (roundedProb >= 50 && competenceFit >= 50) {
+                quadName = "CUADRANTE B: RETENCIÓN CRÍTICA (ESTRELLA EXTRUÍDA)";
+                pPeople = "Intervención de RRHH inmediata. Pactar plan de carrera a 12 meses y auditar la relación jefe-supervisor.";
+                pStructure = "Alto riesgo en puesto crítico de sucesión. Iniciar plan preventivo de contingencia del Know-how.";
+                pFinance = "Nivelar sueldo por encima de mercado. Bono exclusivo por logro de hitos de retención.";
+            } else if (roundedProb < 50 && competenceFit < 50) {
+                quadName = "CUADRANTE C: MONITOREO Y CAPACITACIÓN";
+                pPeople = "Acompañamiento técnico mediante tutorías. El clima de liderazgo le da margen de tolerancia al colaborador.";
+                pStructure = "Sucesión congelada temporalmente hasta cerrar brechas técnicas en la matriz anual.";
+                pFinance = "Mantener salario en el promedio de mercado. Ajustes atados a resultados de la matriz de habilidades.";
+            } else {
+                quadName = "CUADRANTE D: SUCESOR CONSOLIDADO Y SEGURO";
+                pPeople = "Asignar coaching directivo. Fomentar su liderazgo y autonomía delegada para mantener la motivación alta.";
+                pStructure = "Confirmar como primer sucesor en el protocolo familiar/estructural de la compañía.";
+                pFinance = "Consolidar plan de incentivos a largo plazo (LTIP) y bonificación anual por preservación de márgenes operativos.";
+            }
+
+            document.getElementById('textActiveQuadrant').innerText = quadName;
+            document.getElementById('actionPeople').innerText = pPeople;
+            document.getElementById('actionStructure').innerText = pStructure;
+            document.getElementById('actionFinance').innerText = pFinance;
+        }
+
+        // CARGAR PRESETS
+        function loadPreset(preset) {
+            if (preset === 'jefe_toxico') {
+                document.getElementById('inputBoss').value = 15;
+                document.getElementById('inputCareer').value = 65;
+                document.getElementById('inputSalary').value = 1.05;
+                document.getElementById('inputOvertime').value = 24;
+                document.getElementById('inputGap').value = 10;
+                document.getElementById('inputD').value = 85; 
+                document.getElementById('inputI').value = 40;
+                document.getElementById('inputS').value = 20;
+                document.getElementById('inputC').value = 55;
+            } else if (preset === 'carrera_bloqueada') {
+                document.getElementById('inputBoss').value = 75;
+                document.getElementById('inputCareer').value = 10;
+                document.getElementById('inputSalary').value = 0.85;
+                document.getElementById('inputOvertime').value = 15;
+                document.getElementById('inputGap').value = 5; 
+                document.getElementById('inputD').value = 60;
+                document.getElementById('inputI').value = 65;
+                document.getElementById('inputS').value = 40;
+                document.getElementById('inputC').value = 35;
+            } else if (preset === 'lider_estrella') {
+                document.getElementById('inputBoss').value = 85;
+                document.getElementById('inputCareer').value = 90;
+                document.getElementById('inputSalary').value = 1.15;
+                document.getElementById('inputOvertime').value = 8;
+                document.getElementById('inputGap').value = 10;
+                document.getElementById('inputD').value = 65;
+                document.getElementById('inputI').value = 55;
+                document.getElementById('inputS').value = 50;
+                document.getElementById('inputC').value = 70;
+            }
+            updateSimulation();
+        }
+
+        function resetInputs() {
+            document.getElementById('inputBoss').value = 80;
+            document.getElementById('inputCareer').value = 70;
+            document.getElementById('inputSalary').value = 0.95;
+            document.getElementById('inputOvertime').value = 12;
+            document.getElementById('inputGap').value = 15;
+            document.getElementById('inputD').value = 65;
+            document.getElementById('inputI').value = 45;
+            document.getElementById('inputS').value = 35;
+            document.getElementById('inputC').value = 60;
+            updateSimulation();
+        }
+
+        function buttonPrint() {
+            // Un pequeño timeout para asegurar que todo renderice antes de disparar el print dialog
+            setTimeout(() => {
+                window.print();
+            }, 100);
+        }
+
+        window.onload = function() {
+            updateSimulation();
+        }
+    </script>
+</body>
+</html>
