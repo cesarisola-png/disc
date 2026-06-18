@@ -206,8 +206,19 @@ const ST={
   if(p.get('legajo')){ST.form.legajo=p.get('legajo');ST.modo='empleado';ST.screen='datos';}
   if(p.get('modo')==='candidato'){ST.modo='candidato';ST.screen='datos';}
   // Pre-carga de datos desde URL
-  if(p.get('nombre'))   ST.form.nombre   = p.get('nombre');
   if(p.get('apellido')) ST.form.apellido = p.get('apellido');
+  if(p.get('nombre')){
+    const n = p.get('nombre').trim();
+    // Si viene "Nombre Apellido" en un solo param, va solo a nombre
+    // Si viene "Apellido, Nombre" con coma, separar
+    if(n.includes(',')){
+      const pts = n.split(',');
+      ST.form.apellido = pts[0].trim();
+      ST.form.nombre   = pts[1].trim();
+    } else {
+      ST.form.nombre = n;
+    }
+  }
   if(p.get('empresa'))  ST.form.empresa  = p.get('empresa');
   if(p.get('unidad'))   ST.form.unidad   = p.get('unidad');
   if(p.get('colaborador')){
