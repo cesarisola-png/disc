@@ -432,7 +432,35 @@ function hResult(){
   <div class="alert ${r.saved?'alert-green':'alert-red'}" style="margin-bottom:12px">
     ${r.saved?`✓ Perfil guardado en Talento 3D · ${isEmp?'Tu perfil quedó activo':'Aparecerás en el módulo de Onboarding'}`:'⚠ No se pudo guardar. Mostrá este resultado a tu RRHH.'}
   </div>
-  ${!(ST.modo==='candidato' && !ST.form.empresa) ? `<button class="btn" style="width:100%" onclick="location.reload()">← Nueva evaluación</button>` : ''}`;}
+  ${!(ST.modo==='candidato' && !ST.form.empresa) ? `<button class="btn" style="width:100%" onclick="location.reload()">← Nueva evaluación</button>` : ''}
+  ${(ST.modo==='candidato' && !ST.form.empresa) ? `
+  <a href="${(()=>{
+    const asunto=encodeURIComponent('Mi perfil DISC — Talento 3D');
+    const cuerpo=encodeURIComponent(
+      'Hola!\n\nAcá están los resultados de mi evaluación DISC completada en Talento 3D.\n\n'
+      +'━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+      +'ROL PRINCIPAL: '+r.rol1+'\n'
+      +'Rol secundario: '+r.rol2+' · Terciario: '+r.rol3+'\n'
+      +'━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
+      +'PERFIL NATURAL (Underlying)\n'
+      +'D (Dominancia):   '+r.U.D+'\n'
+      +'I (Influencia):   '+r.U.I+'\n'
+      +'S (Estabilidad):  '+r.U.S+'\n'
+      +'C (Cumplimiento): '+r.U.C+'\n\n'
+      +'PERFIL MÁSCARA (Mask)\n'
+      +'D: '+r.M.D+' · I: '+r.M.I+' · S: '+r.M.S+' · C: '+r.M.C+'\n\n'
+      +'PERFIL COMPUESTO\n'
+      +'D: '+r.C.D+' · I: '+r.C.I+' · S: '+r.C.S+' · C: '+r.C.C+'\n\n'
+      +'━━━━━━━━━━━━━━━━━━━━━━━━━\n'
+      +'Evaluación realizada con Talento 3D\n'
+      +'https://cesarisola-png.github.io/disc/\n'
+    );
+    return 'mailto:?subject='+asunto+'&body='+cuerpo;
+  })()}" style="text-decoration:none;display:block;margin-top:8px">
+    <button class="btn" style="width:100%;background:white;color:#2980b9;border:2px solid #2980b9;">
+      📧 Enviarme mis resultados por email
+    </button>
+  </a>` : ''}`;}
 
 // ── EVENTOS ───────────────────────────────────────────────────────────────────
 function attachEvents(){
