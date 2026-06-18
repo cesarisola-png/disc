@@ -205,6 +205,20 @@ const ST={
   const p=new URLSearchParams(window.location.search);
   if(p.get('legajo')){ST.form.legajo=p.get('legajo');ST.modo='empleado';ST.screen='datos';}
   if(p.get('modo')==='candidato'){ST.modo='candidato';ST.screen='datos';}
+  // Pre-carga de datos desde URL
+  if(p.get('nombre'))   ST.form.nombre   = p.get('nombre');
+  if(p.get('apellido')) ST.form.apellido = p.get('apellido');
+  if(p.get('empresa'))  ST.form.empresa  = p.get('empresa');
+  if(p.get('unidad'))   ST.form.unidad   = p.get('unidad');
+  if(p.get('colaborador')){
+    const partes = p.get('colaborador').split(',');
+    if(partes.length >= 2){
+      ST.form.apellido = partes[0].trim();
+      ST.form.nombre   = partes[1].trim();
+    } else {
+      ST.form.nombre = p.get('colaborador').trim();
+    }
+  }
 })();
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
