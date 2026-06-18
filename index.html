@@ -432,7 +432,7 @@ function hResult(){
   <div class="alert ${r.saved?'alert-green':'alert-red'}" style="margin-bottom:12px">
     ${r.saved?`✓ Perfil guardado en Talento 3D · ${isEmp?'Tu perfil quedó activo':'Aparecerás en el módulo de Onboarding'}`:'⚠ No se pudo guardar. Mostrá este resultado a tu RRHH.'}
   </div>
-  <button class="btn" style="width:100%" onclick="location.reload()">← Nueva evaluación</button>`;}
+  ${!(ST.modo==='candidato' && !ST.form.empresa) ? `<button class="btn" style="width:100%" onclick="location.reload()">← Nueva evaluación</button>` : ''}`;}
 
 // ── EVENTOS ───────────────────────────────────────────────────────────────────
 function attachEvents(){
