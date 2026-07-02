@@ -11,16 +11,18 @@
   --text: #1a1a1a; --text2: #6b7280; --text3: #9ca3af;
   --border: #e5e7eb; --border2: #d1d5db;
   --blue: #2980b9; --green: #27ae60; --red: #c0392b; --orange: #e67e22;
+  --purple: #8e44ad;
   --radius: 8px; --radius-lg: 12px;
 }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg2); color: var(--text); font-size: 13px; min-height: 100vh; }
-#app { max-width: 640px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+#app { max-width: 680px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
 input:not([type=range]), select, textarea {
   width: 100%; padding: 8px 10px; border: 1px solid var(--border2);
   border-radius: var(--radius); background: var(--bg); color: var(--text);
   font-size: 13px; font-family: inherit; outline: none; transition: border-color .15s;
 }
-input:focus, select:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(41,128,185,.15); }
+textarea { resize: vertical; min-height: 60px; }
+input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(41,128,185,.15); }
 label { font-size: 10px; color: var(--text2); display: block; margin-bottom: 3px; font-weight: 500; letter-spacing: .3px; }
 .card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.2rem; }
 .btn { display: inline-flex; align-items: center; justify-content: center; padding: 9px 18px; border: 1px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); font-size: 13px; font-family: inherit; cursor: pointer; transition: all .12s; font-weight: 500; }
@@ -29,6 +31,7 @@ label { font-size: 10px; color: var(--text2); display: block; margin-bottom: 3px
 .btn-primary { background: var(--text); color: var(--bg); border-color: var(--text); }
 .btn-primary:hover:not(:disabled) { opacity: .88; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 .disc-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
 .disc-bar span:first-child { width: 14px; font-size: 12px; font-weight: 700; flex-shrink: 0; }
 .disc-bar .track { flex: 1; background: var(--bg3); border-radius: 3px; height: 18px; overflow: hidden; border: 1px solid var(--border); }
@@ -56,6 +59,23 @@ label { font-size: 10px; color: var(--text2); display: block; margin-bottom: 3px
 .sem-green  { background: #27ae60; }
 .sem-yellow { background: #f39c12; }
 .sem-red    { background: #e74c3c; }
+.rasgo-row { display: grid; grid-template-columns: 108px 1fr 34px; align-items: center; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.rasgo-row:last-child { border-bottom: none; }
+.rasgo-track { position: relative; background: var(--bg3); border-radius: 3px; height: 14px; border: 1px solid var(--border); }
+.rasgo-seg { position: absolute; top: -1px; bottom: -1px; background: rgba(41,128,185,.35); border-radius: 3px; }
+.rasgo-dotU { position: absolute; top: 50%; width: 8px; height: 8px; border-radius: 50%; background: #2980b9; transform: translate(-50%,-50%); border: 2px solid #fff; }
+.rasgo-dotM { position: absolute; top: 50%; width: 8px; height: 8px; border-radius: 50%; background: #e67e22; transform: translate(-50%,-50%); border: 2px solid #fff; }
+.stress-badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
+.stress-pos { background: rgba(230,126,34,.14); color: var(--orange); }
+.stress-neg { background: rgba(142,68,173,.14); color: var(--purple); }
+.stress-neu { background: rgba(107,114,128,.12); color: var(--text2); }
+.report-only-flag { font-size: 9px; color: var(--text3); font-style: italic; }
+@media print {
+  body { background: #fff; }
+  .no-print { display: none !important; }
+  #app { max-width: 100%; padding: 0; }
+  .card { border: none; page-break-inside: avoid; }
+}
 </style>
 </head>
 <body>
@@ -80,7 +100,7 @@ async function sbUpdate(t,row,f){
   if(!r.ok)throw new Error(await r.text()); return r.json();
 }
 
-// ── 24 SETS ───────────────────────────────────────────────────────────────────
+// ── 24 SETS (SNTQSET.DTA) ───────────────────────────────────────────────────────
 const SETS=[
   {k1:"SIC*",k2:"S*CD",p:["Siempre trato de tener en cuenta los sentimientos de los demás.","Generalmente puedo persuadir a los demás de mis puntos de vista.","Me gusta reconocer el mérito de los demás cuando corresponde.","Tengo un enfoque de la vida poco convencional."]},
   {k1:"ICD*",k2:"ICDS",p:["Me preocupo por mi imagen personal.","Trabajo bien como parte de un equipo.","Casi nunca me doy por vencido en nada.","Tengo mucho cuidado de no ofender a nadie."]},
@@ -108,7 +128,7 @@ const SETS=[
   {k1:"DSIC",k2:"DSIC",p:["Me gusta estar activo todo el tiempo.","Me gusta llevarme bien con la mayor cantidad de gente posible.","Tengo un círculo de amigos amplio.","Soy una persona muy organizada y ordenada."]}
 ];
 
-// ── ALGORITMO ─────────────────────────────────────────────────────────────────
+// ── ALGORITMO DISC ────────────────────────────────────────────────────────────
 const CAL_U=[47.46,34.12,51.43,24.05], CAL_M=[41.67,42.67,30.00,35.29];
 const DC={D:'#c0392b',I:'#e67e22',S:'#27ae60',C:'#2980b9'};
 
@@ -119,12 +139,52 @@ function computeProfiles(ans){
   const U=normArr(scoreW(ans,'k1'),CAL_U),M=normArr(scoreW(ans,'k2'),CAL_M),C=U.map((v,i)=>Math.round((v+M[i])/2));
   const o=a=>({D:a[0],I:a[1],S:a[2],C:a[3]});return{U:o(U),M:o(M),C:o(C)};
 }
+
+// ── 12 RASGOS DE PERSONALIDAD ─────────────────────────────────────────────────
+// Fórmulas según "Rasgos de personalidad actualizados" (Lic. César Isola):
+// cada rasgo = diferencia entre dos factores DISC, normalizada a 0-100 (50 = neutro)
+const RASGOS_ORDEN=["Independencia","Entusiasmo","Amistoso","Cooperativismo","Exactitud",
+  "Automotivacion","Auto Confianza","Sensitividad","Pensador Objetivo","Persistencia","Paciencia","Eficiencia"];
+
 function derivarRasgos(d,i,s,c){
-  const mix=(p,q=null,r=null)=>r!==null?Math.round(p*.80+q*.15+r*.05):q!==null?Math.round(p*.90+q*.10):Math.round(p);
-  return{'Independencia':mix(d,i*.1),'Auto Confianza':mix(d,c*.1),'Eficiencia':mix(d,c,s),'Automotivacion':mix(d,i),
-    'Entusiasmo':mix(i,d*.1),'Amistoso':mix(i,s),'Sensitividad':mix(i,s,c),'Cooperativismo':mix(s,i),
-    'Paciencia':mix(s,c*.1),'Pensador Objetivo':mix(c,s),'Exactitud':mix(c,s*.1),'Persistencia':mix(c,d*.1)};
+  const clamp=v=>Math.max(0,Math.min(100,Math.round(v)));
+  const diff=(a,b)=>clamp(50+(a-b)/2);
+  return {
+    'Independencia'     : diff(d,c),   // D/C
+    'Entusiasmo'        : diff(i,s),   // I/S
+    'Amistoso'          : diff(i,d),   // I/D
+    'Cooperativismo'    : diff(c,d),   // C/D
+    'Exactitud'         : diff(c,i),   // C/I
+    'Automotivacion'    : diff(d,s),   // D/S
+    'Auto Confianza'    : diff(i,c),   // I/C
+    'Sensitividad'      : diff(c,s),   // C/S
+    'Pensador Objetivo' : diff(s,i),   // S/I
+    'Persistencia'      : diff(s,c),   // S/C
+    'Paciencia'         : diff(s,d),   // S/D
+    'Eficiencia'        : diff(d,i),   // D/I
+  };
 }
+
+// ── INDICADOR DE STRESS (movimiento Underlying → Mask) ────────────────────────
+function calcularStress(traitsU,traitsM){
+  const detalle={};let sumAbs=0,sumPos=0,sumNeg=0;
+  RASGOS_ORDEN.forEach(k=>{
+    const u=traitsU[k],m=traitsM[k],delta=m-u;
+    let tipo='estable'; if(delta>5)tipo='positivo'; else if(delta<-5)tipo='negativo';
+    detalle[k]={u,m,delta,tipo};
+    sumAbs+=Math.abs(delta); if(delta>0)sumPos+=delta; else sumNeg+=Math.abs(delta);
+  });
+  const indice=Math.round(sumAbs/RASGOS_ORDEN.length);
+  const ordenadoPorMovimiento=Object.entries(detalle).sort((a,b)=>Math.abs(b[1].delta)-Math.abs(a[1].delta));
+  const top=ordenadoPorMovimiento[0];
+  return{
+    detalle, indice,
+    tendencia: sumPos>sumNeg+5?'positiva':(sumNeg>sumPos+5?'negativa':'equilibrada'),
+    rasgoMax: top?top[0]:null, deltaMax: top?top[1].delta:0,
+  };
+}
+
+// ── ROLES ─────────────────────────────────────────────────────────────────────
 function calcularTop3Roles(rasgos){
   const eng={'Independencia':'Independence','Entusiasmo':'Enthusiasm','Amistoso':'Friendliness','Cooperativismo':'Cooperativeness',
     'Exactitud':'Accuracy','Automotivacion':'Self-motivation','Auto Confianza':'Self-confidence','Sensitividad':'Sensitivity',
@@ -140,20 +200,25 @@ function calcularTop3Roles(rasgos){
   const ord=Object.entries(pts).sort((a,b)=>b[1]-a[1]).map(([k])=>k);
   return[ord[0],ord[1],ord[2]];
 }
+
+// Mismos textos que DETALLES_ROLES en Equipos_DISC.py — mantener sincronizados
+const DETALLES_ROLES={
+  'Pionero':{perfil:'Motor de resultados y tomador de riesgos.',aporte:'Excelente para la apertura de proyectos complejos y situaciones de alta incertidumbre.',etapa:'Inicio (Define la postura de ataque y empuja a la acción).',alerta:'Puede ser percibido como excesivamente asertivo o emocional bajo frustración.',color:'#E74C3C'},
+  'Relacionista':{perfil:'Comunicador persuasivo y gestor de contactos externos.',aporte:'El mejor activo para negociaciones, captación de recursos y comunicación entusiasta.',etapa:'Ejecución / Negociación (Toma ideas de otros y les agrega valor).',alerta:'Su entusiasmo puede decaer si la tarea se vuelve monótona.',color:'#E67E22'},
+  'Apoyo':{perfil:'Facilitador de la cooperación y armonía grupal.',aporte:'Genera deseo de cooperación y prioriza al equipo sobre intereses personales.',etapa:'Planificación / Ejecución (Soporte interno y atención al cliente).',alerta:'Le cuesta lidiar con la presión extrema o conflictos directos.',color:'#2ECC71'},
+  'Analista':{perfil:'Investigador detallista y estratega basado en hechos.',aporte:'Proporciona asesoramiento detallado y actúa como filtro de calidad del equipo.',etapa:'Planificación (Asesoramiento táctico y validación de datos).',alerta:'Puede ser excesivamente crítico, lo que desmotiva a perfiles creativos.',color:'#3498DB'},
+  'Motivador':{perfil:'Desarrollador de talento y espíritu de equipo.',aporte:'Ideal para líderes que buscan potenciar las capacidades de sus colaboradores.',etapa:'Ejecución (Mantiene la motivación y el ritmo grupal).',alerta:'Puede enfocarse tanto en las personas que descuide los plazos técnicos.',color:'#9B59B6'},
+  'Innovador':{perfil:'Creador de soluciones imaginativas y fuera de la caja.',aporte:'Enfrenta desafíos complejos con estrategias poco convencionales.',etapa:'Inicio / Planificación (Diseño de la solución estratégica).',alerta:'Su pensamiento puede carecer de límites prácticos o rigor.',color:'#1ABC9C'},
+  'Finalizador':{perfil:'Implementador preciso orientado al cierre y la calidad.',aporte:'Transforma ideas en soluciones prácticas y asegura que nada quede sin terminar.',etapa:'Cierre (Guardián de plazos y detalles finales).',alerta:'Tiene estándares tan altos que le cuesta delegar tareas.',color:'#F39C12'},
+  'Especialista':{perfil:'Experto técnico con pericia en áreas específicas.',aporte:'Aporta un conocimiento técnico profundo y detallado.',etapa:'Planificación (Consulta técnica experta).',alerta:'Puede tener dificultades de comunicación con perfiles comerciales.',color:'#34495E'},
+  'Ancla':{perfil:'Administrador confiable, fiel y procedimental.',aporte:'Garantiza estabilidad operativa y administración eficiente.',etapa:'Ejecución / Cierre (Mantenimiento de procesos y lealtad).',alerta:'Tiende a ser inflexible ante los cambios bruscos de dirección.',color:'#7F8C8D'}
+};
+
 function today(){return new Date().toISOString().split('T')[0];}
 
-// ── CONSISTENCIA ──────────────────────────────────────────────────────────────
-// Pares de sets temáticamente similares — si el perfil es consistente
-// las respuestas deben apuntar al mismo factor dominante
+// ── CONSISTENCIA (indicador de confiabilidad, uso interno RRHH) ───────────────
 const PARES_CONSIST = [[0,6],[1,22],[3,9],[4,13],[8,10],[11,16],[14,20],[15,17],[18,7],[21,23]];
-
 function calcularConsistencia(ans) {
-  function factorDominante(a) {
-    const k=pKey(SETS[a.setIdx||0]?.k1||SETS[0].k1);
-    if(k[a.mi]!==-1) return k[a.mi];
-    return -1;
-  }
-  // Comparar factor elegido como MÁS en pares similares
   let iguales=0, total=0;
   PARES_CONSIST.forEach(([ia,ib])=>{
     const fa=pKey(SETS[ia].k1)[ans[ia].mi];
@@ -165,20 +230,15 @@ function calcularConsistencia(ans) {
 
 // ── TEMPORIZADOR ──────────────────────────────────────────────────────────────
 const TIMER = {
-  start: null,          // timestamp inicio cuestionario
-  setTimes: [],         // ms por set
-  setStart: null,       // timestamp inicio set actual
+  start: null, setTimes: [], setStart: null,
   startSet(i) { this.setStart=Date.now(); },
-  endSet(i) {
-    if(this.setStart) { this.setTimes[i]=(Date.now()-this.setStart)/1000; this.setStart=null; }
-  },
+  endSet(i) { if(this.setStart) { this.setTimes[i]=(Date.now()-this.setStart)/1000; this.setStart=null; } },
   totalSec() { return this.start ? Math.round((Date.now()-this.start)/1000) : 0; },
   fmt(s) { const m=Math.floor(s/60),sec=s%60; return `${m}m ${sec.toString().padStart(2,'0')}s`; },
   maxPausa() {
     if(!this.setTimes.length) return {sec:0,set:0};
-    let max=0,idx=0;
-    this.setTimes.forEach((t,i)=>{if(t>max){max=t;idx=i;}});
-    return {sec:Math.round(max),set:idx+1,label:SETS[idx]?.label||`Set ${idx+1}`};
+    let max=0,idx=0; this.setTimes.forEach((t,i)=>{if(t>max){max=t;idx=i;}});
+    return {sec:Math.round(max),set:idx+1};
   },
   semaforo() {
     const total=this.totalSec();
@@ -191,51 +251,28 @@ const TIMER = {
 
 // ── ESTADO ────────────────────────────────────────────────────────────────────
 const ST={
-  screen:'modo', // modo|datos|encuadre|q|saving|result
+  screen:'modo', // modo|datos|encuadre|q|saving|result|buscarReporte|reporte
   modo:null,
   empleadoData:null,
-  form:{empresa:'',unidad:'',nombre:'',apellido:'',legajo:'',sexo:'M',comentario:''},
+  form:{empresa:'',unidad:'',nombre:'',apellido:'',legajo:'',sexo:'M',fechaNacimiento:'',infoGeneral:''},
   cur:0, sel:'most',
   ans:Array(24).fill(null).map(()=>({mi:null,li:null})),
   result:null, error:null,
+  buscar:{empresa:'',termino:''}, candidatosEncontrados:null, reporteData:null,
 };
 
 // URL params
 (()=>{
   const p=new URLSearchParams(window.location.search);
+  if(p.get('modo')==='reporte'){ST.screen='buscarReporte';return;}
   if(p.get('legajo')){ST.form.legajo=p.get('legajo');ST.modo='empleado';ST.screen='datos';}
   if(p.get('modo')==='candidato'){ST.modo='candidato';ST.screen='datos';}
-  // Pre-carga de datos desde URL
-  if(p.get('apellido')) ST.form.apellido = p.get('apellido');
-  if(p.get('nombre')){
-    const n = p.get('nombre').trim();
-    // Si viene "Nombre Apellido" en un solo param, va solo a nombre
-    // Si viene "Apellido, Nombre" con coma, separar
-    if(n.includes(',')){
-      const pts = n.split(',');
-      ST.form.apellido = pts[0].trim();
-      ST.form.nombre   = pts[1].trim();
-    } else {
-      ST.form.nombre = n;
-    }
-  }
-  if(p.get('empresa'))  ST.form.empresa  = p.get('empresa');
-  if(p.get('unidad'))   ST.form.unidad   = p.get('unidad');
-  if(p.get('colaborador')){
-    const partes = p.get('colaborador').split(',');
-    if(partes.length >= 2){
-      ST.form.apellido = partes[0].trim();
-      ST.form.nombre   = partes[1].trim();
-    } else {
-      ST.form.nombre = p.get('colaborador').trim();
-    }
-  }
 })();
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function render(){
   const app=document.getElementById('app');
-  const screens={modo:hModo,datos:hDatos,encuadre:hEncuadre,q:hQ,saving:hSaving,result:hResult};
+  const screens={modo:hModo,datos:hDatos,encuadre:hEncuadre,q:hQ,saving:hSaving,result:hResult,buscarReporte:hBuscarReporte,reporte:hReporte};
   app.innerHTML=(screens[ST.screen]||hModo)();
   attachEvents();
 }
@@ -293,14 +330,15 @@ function hDatos(){
         <div><label>Apellido *</label><input id="fApellido" value="${ed?.colaborador?.split(',')[0]?.trim()||f.apellido}" placeholder="Apellido" ${found?'disabled style="opacity:.6"':''}></div>
         <div><label>Nombre *</label><input id="fNombre" value="${ed?.colaborador?.split(',')[1]?.trim()||f.nombre}" placeholder="Nombre" ${found?'disabled style="opacity:.6"':''}></div>
       </div>
-      <div><label>Empresa *</label><input id="fEmpresa" value="${ed?.empresa||f.empresa}" placeholder="Empresa" ${found?'disabled style="opacity:.6"':''}></div>
-      <div><label>Área / Unidad de negocio</label><input id="fUnidad" value="${ed?.unidad_de_negocio||f.unidad}" placeholder="Ej: Comercial, Operaciones..." ${found?'disabled style="opacity:.6"':''}></div>
       <div class="grid2">
+        <div><label>Fecha de nacimiento</label><input id="fFechaNac" type="date" value="${f.fechaNacimiento}"></div>
         <div><label>Sexo</label>
           <select id="fSexo"><option value="M" ${f.sexo==='M'?'selected':''}>Masculino</option><option value="F" ${f.sexo==='F'?'selected':''}>Femenino</option></select>
         </div>
-        <div><label>Comentarios</label><input id="fComentario" value="${f.comentario}" placeholder="Puesto, área, etc."></div>
       </div>
+      <div><label>Empresa *</label><input id="fEmpresa" value="${ed?.empresa||f.empresa}" placeholder="Empresa" ${found?'disabled style="opacity:.6"':''}></div>
+      <div><label>Área / Unidad de negocio</label><input id="fUnidad" value="${ed?.unidad_de_negocio||f.unidad}" placeholder="Ej: Comercial, Operaciones..."></div>
+      <div><label>Información general</label><textarea id="fInfoGeneral" placeholder="Puesto al que aplica, comentarios, contexto adicional...">${f.infoGeneral}</textarea></div>
       <button class="btn btn-primary" id="btnIniciar" style="width:100%;padding:11px;margin-top:4px">Continuar →</button>
       `:`<p style="font-size:12px;color:var(--text2);text-align:center;padding:1rem">Ingresá tu legajo y hacé clic en <strong>Buscar</strong></p>`}
     </div>
@@ -318,22 +356,22 @@ function hEncuadre(){
       </h2>
       <div style="text-align:left;max-width:460px;margin:0 auto">
         <p style="font-size:14px;line-height:1.7;color:var(--text);margin-bottom:12px">
-          Esta evaluación <strong>no tiene respuestas correctas ni incorrectas</strong>. 
+          Esta evaluación <strong>no tiene respuestas correctas ni incorrectas</strong>.
           No mide si sos bueno o malo en algo.
         </p>
         <p style="font-size:14px;line-height:1.7;color:var(--text);margin-bottom:12px">
-          Describe <strong>cómo sos naturalmente</strong> — tu estilo de comunicación, 
+          Describe <strong>cómo sos naturalmente</strong> — tu estilo de comunicación,
           tus fortalezas y la forma en que preferís trabajar.
         </p>
         <p style="font-size:14px;line-height:1.7;color:var(--text);margin-bottom:16px">
-          Un perfil honesto te ayuda a vos y a tu equipo. 
+          Un perfil honesto te ayuda a vos y a tu equipo.
           Un perfil estratégico solo genera decisiones equivocadas sobre tu propio desarrollo.
         </p>
         <div style="background:rgba(41,128,185,.08);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px">
           <p style="font-size:12px;color:var(--blue);font-weight:500;margin-bottom:4px">💡 Cómo responder</p>
           <p style="font-size:12px;color:var(--text2);line-height:1.6">
-            En cada pantalla vas a ver 4 frases. Elegí primero la que <strong>más</strong> te describe 
-            y luego la que <strong>menos</strong> te describe. Seguí tu primera impresión — 
+            En cada pantalla vas a ver 4 frases. Elegí primero la que <strong>más</strong> te describe
+            y luego la que <strong>menos</strong> te describe. Seguí tu primera impresión —
             no hay que pensar demasiado.
           </p>
         </div>
@@ -383,109 +421,181 @@ function hSaving(){return`
     <p style="font-size:12px;color:var(--text2)">Esto tarda unos segundos</p>
   </div>`;}
 
-// ── PANTALLA 6: RESULTADO ─────────────────────────────────────────────────────
+// ── PANTALLA 6: RESULTADO (vista del candidato — sin detalle sensible) ────────
 function hResult(){
-  const r=ST.result, isEmp=ST.modo==='empleado';
-  const bar=(f,v)=>`
-    <div class="disc-bar">
-      <span style="color:${DC[f]}">${f}</span>
-      <div class="track"><div class="fill" style="width:${v}%;background:${DC[f]}">${v>=20?`<span>${v}</span>`:''}</div></div>
-      ${v<20?`<span style="font-size:11px;font-weight:600;color:${DC[f]};min-width:24px">${v}</span>`:''}
-    </div>`;
-  const pBlock=(title,sub,sc)=>`
-    <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.9rem 1rem;flex:1;min-width:130px">
-      <p style="font-size:11px;font-weight:600;margin:0 0 1px">${title}</p>
-      <p style="font-size:9px;color:var(--text2);margin:0 0 9px">${sub}</p>
-      ${['D','I','S','C'].map(f=>bar(f,sc[f])).join('')}
-    </div>`;
-  const rolColor={'Pionero':'#E74C3C','Relacionista':'#E67E22','Apoyo':'#2ECC71','Analista':'#3498DB',
-    'Motivador':'#9B59B6','Innovador':'#1ABC9C','Finalizador':'#F39C12','Especialista':'#34495E','Ancla':'#7F8C8D'};
-  const rc=rolColor[r.rol1]||'#2980b9';
+  const r=ST.result;
+  return`
+  <div style="min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1rem;text-align:center">
+    <div style="font-size:44px">${r.saved?'✅':'⚠️'}</div>
+    <h2 style="font-size:19px;font-weight:600">${r.saved?'¡Evaluación completada!':'Evaluación registrada con observaciones'}</h2>
+    <p style="font-size:13px;color:var(--text2);max-width:400px;line-height:1.6">
+      Gracias, ${r.name.split(',')[1]?.trim()||r.name}. Tus respuestas quedaron registradas en Talento 3D.
+      Los resultados detallados los va a revisar tu equipo de RRHH, y si corresponde, te los va a compartir
+      y conversar con vos.
+    </p>
+    ${!r.saved?`<div class="alert alert-red">No se pudo guardar automáticamente. Avisale a tu RRHH.</div>`:''}
+  </div>`;}
 
-  // Bloque de confiabilidad — solo visible en el resultado
-  const sem=r.confiab.semaforo;
-  const consSem=r.confiab.consist>=0.75?{cls:'sem-green',txt:'Alta'}:r.confiab.consist>=0.5?{cls:'sem-yellow',txt:'Media'}:{cls:'sem-red',txt:'Baja'};
-  const confiabHtml=`
-    <div class="card" style="margin-bottom:12px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <p style="font-size:12px;font-weight:600;margin:0">Indicadores de confiabilidad</p>
-        <span style="font-size:9px;color:var(--text3);font-style:italic">Solo visible para RRHH / consultor</span>
+// ── BÚSQUEDA DE REPORTE (uso interno RRHH) ────────────────────────────────────
+function hBuscarReporte(){
+  const b=ST.buscar;
+  return`
+  <div style="text-align:center;padding:1rem 0">
+    <div style="font-size:11px;font-weight:600;color:#2980b9;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">TALENTO 3D · USO INTERNO</div>
+    <h1 style="font-size:19px;font-weight:600;margin-bottom:4px">Reporte DISC Individual</h1>
+    <p style="font-size:11px;color:var(--text2)">Solo visible para la empresa / consultor — no para el candidato</p>
+  </div>
+  ${ST.error?`<div class="alert alert-red">${ST.error}</div>`:''}
+  <div class="card" style="margin-top:12px">
+    <div style="display:grid;gap:10px">
+      <div><label>Empresa *</label><input id="bEmpresa" value="${b.empresa}" placeholder="Nombre exacto de la empresa"></div>
+      <div><label>Nombre / Apellido o legajo</label><input id="bTermino" value="${b.termino}" placeholder="Ej: Brenot, o 1234"></div>
+      <button class="btn btn-primary" id="btnBuscarReporte" style="width:100%;padding:10px">Buscar →</button>
+    </div>
+  </div>
+  ${ST.candidatosEncontrados?renderListaResultados(ST.candidatosEncontrados):''}
+  `;}
+
+function renderListaResultados(rows){
+  if(!rows.length)return`<p style="font-size:12px;color:var(--text2);text-align:center;margin-top:14px">No se encontraron resultados.</p>`;
+  return`<div class="card" style="margin-top:12px">
+    <p style="font-size:11px;color:var(--text2);margin-bottom:8px">${rows.length} resultado(s):</p>
+    ${rows.map((r,i)=>`
+      <button class="btn" data-idx="${i}" data-action="verReporte" style="width:100%;justify-content:flex-start;margin-bottom:6px;text-align:left">
+        ${r.colaborador} — <span style="color:var(--text2);font-size:11px">${r.unidad_de_negocio||''} ${r.tipo==='candidato'?'(candidato)':''}</span>
+      </button>`).join('')}
+  </div>`;}
+
+// ── PANTALLA REPORTE COMPLETO ──────────────────────────────────────────────────
+function barBlock(title,sub,sc){
+  const bar=(f,v)=>`<div class="disc-bar"><span style="color:${DC[f]}">${f}</span>
+    <div class="track"><div class="fill" style="width:${v}%;background:${DC[f]}">${v>=20?`<span>${v}</span>`:''}</div></div>
+    ${v<20?`<span style="font-size:11px;font-weight:600;color:${DC[f]};min-width:24px">${v}</span>`:''}</div>`;
+  return`<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.9rem 1rem;flex:1;min-width:150px">
+    <p style="font-size:11px;font-weight:600;margin:0 0 1px">${title}</p>
+    <p style="font-size:9px;color:var(--text2);margin:0 0 9px">${sub}</p>
+    ${['D','I','S','C'].map(f=>bar(f,sc[f])).join('')}</div>`;
+}
+
+function radarSVG(labels,seriesA,seriesB){
+  const n=labels.length,cx=170,cy=170,R=118;
+  const angle=i=>-Math.PI/2+i*2*Math.PI/n;
+  const pt=(val,i)=>{const r=R*val/100;return[cx+r*Math.cos(angle(i)),cy+r*Math.sin(angle(i))];};
+  const gridPoly=frac=>labels.map((_,i)=>pt(frac*100,i).join(',')).join(' ');
+  const axisLines=labels.map((_,i)=>{const[x,y]=pt(100,i);return`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#e5e7eb" stroke-width="1"/>`;}).join('');
+  const grids=[.25,.5,.75,1].map(f=>`<polygon points="${gridPoly(f)}" fill="none" stroke="#e5e7eb" stroke-width="1"/>`).join('');
+  const labelsHtml=labels.map((lab,i)=>{const[x,y]=pt(132,i);return`<text x="${x}" y="${y}" font-size="8.5" fill="#6b7280" text-anchor="middle">${lab}</text>`;}).join('');
+  const polyA=`<polygon points="${labels.map((_,i)=>pt(seriesA[i],i).join(',')).join(' ')}" fill="#2980b933" stroke="#2980b9" stroke-width="2"/>`;
+  const polyB=seriesB?`<polygon points="${labels.map((_,i)=>pt(seriesB[i],i).join(',')).join(' ')}" fill="none" stroke="#e67e22" stroke-width="2" stroke-dasharray="4,3"/>`:'';
+  return`<svg viewBox="0 0 340 340" style="width:100%;max-width:380px;display:block;margin:8px auto">${grids}${axisLines}${polyA}${polyB}${labelsHtml}</svg>`;
+}
+
+function rolBlock(n,rol){
+  const info=DETALLES_ROLES[rol]||{};
+  return`<div style="margin-bottom:10px">
+    <p style="font-size:12px;font-weight:700;color:${info.color||'var(--text)'};margin-bottom:3px">Rol ${n}: ${rol}</p>
+    <p style="font-size:11px;line-height:1.55"><b>Perfil:</b> ${info.perfil||''}</p>
+    <p style="font-size:11px;line-height:1.55"><b>Aporte:</b> ${info.aporte||''}</p>
+    <p style="font-size:11px;line-height:1.55"><b>Etapa ideal:</b> ${info.etapa||''}</p>
+    <p style="font-size:11px;line-height:1.55"><b>Alerta:</b> ${info.alerta||''}</p>
+  </div>`;
+}
+
+function hReporte(){
+  const d=ST.reporteData;
+  const U={D:d.d_score,I:d.i_score,S:d.s_score,C:d.c_score};
+  const M=d.mask_scores||{D:0,I:0,S:0,C:0};
+  const Mn={D:M.d??M.D??0,I:M.i??M.I??0,S:M.s??M.S??0,C:M.c??M.C??0};
+  const C={D:Math.round((U.D+Mn.D)/2),I:Math.round((U.I+Mn.I)/2),S:Math.round((U.S+Mn.S)/2),C:Math.round((U.C+Mn.C)/2)};
+  const traitsU={}; RASGOS_ORDEN.forEach(k=>traitsU[k]=d[k.toLowerCase().replace(' ','_')]??0);
+  const traitsM=d.rasgos_mask||{};
+  const stress=d.stress||calcularStress(traitsU,traitsM);
+  const rolColor={'Pionero':'#E74C3C','Relacionista':'#E67E22','Apoyo':'#2ECC71','Analista':'#3498DB','Motivador':'#9B59B6','Innovador':'#1ABC9C','Finalizador':'#F39C12','Especialista':'#34495E','Ancla':'#7F8C8D'};
+  const rc=rolColor[d.rol_preferido_1]||'#2980b9';
+
+  const rasgoRows=RASGOS_ORDEN.map(k=>{
+    const u=traitsU[k]??0, m=traitsM[k]??(stress.detalle?.[k]?.m??u);
+    const delta=stress.detalle?.[k]?.delta ?? (m-u);
+    const tipo=stress.detalle?.[k]?.tipo ?? (delta>5?'positivo':delta<-5?'negativo':'estable');
+    const badge=tipo==='positivo'?`<span class="stress-badge stress-pos">▲ +${delta}</span>`:tipo==='negativo'?`<span class="stress-badge stress-neg">▼ ${delta}</span>`:`<span class="stress-badge stress-neu">≈</span>`;
+    const lo=Math.min(u,m),hi=Math.max(u,m);
+    return`<div class="rasgo-row">
+      <span style="font-size:11px">${k}</span>
+      <div class="rasgo-track">
+        <div class="rasgo-seg" style="left:${lo}%;width:${Math.max(hi-lo,1)}%"></div>
+        <div class="rasgo-dotU" style="left:${u}%"></div>
+        <div class="rasgo-dotM" style="left:${m}%"></div>
       </div>
-      <div class="confiab-row">
-        <span style="font-size:12px;color:var(--text2)">⏱ Tiempo total</span>
-        <span style="font-size:12px;font-weight:600">${r.confiab.tiempoFmt}</span>
-      </div>
-      <div class="confiab-row">
-        <span style="font-size:12px;color:var(--text2)">📊 Ritmo de respuesta</span>
-        <span style="font-size:12px;font-weight:600"><span class="semaforo ${sem.cls}"></span>${sem.txt}</span>
-      </div>
-      <div class="confiab-row">
-        <span style="font-size:12px;color:var(--text2)">🔍 Consistencia interna</span>
-        <span style="font-size:12px;font-weight:600"><span class="semaforo ${consSem.cls}"></span>${consSem.txt} (${Math.round(r.confiab.consist*100)}%)</span>
-      </div>
-      <div class="confiab-row">
-        <span style="font-size:12px;color:var(--text2)">⏸ Mayor pausa</span>
-        <span style="font-size:12px;font-weight:600">Set ${r.confiab.maxPausa.set} — ${r.confiab.maxPausa.sec}s</span>
-      </div>
-      <div style="margin-top:10px;padding:10px;background:var(--bg2);border-radius:var(--radius)">
-        <p style="font-size:11px;color:var(--text2);line-height:1.6;margin:0">
-          ${sem.color==='red' && sem.txt.includes('rápida') ? '⚠️ Evaluación completada en tiempo inusualmente corto. Se recomienda validar el perfil en una conversación.' :
-            sem.color==='orange' ? '⚠️ Tiempo de respuesta inusualmente largo. Puede indicar análisis estratégico de las preguntas.' :
-            consSem.cls==='sem-red' ? '⚠️ Baja consistencia en respuestas similares. El perfil puede no reflejar con precisión el estilo natural.' :
-            '✓ El perfil tiene buena confiabilidad. El tiempo y la consistencia son coherentes con una evaluación honesta.'}
-        </p>
-      </div>
+      ${badge}
     </div>`;
+  }).join('');
 
   return`
-  <div style="text-align:center;padding:.8rem 0 .4rem">
-    <div style="font-size:11px;font-weight:600;color:#2980b9;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">RESULTADO</div>
-    <h2 style="font-size:19px;font-weight:600;margin-bottom:2px">${r.name}</h2>
-    <p style="font-size:11px;color:var(--text2)">${r.empresa}${r.unidad?' · '+r.unidad:''}</p>
+  <div class="no-print" style="margin-bottom:10px">
+    <button class="btn" id="btnVolverBusqueda">← Nueva búsqueda</button>
+    <button class="btn btn-primary" onclick="window.print()" style="float:right">🖨️ Imprimir / Guardar PDF</button>
   </div>
+  <div style="text-align:center;padding:.6rem 0">
+    <div style="font-size:10px;font-weight:600;color:#2980b9;letter-spacing:1px;text-transform:uppercase">REPORTE DISC INDIVIDUAL</div>
+    <span class="report-only-flag">Solo visible para la empresa, no el candidato</span>
+    <h2 style="font-size:19px;font-weight:600;margin:6px 0 2px">${d.colaborador}</h2>
+    <p style="font-size:11px;color:var(--text2)">${d.empresa}${d.unidad_de_negocio?' · '+d.unidad_de_negocio:''}${d.fecha_nacimiento?' · Nac.: '+d.fecha_nacimiento:''}</p>
+  </div>
+
   <div style="background:${rc}15;border:1px solid ${rc}40;border-radius:var(--radius-lg);padding:1rem;margin:12px 0;text-align:center">
     <p style="font-size:10px;font-weight:600;color:${rc};text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Rol principal</p>
-    <p style="font-size:22px;font-weight:700;color:${rc};margin-bottom:2px">${r.rol1}</p>
-    <p style="font-size:11px;color:var(--text2)">Secundario: ${r.rol2} · Terciario: ${r.rol3}</p>
+    <p style="font-size:22px;font-weight:700;color:${rc};margin-bottom:2px">${d.rol_preferido_1}</p>
+    <p style="font-size:11px;color:var(--text2)">Secundario: ${d.rol_preferido_2} · Terciario: ${d.rol_preferido_3}</p>
   </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <p style="font-size:12px;font-weight:600;margin-bottom:4px">Perfil de Rasgos — Gráfico Radial</p>
+    <p style="font-size:10px;color:var(--text2);margin-bottom:4px">🔵 Underlying (natural) · 🟠 Mask (bajo presión, línea punteada)</p>
+    ${radarSVG(RASGOS_ORDEN,RASGOS_ORDEN.map(k=>traitsU[k]??0),RASGOS_ORDEN.map(k=>traitsM[k]??traitsU[k]??0))}
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    ${rolBlock(1,d.rol_preferido_1)}${rolBlock(2,d.rol_preferido_2)}${rolBlock(3,d.rol_preferido_3)}
+  </div>
+
   <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-    ${pBlock('Perfil Natural','Underlying',r.U)}
-    ${pBlock('Perfil Máscara','Mask',r.M)}
-    ${pBlock('Compuesto','Promedio',r.C)}
+    ${barBlock('Perfil Underlying','Natural / instintivo',U)}
+    ${barBlock('Perfil Mask','Bajo presión / esperado',Mn)}
+    ${barBlock('Perfil Compuesto','Promedio de ambos',C)}
   </div>
-  ${confiabHtml}
-  <div class="alert ${r.saved?'alert-green':'alert-red'}" style="margin-bottom:12px">
-    ${r.saved?`✓ Perfil guardado en Talento 3D · ${isEmp?'Tu perfil quedó activo':'Aparecerás en el módulo de Onboarding'}`:'⚠ No se pudo guardar. Mostrá este resultado a tu RRHH.'}
+
+  <div class="card" style="margin-bottom:12px">
+    <p style="font-size:12px;font-weight:600;margin-bottom:6px">Puntajes por Rasgo — movimiento Underlying → Mask</p>
+    ${rasgoRows}
   </div>
-  ${!(ST.modo==='candidato' && !ST.form.empresa) ? `<button class="btn" style="width:100%" onclick="location.reload()">← Nueva evaluación</button>` : ''}
-  ${(ST.modo==='candidato' && !ST.form.empresa) ? `
-  <a href="${(()=>{
-    const asunto=encodeURIComponent('Mi perfil DISC — Talento 3D');
-    const cuerpo=encodeURIComponent(
-      'Hola!\n\nAcá están los resultados de mi evaluación DISC completada en Talento 3D.\n\n'
-      +'━━━━━━━━━━━━━━━━━━━━━━━━━\n'
-      +'ROL PRINCIPAL: '+r.rol1+'\n'
-      +'Rol secundario: '+r.rol2+' · Terciario: '+r.rol3+'\n'
-      +'━━━━━━━━━━━━━━━━━━━━━━━━━\n\n'
-      +'PERFIL NATURAL (Underlying)\n'
-      +'D (Dominancia):   '+r.U.D+'\n'
-      +'I (Influencia):   '+r.U.I+'\n'
-      +'S (Estabilidad):  '+r.U.S+'\n'
-      +'C (Cumplimiento): '+r.U.C+'\n\n'
-      +'PERFIL MÁSCARA (Mask)\n'
-      +'D: '+r.M.D+' · I: '+r.M.I+' · S: '+r.M.S+' · C: '+r.M.C+'\n\n'
-      +'PERFIL COMPUESTO\n'
-      +'D: '+r.C.D+' · I: '+r.C.I+' · S: '+r.C.S+' · C: '+r.C.C+'\n\n'
-      +'━━━━━━━━━━━━━━━━━━━━━━━━━\n'
-      +'Evaluación realizada con Talento 3D\n'
-      +'https://cesarisola-png.github.io/disc/\n'
-    );
-    return 'mailto:?subject='+asunto+'&body='+cuerpo;
-  })()}" style="text-decoration:none;display:block;margin-top:8px">
-    <button class="btn" style="width:100%;background:white;color:#2980b9;border:2px solid #2980b9;">
-      📧 Enviarme mis resultados por email
-    </button>
-  </a>` : ''}`;}
+
+  <div class="card" style="margin-bottom:12px">
+    <p style="font-size:12px;font-weight:600;margin-bottom:8px">Indicador de Stress</p>
+    <div class="confiab-row"><span style="color:var(--text2)">Índice de stress (0–100)</span><span style="font-weight:700">${stress.indice}</span></div>
+    <div class="confiab-row"><span style="color:var(--text2)">Tendencia bajo presión</span>
+      <span style="font-weight:700">${stress.tendencia==='positiva'?'Se exige más de lo natural':stress.tendencia==='negativa'?'Tiende a replegarse / reprimirse':'Equilibrada'}</span></div>
+    <div class="confiab-row"><span style="color:var(--text2)">Rasgo con mayor movimiento</span><span style="font-weight:700">${stress.rasgoMax||'—'} (${stress.deltaMax>0?'+':''}${stress.deltaMax})</span></div>
+    <div style="margin-top:10px;padding:10px;background:var(--bg2);border-radius:var(--radius)">
+      <p style="font-size:11px;color:var(--text2);line-height:1.6;margin:0">
+        ${stress.indice<10?'✓ Baja adaptación entre el estilo natural y el estilo bajo presión — perfil estable en distintos contextos.':
+          stress.indice<20?'⚠️ Adaptación moderada. Sostenida en el tiempo puede generar cierto desgaste si el entorno exige mantenerla siempre.':
+          '⚠️ Adaptación alta entre Underlying y Mask. Sostenida en el tiempo es una señal de riesgo de desgaste / burnout — vale la pena conversarlo.'}
+      </p>
+    </div>
+  </div>
+
+  ${d.info_general?`<div class="card" style="margin-bottom:12px">
+    <p style="font-size:12px;font-weight:600;margin-bottom:4px">Información general</p>
+    <p style="font-size:11px;color:var(--text2);white-space:pre-wrap">${d.info_general}</p>
+  </div>`:''}
+
+  ${(d.tiempo_evaluacion_seg||d.consistencia_interna)?`<div class="card">
+    <p style="font-size:12px;font-weight:600;margin-bottom:6px">Confiabilidad de la evaluación</p>
+    <div class="confiab-row"><span style="color:var(--text2)">Tiempo total</span><span style="font-weight:600">${TIMER.fmt(d.tiempo_evaluacion_seg||0)}</span></div>
+    <div class="confiab-row"><span style="color:var(--text2)">Consistencia interna</span><span style="font-weight:600">${d.consistencia_interna||'—'}%</span></div>
+  </div>`:''}
+  `;
+}
 
 // ── EVENTOS ───────────────────────────────────────────────────────────────────
 function attachEvents(){
@@ -493,8 +603,8 @@ function attachEvents(){
   document.getElementById('btnCandidato')?.addEventListener('click',()=>{ST.modo='candidato';ST.screen='datos';ST.error=null;render();});
   document.getElementById('btnBackModo')?.addEventListener('click',()=>{ST.screen='modo';ST.error=null;ST.empleadoData=null;render();});
 
-  ['fLegajo','fApellido','fNombre','fEmpresa','fUnidad','fSexo','fComentario'].forEach((id,idx)=>{
-    const keys=['legajo','apellido','nombre','empresa','unidad','sexo','comentario'];
+  ['fLegajo','fApellido','fNombre','fFechaNac','fSexo','fEmpresa','fUnidad','fInfoGeneral'].forEach((id,idx)=>{
+    const keys=['legajo','apellido','nombre','fechaNacimiento','sexo','empresa','unidad','infoGeneral'];
     const el=document.getElementById(id);
     el?.addEventListener('input',e=>{ST.form[keys[idx]]=e.target.value;});
     el?.addEventListener('change',e=>{ST.form[keys[idx]]=e.target.value;});
@@ -522,7 +632,8 @@ function attachEvents(){
     ST.form.nombre=nombre;ST.form.apellido=apellido;ST.form.empresa=empresa;
     ST.form.unidad=document.getElementById('fUnidad')?.value?.trim()||ST.empleadoData?.unidad_de_negocio||'';
     ST.form.sexo=document.getElementById('fSexo')?.value||'M';
-    ST.form.comentario=document.getElementById('fComentario')?.value?.trim()||'';
+    ST.form.fechaNacimiento=document.getElementById('fFechaNac')?.value||'';
+    ST.form.infoGeneral=document.getElementById('fInfoGeneral')?.value?.trim()||'';
     ST.error=null;ST.screen='encuadre';render();
   });
 
@@ -551,6 +662,33 @@ function attachEvents(){
       }
     });
   });
+
+  // Búsqueda de reporte (uso interno)
+  ['bEmpresa','bTermino'].forEach((id,idx)=>{
+    const keys=['empresa','termino'];
+    document.getElementById(id)?.addEventListener('input',e=>{ST.buscar[keys[idx]]=e.target.value;});
+  });
+  document.getElementById('btnBuscarReporte')?.addEventListener('click',async()=>{
+    const empresa=document.getElementById('bEmpresa')?.value?.trim();
+    const termino=document.getElementById('bTermino')?.value?.trim()||'';
+    if(!empresa){ST.error='Ingresá la empresa.';render();return;}
+    ST.buscar.empresa=empresa;ST.buscar.termino=termino;
+    try{
+      const rows=await sbGet('colaboradores',{empresa});
+      const filtrados=termino?rows.filter(r=>(r.colaborador||'').toLowerCase().includes(termino.toLowerCase())||String(r.employee_id_number||'')===termino):rows;
+      ST.candidatosEncontrados=filtrados;ST.error=null;
+    }catch(e){ST.error='Error al conectar con el sistema.';}
+    render();
+  });
+  document.querySelectorAll('[data-action="verReporte"]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      ST.reporteData=ST.candidatosEncontrados[parseInt(btn.dataset.idx)];
+      ST.screen='reporte';render();
+    });
+  });
+  document.getElementById('btnVolverBusqueda')?.addEventListener('click',()=>{
+    ST.screen='buscarReporte';ST.candidatosEncontrados=null;ST.reporteData=null;render();
+  });
 }
 
 // ── FINALIZAR ─────────────────────────────────────────────────────────────────
@@ -558,36 +696,33 @@ async function finalizarEvaluacion(){
   ST.screen='saving';render();
   const profiles=computeProfiles(ST.ans);
   const{U,M,C}=profiles;
-  const rasgos=derivarRasgos(U.D,U.I,U.S,U.C);
-  const[rol1,rol2,rol3]=calcularTop3Roles(rasgos);
+  const rasgosU=derivarRasgos(U.D,U.I,U.S,U.C);
+  const rasgosM=derivarRasgos(M.D,M.I,M.S,M.C);
+  const stress=calcularStress(rasgosU,rasgosM);
+  const[rol1,rol2,rol3]=calcularTop3Roles(rasgosU);
   const consist=calcularConsistencia(ST.ans);
   const totalSec=TIMER.totalSec();
   const nombreCompleto=`${ST.form.apellido}, ${ST.form.nombre}`.replace(/^,\s*/,'').replace(/,\s*$/,'');
 
-  ST.result={
-    name:nombreCompleto,empresa:ST.form.empresa,unidad:ST.form.unidad,
-    U,M,C,rol1,rol2,rol3,saved:false,
-    confiab:{
-      totalSec,tiempoFmt:TIMER.fmt(totalSec),
-      semaforo:TIMER.semaforo(),
-      consist,
-      maxPausa:TIMER.maxPausa(),
-    }
-  };
+  ST.result={name:nombreCompleto,saved:false};
 
   try{
     const fila={
       empresa:ST.form.empresa, unidad_de_negocio:ST.form.unidad||'',
-      fecha:today(), colaborador:nombreCompleto,
-      independencia:rasgos['Independencia'], entusiasmo:rasgos['Entusiasmo'],
-      amistoso:rasgos['Amistoso'], cooperativismo:rasgos['Cooperativismo'],
-      exactitud:rasgos['Exactitud'], automotivacion:rasgos['Automotivacion'],
-      auto_confianza:rasgos['Auto Confianza'], sensitividad:rasgos['Sensitividad'],
-      pensador_objetivo:rasgos['Pensador Objetivo'], persistencia:rasgos['Persistencia'],
-      paciencia:rasgos['Paciencia'], eficiencia:rasgos['Eficiencia'],
+      fecha:today(), colaborador:nombreCompleto, sexo:ST.form.sexo,
+      fecha_nacimiento: ST.form.fechaNacimiento||null,
+      info_general: ST.form.infoGeneral||'',
+      independencia:rasgosU['Independencia'], entusiasmo:rasgosU['Entusiasmo'],
+      amistoso:rasgosU['Amistoso'], cooperativismo:rasgosU['Cooperativismo'],
+      exactitud:rasgosU['Exactitud'], automotivacion:rasgosU['Automotivacion'],
+      auto_confianza:rasgosU['Auto Confianza'], sensitividad:rasgosU['Sensitividad'],
+      pensador_objetivo:rasgosU['Pensador Objetivo'], persistencia:rasgosU['Persistencia'],
+      paciencia:rasgosU['Paciencia'], eficiencia:rasgosU['Eficiencia'],
       rol_preferido_1:rol1, rol_preferido_2:rol2, rol_preferido_3:rol3,
       d_score:U.D, i_score:U.I, s_score:U.S, c_score:U.C,
-      // Confiabilidad guardada para RRHH
+      mask_scores:{d:M.D,i:M.I,s:M.S,c:M.C},
+      rasgos_mask:rasgosM,
+      stress:stress,
       tiempo_evaluacion_seg: totalSec,
       consistencia_interna: Math.round(consist*100),
     };
@@ -603,7 +738,50 @@ async function finalizarEvaluacion(){
   ST.screen='result';render();
 }
 
+// ── UTILIDAD DE MIGRACIÓN (uso manual desde la consola del navegador) ─────────
+// Los registros guardados ANTES de esta corrección tienen los 12 rasgos
+// calculados con la fórmula vieja (mezcla ponderada, no diferencia entre
+// factores). Como el score Underlying (d_score/i_score/s_score/c_score)
+// siempre se guardó, se puede recalcular todo sin pedirle a nadie que repita
+// la evaluación. Para correrlo: abrir esta página, F12 → Consola, y ejecutar:
+//   await recalcularHistoricos('Nombre Exacto De La Empresa')
+// (sin argumento recalcula TODAS las empresas — usar con cuidado)
+window.recalcularHistoricos = async function(empresa){
+  const filtro = empresa ? {empresa} : {};
+  const rows = await sbGet('colaboradores', filtro);
+  let ok=0, fail=0;
+  for(const r of rows){
+    if(r.d_score==null||r.i_score==null||r.s_score==null||r.c_score==null){fail++;continue;}
+    try{
+      const rasgosU = derivarRasgos(r.d_score,r.i_score,r.s_score,r.c_score);
+      const [rol1,rol2,rol3] = calcularTop3Roles(rasgosU);
+      const patch = {
+        independencia:rasgosU['Independencia'], entusiasmo:rasgosU['Entusiasmo'],
+        amistoso:rasgosU['Amistoso'], cooperativismo:rasgosU['Cooperativismo'],
+        exactitud:rasgosU['Exactitud'], automotivacion:rasgosU['Automotivacion'],
+        auto_confianza:rasgosU['Auto Confianza'], sensitividad:rasgosU['Sensitividad'],
+        pensador_objetivo:rasgosU['Pensador Objetivo'], persistencia:rasgosU['Persistencia'],
+        paciencia:rasgosU['Paciencia'], eficiencia:rasgosU['Eficiencia'],
+        rol_preferido_1:rol1, rol_preferido_2:rol2, rol_preferido_3:rol3,
+      };
+      // Si hay mask_scores guardado, recalcular también rasgos_mask + stress
+      const ms = r.mask_scores;
+      if(ms && (ms.d??ms.D)!=null){
+        const rasgosM = derivarRasgos(ms.d??ms.D, ms.i??ms.I, ms.s??ms.S, ms.c??ms.C);
+        patch.rasgos_mask = rasgosM;
+        patch.stress = calcularStress(rasgosU, rasgosM);
+      }
+      const filtroFila = r.employee_id_number ? {employee_id_number:r.employee_id_number} : {colaborador:r.colaborador, empresa:r.empresa};
+      await sbUpdate('colaboradores', patch, filtroFila);
+      ok++;
+    }catch(e){console.error('Error con',r.colaborador,e);fail++;}
+  }
+  console.log(`Recalculado: ${ok} OK, ${fail} con error/sin scores.`);
+  return {ok,fail,total:rows.length};
+};
+
 render();
 </script>
 </body>
 </html>
+
