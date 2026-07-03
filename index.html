@@ -468,13 +468,16 @@ function renderListaResultados(rows){
 
 // ── PANTALLA REPORTE COMPLETO ──────────────────────────────────────────────────
 function barBlock(title,sub,sc){
-  const bar=(f,v)=>`<div class="disc-bar"><span style="color:${DC[f]}">${f}</span>
-    <div class="track"><div class="fill" style="width:${v}%;background:${DC[f]}">${v>=20?`<span>${v}</span>`:''}</div></div>
-    ${v<20?`<span style="font-size:11px;font-weight:600;color:${DC[f]};min-width:24px">${v}</span>`:''}</div>`;
-  return`<div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.9rem 1rem;flex:1;min-width:150px">
-    <p style="font-size:11px;font-weight:600;margin:0 0 1px">${title}</p>
-    <p style="font-size:9px;color:var(--text2);margin:0 0 9px">${sub}</p>
-    ${['D','I','S','C'].map(f=>bar(f,sc[f])).join('')}</div>`;
+  const bar=(f,v)=>{
+    const val=sc[f]||0;
+    return`<div class="disc-bar"><span style="color:${DC[f]};font-weight:700">${f}</span>
+    <div class="track"><div class="fill" style="width:${val}%;background:${DC[f]}">${val>=15?`<span>${val}</span>`:''}</div></div>
+    ${val<15?`<span style="font-size:12px;font-weight:700;color:${DC[f]};min-width:30px">${val}</span>`:''}</div>`;
+  };
+  return`<div style="background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-lg);padding:1.2rem 1.4rem;flex:1;min-width:160px">
+    <p style="font-size:12px;font-weight:700;margin:0 0 3px;color:var(--text)">${title}</p>
+    <p style="font-size:10px;color:var(--text2);margin:0 0 12px">${sub}</p>
+    ${['D','I','S','C'].map(f=>bar(f,sc[f]??0)).join('')}</div>`;
 }
 
 function radarSVG(labels,seriesA,seriesB){
@@ -558,14 +561,26 @@ function hReporte(){
     ${rolBlock(1,d.rol_preferido_1)}${rolBlock(2,d.rol_preferido_2)}${rolBlock(3,d.rol_preferido_3)}
   </div>
 
-  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
-    ${barBlock('Perfil Underlying','Natural / instintivo',U)}
-    ${barBlock('Perfil Mask','Bajo presión / esperado',Mn)}
-    ${barBlock('Perfil Compuesto','Promedio de ambos',C)}
+  <div class="card" style="margin-bottom:12px">
+    <p style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text)">🔵 Perfiles DISC (Scores 0-100)</p>
+    <p style="font-size:10px;color:var(--text2);margin-bottom:12px">Tres perspectivas del perfil behavioral</p>
+    <div style="display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+      ${barBlock('🔵 Underlying','Natural / Instintivo',U)}
+      ${barBlock('🟠 Mask','Bajo Presión / Esperado',Mn)}
+      ${barBlock('🟡 Compuesto','Promedio de Ambos',C)}
+    </div>
+    <div style="background:rgba(41,128,185,.08);border-left:3px solid #2980b9;padding:10px;border-radius:4px;font-size:10px;color:var(--text2);line-height:1.6">
+      <strong>Interpretación:</strong> Underlying muestra el estilo natural. Mask muestra cómo se adapta bajo presión. Compuesto es el promedio de ambas perspectivas.
+    </div>
   </div>
 
   <div class="card" style="margin-bottom:12px">
-    <p style="font-size:12px;font-weight:600;margin-bottom:6px">Puntajes por Rasgo — movimiento Underlying → Mask</p>
+    <p style="font-size:13px;font-weight:700;margin-bottom:3px;color:var(--text)">📊 Puntajes por Rasgo (0-100)</p>
+    <p style="font-size:10px;color:var(--text2);margin-bottom:12px">Movimiento del perfil Underlying → Mask + Indicador de Stress</p>
+    <div style="background:rgba(41,128,185,.06);padding:8px 10px;border-radius:4px;margin-bottom:10px;font-size:9px;color:var(--text2)">
+      🔵 Punto azul = Underlying (natural) · 🟠 Punto naranja = Mask (bajo presión) · 
+      🟠 Rojo = stress positivo (se exige más) · 🟣 Púrpura = stress negativo (se reprime) · ⚪ Gris = estable
+    </div>
     ${rasgoRows}
   </div>
 
