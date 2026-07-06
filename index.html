@@ -177,10 +177,19 @@ function calcularStress(traitsU,traitsM){
   const indice=Math.round(sumAbs/RASGOS_ORDEN.length);
   const ordenadoPorMovimiento=Object.entries(detalle).sort((a,b)=>Math.abs(b[1].delta)-Math.abs(a[1].delta));
   const top=ordenadoPorMovimiento && ordenadoPorMovimiento.length>0 ? ordenadoPorMovimiento[0] : null;
+  
+  // Calcular los 3 rasgos más altos (por valor Underlying)
+  const top3Rasgos=Object.entries(detalle)
+    .sort((a,b)=>b[1].u-a[1].u)
+    .slice(0,3)
+    .map(([nombre,{u,m,delta}])=>({nombre,u,m,delta}));
+  
   return{
     detalle, indice,
     tendencia: sumPos>sumNeg+5?'positiva':(sumNeg>sumPos+5?'negativa':'equilibrada'),
-    rasgoMax: top ? top[0] : 'Ninguno', deltaMax: top ? top[1].delta : 0,
+    rasgoMax: top ? top[0] : 'Ninguno', 
+    deltaMax: top ? top[1].delta : 0,
+    top3Rasgos: top3Rasgos,
   };
 }
 
@@ -571,6 +580,21 @@ function hReporte(){
     </div>
     <div style="background:rgba(41,128,185,.08);border-left:3px solid #2980b9;padding:10px;border-radius:4px;font-size:10px;color:var(--text2);line-height:1.6">
       <strong>Interpretación:</strong> Underlying muestra el estilo natural. Mask muestra cómo se adapta bajo presión. Compuesto es el promedio de ambas perspectivas.
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <p style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--text)">🎯 3 Rasgos más destacados</p>
+    <p style="font-size:10px;color:var(--text2);margin-bottom:12px">Los rasgos de mayor intensidad en el perfil natural (Underlying)</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+      ${stress.top3Rasgos.map((r,i)=>`
+        <div style="flex:1;min-width:120px;background:rgba(41,128,185,.08);border:1px solid rgba(41,128,185,.2);padding:12px;border-radius:6px">
+          <div style="font-size:11px;font-weight:700;color:#2980b9;margin-bottom:4px">${i+1}. ${r.nombre}</div>
+          <div style="font-size:18px;font-weight:700;color:#2980b9;margin-bottom:4px">${Math.round(r.u)}</div>
+          <div style="font-size:9px;color:var(--text2)">Intensidad natural</div>
+          ${Math.abs(r.delta)>0?`<div style="font-size:9px;color:var(--text2);margin-top:4px">Ajuste bajo presión: ${r.delta>0?'+':''}${Math.round(r.delta)}</div>`:''}
+        </div>
+      `).join('')}
     </div>
   </div>
 
