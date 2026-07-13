@@ -137,30 +137,27 @@
   }
   .why p.body{max-width:640px; color:var(--text); margin-top:22px; font-size:16px;}
 
-  /* module list */
-  .module{
-    display:grid; grid-template-columns:56px 1fr; gap:20px;
-    padding:26px 28px; margin-bottom:14px;
+  /* problem groups */
+  .problem-grid{
+    display:grid; grid-template-columns:repeat(2,1fr); gap:18px;
+  }
+  .problem-card{
     background:var(--card); border-radius:18px; box-shadow:var(--shadow);
+    padding:26px 26px 26px 34px; position:relative;
   }
-  .module .num{font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:13px; padding-top:4px;}
-  .module h3{font-size:22px; margin-bottom:8px; font-weight:700;}
-  .module p{color:var(--text); font-size:15px; max-width:620px;}
-  .status{
-    display:inline-block; font-family:'Inter',sans-serif; font-weight:600; font-size:11px;
-    letter-spacing:0.02em; padding:4px 10px; border-radius:999px;
-    margin-left:8px; position:relative; top:-2px;
+  .problem-card::before{
+    content:""; position:absolute; left:14px; top:24px; bottom:24px;
+    width:4px; border-radius:4px; background:var(--accent);
   }
-  .status.live{background:rgba(47,187,147,0.14); color:#1F8F6E;}
-  .status.dev{background:rgba(255,182,72,0.18); color:#B9760F;}
-
-  .roadmap-grid{
-    display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:14px;
-    margin-top:8px;
+  .problem-card h3{font-size:20px; font-weight:700; margin-bottom:14px; line-height:1.3;}
+  .problem-card ul{list-style:none; display:flex; flex-direction:column; gap:9px;}
+  .problem-card li{
+    font-size:14px; color:var(--text); line-height:1.5;
   }
-  .roadmap-grid .cell{background:var(--card); border-radius:16px; padding:22px; box-shadow:var(--shadow);}
-  .roadmap-grid .cell h4{font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:15px; margin-bottom:6px; color:var(--ink);}
-  .roadmap-grid .cell p{color:var(--muted); font-size:13.5px; line-height:1.5;}
+  .problem-card li strong{color:var(--ink); font-weight:600;}
+  @media (max-width:760px){
+    .problem-grid{grid-template-columns:1fr;}
+  }
 
   /* credibility stats */
   .stats{display:flex; flex-wrap:wrap; gap:48px; margin-bottom:44px;}
@@ -235,57 +232,56 @@
 
 <section class="modules">
   <div class="wrap">
-    <div class="section-head reveal"><span class="mark"></span><span class="section-tag">La suite — en uso</span></div>
+    <div class="section-head reveal"><span class="mark"></span><span class="section-tag">La suite, por problema que resuelve</span></div>
 
-    <div class="module reveal">
-      <div class="num mono">01</div>
-      <div><h3>Talento 3D — Equipos</h3>
-      <p>Diagnóstico y desarrollo organizacional basado en DISC: perfil conductual, diseño de equipos complementarios, asignación de roles y planes de acción — potenciado con IA.</p></div>
-    </div>
-    <div class="module reveal">
-      <div class="num mono">02</div>
-      <div><h3>TalentFlow</h3>
-      <p>Gestión del desempeño que combina evaluación por competencias con análisis de potencial. Genera planes de desarrollo integrados con Objetivos y Resultados Clave.</p></div>
-    </div>
-    <div class="module reveal">
-      <div class="num mono">03</div>
-      <div><h3>Talento 3D — Fundadores</h3>
-      <p>Une Adizes y DISC para que los equipos de fundadores y dueños definan roles directivos que ayuden a la empresa a perdurar en el tiempo.</p></div>
-    </div>
-    <div class="module reveal">
-      <div class="num mono">04</div>
-      <div><h3>Formación del Equipo</h3>
-      <p>Algoritmo de ranking de candidatos por fit conductual (DISC), motivacional (anclas de Schein) y cultural (Cameron &amp; Quinn).</p></div>
-    </div>
-    <div class="module reveal">
-      <div class="num mono">05</div>
-      <div><h3>Fit Carrera &amp; Fit Cultura</h3>
-      <p>Assessments de anclas de carrera y cultura organizacional, con perfil integrado 360°.</p></div>
-    </div>
-    <div class="module reveal">
-      <div class="num mono">06</div>
-      <div><h3>Evaluador Persona-Puesto</h3>
-      <p>Análisis de adecuación de una persona al puesto por rasgos de personalidad DISC.</p></div>
-    </div>
-    <div class="module reveal">
-      <div class="num mono">07</div>
-      <div><h3>Análisis del Perfil Comercial</h3>
-      <p>A partir de un perfil comercial personalizado y la encuesta DISC, define si conviene contratar a un candidato para roles comerciales.</p></div>
-    </div>
-    <div class="module reveal">
-      <div class="num mono">08</div>
-      <div><h3>DISC Assessment <span class="status live">Gratis</span></h3>
-      <p>Análisis del perfil DISC de un candidato — puerta de entrada gratuita a la suite.</p></div>
-    </div>
+    <div class="problem-grid">
+      <div class="problem-card reveal" style="--accent:var(--d)">
+        <h3>¿Estoy eligiendo a la persona correcta?</h3>
+        <ul>
+          <li><strong>DISC Assessment</strong> — perfil de comportamiento del candidato</li>
+          <li><strong>Evaluador Persona-Puesto</strong> — fit de personalidad con el rol</li>
+          <li><strong>Análisis del Perfil Comercial</strong> — aptitud para roles de venta</li>
+          <li><strong>Formación del Equipo</strong> — ranking de candidatos por fit total</li>
+        </ul>
+      </div>
 
-    <div style="margin-top:64px;" class="reveal">
-      <div class="section-head" style="margin-bottom:24px;"><span class="mark"></span><span class="section-tag">Próximamente</span></div>
-      <div class="roadmap-grid">
-        <div class="cell"><h4>Mentor Comercial</h4><p>Mentor para dueños de empresa que te ayuda a definir tu equipo de ventas.</p></div>
-        <div class="cell"><h4>SkillsMap</h4><p>Matriz de habilidades y brechas por equipo, por rol.</p></div>
-        <div class="cell"><h4>Diagnóstico Operativo</h4><p>Detecta cuellos de botella, ineficiencias en los procesos, falta de automatización y fallas en sistemas, y mejora los procesos.</p></div>
-        <div class="cell"><h4>Talent Analytics</h4><p>Modelo predictivo de sucesión y fuga en mandos medios. Recall 88.9%, AUC 98.8%.</p></div>
-        <div class="cell"><h4>TaskForce</h4><p>Simulador de planificación de proyectos: capacidad vs. demanda por fase.</p></div>
+      <div class="problem-card reveal" style="--accent:var(--c)">
+        <h3>¿Mi equipo funciona como equipo?</h3>
+        <ul>
+          <li><strong>Talento 3D — Equipos</strong> — diagnóstico y diseño de equipos por DISC</li>
+          <li><strong>Fit Carrera &amp; Fit Cultura</strong> — anclas de carrera y encaje cultural</li>
+        </ul>
+      </div>
+
+      <div class="problem-card reveal" style="--accent:var(--s)">
+        <h3>¿Los socios remamos para el mismo lado?</h3>
+        <ul>
+          <li><strong>Talento 3D — Fundadores</strong> — roles directivos con Adizes + DISC</li>
+        </ul>
+      </div>
+
+      <div class="problem-card reveal" style="--accent:var(--i)">
+        <h3>¿Cómo ayudo a los Jefes con el Desempeño y potencial de cada uno de su equipo? ¿Quién se puede ir?</h3>
+        <ul>
+          <li><strong>TalentFlow</strong> — desempeño y potencial, con Objetivos y Resultados Clave</li>
+          <li><strong>Talent Analytics</strong> — predicción de fuga y sucesión (Recall 88.9%, AUC 98.8%)</li>
+          <li><strong>SkillsMap</strong> — matriz de habilidades y brechas por equipo</li>
+        </ul>
+      </div>
+
+      <div class="problem-card reveal" style="--accent:var(--d)">
+        <h3>¿Dónde se traba mi operación?</h3>
+        <ul>
+          <li><strong>Diagnóstico Operativo</strong> — cuellos de botella, falta de automatización y fallas en sistemas</li>
+          <li><strong>TaskForce</strong> — capacidad vs. demanda por fase de proyecto</li>
+        </ul>
+      </div>
+
+      <div class="problem-card reveal" style="--accent:var(--c)">
+        <h3>¿Tengo un equipo comercial armado?</h3>
+        <ul>
+          <li><strong>Mentor Comercial</strong> — te ayuda a definir tu equipo de ventas</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -346,7 +342,7 @@
 <section class="close">
   <div class="wrap reveal">
     <div class="section-head" style="justify-content:center;"><span class="mark"></span><span class="section-tag">¿Empezamos?</span></div>
-    <h2>¿Querés ver cómo se aplicaría en tu empresa?</h2>
+    <h2>¿Queres ver cómo se aplicaría en tu empresa?</h2>
     <div class="hero-ctas">
       <a class="btn btn-primary" id="ctaCloseDemo" href="#" target="_blank" rel="noopener">Pedir demo →</a>
     </div>
