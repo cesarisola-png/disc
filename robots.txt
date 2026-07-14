@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cesarisola-png.github.io/disc/sitemap.xml
