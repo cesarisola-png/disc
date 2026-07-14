@@ -1,8 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://cesarisola-png.github.io/disc/index.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://cesarisola-png.github.io/disc/Fit_Carrera_Assessment.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://cesarisola-png.github.io/disc/Fit_Cultura_Assessment.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://cesarisola-png.github.io/disc/IVI_Assessment.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://cesarisola-png.github.io/disc/Talento3D_Consultoras_RRHH.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://cesarisola-png.github.io/disc/Talento3D_Material_Cliente.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://cesarisola-png.github.io/disc/Talento3D_x_DeltaTeams.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://cesarisola-png.github.io/disc/simulador_avanzado_reporte_oscuro.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
   <url>
     <loc>https://cesarisola-png.github.io/disc/talento3d.html</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
+
 </urlset>
