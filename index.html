@@ -99,6 +99,17 @@ async function sbUpdate(t,row,f){
   const r=await fetch(`${SB_URL}/rest/v1/${t}?${q}`,{method:'PATCH',headers:SB_H,body:JSON.stringify(row)});
   if(!r.ok)throw new Error(await r.text()); return r.json();
 }
+// Devuelve true/false, o null si no se pudo verificar (error de red/API).
+async function candidatoYaEvaluado(empresa,apellido,nombre){
+  const nombreCompleto=`${apellido}, ${nombre}`.replace(/^,\s*/,'').replace(/,\s*$/,'').trim().toLowerCase();
+  try{
+    const rows=await sbGet('colaboradores',{empresa,tipo:'candidato'});
+    return (rows||[]).some(r=>
+      (r.estado||'').toLowerCase()==='activo' &&
+      (r.colaborador||'').trim().toLowerCase()===nombreCompleto
+    );
+  }catch(e){console.error(e);return null;}
+}
 
 // ── 24 SETS (SNTQSET.DTA) ───────────────────────────────────────────────────────
 const SETS=[
@@ -260,8 +271,9 @@ const TIMER = {
 
 // ── ESTADO ────────────────────────────────────────────────────────────────────
 const ST={
-  screen:'modo', // modo|datos|encuadre|q|saving|result|buscarReporte|reporte
+  screen:'modo', // modo|datos|encuadre|q|saving|result|buscarReporte|reporte|bloqueado
   modo:null,
+  linkTs:null, blockMsg:'',
   empleadoData:null,
   form:{empresa:'',unidad:'',nombre:'',apellido:'',legajo:'',sexo:'M',fechaNacimiento:'',infoGeneral:''},
   cur:0, sel:'most',
@@ -270,21 +282,43 @@ const ST={
   buscar:{empresa:'',termino:''}, candidatosEncontrados:null, reporteData:null,
 };
 
+const LINK_VALIDEZ_MS = 48*60*60*1000; // 48 horas
+const SOPORTE_EMAIL = 'cesarisola@gmail.com';
+
 // URL params
 (()=>{
   const p=new URLSearchParams(window.location.search);
   if(p.get('modo')==='reporte'){ST.screen='buscarReporte';return;}
   if(p.get('legajo')){ST.form.legajo=p.get('legajo');ST.modo='empleado';ST.screen='datos';}
-  if(p.get('modo')==='candidato'){ST.modo='candidato';ST.screen='datos';}
+  if(p.get('modo')==='candidato'){
+    const tsParam=p.get('ts');
+    ST.linkTs=tsParam?parseInt(tsParam,10):null;
+    if(ST.linkTs && (Date.now()-ST.linkTs*1000)>LINK_VALIDEZ_MS){
+      ST.blockMsg=`Este link de evaluación tiene una validez de 48 horas desde que fue generado y ya venció. Escribí a <strong>${SOPORTE_EMAIL}</strong> para que te generen un nuevo link.`;
+      ST.screen='bloqueado';
+      return;
+    }
+    ST.modo='candidato';ST.screen='datos';
+  }
 })();
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function render(){
   const app=document.getElementById('app');
-  const screens={modo:hModo,datos:hDatos,encuadre:hEncuadre,q:hQ,saving:hSaving,result:hResult,buscarReporte:hBuscarReporte,reporte:hReporte};
+  const screens={modo:hModo,datos:hDatos,encuadre:hEncuadre,q:hQ,saving:hSaving,result:hResult,buscarReporte:hBuscarReporte,reporte:hReporte,bloqueado:hBloqueado};
   app.innerHTML=(screens[ST.screen]||hModo)();
   attachEvents();
 }
+
+// ── PANTALLA BLOQUEO (link vencido / evaluación ya completada) ────────────────
+function hBloqueado(){return`
+  <div style="min-height:70vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:14px;padding:1rem">
+    <div style="font-size:40px">🔒</div>
+    <h2 style="font-size:18px;font-weight:600">No podés continuar con esta evaluación</h2>
+    <p style="font-size:13px;color:var(--text2);max-width:420px;line-height:1.65">
+      ${ST.blockMsg||`Comunicate con <strong>${SOPORTE_EMAIL}</strong>.`}
+    </p>
+  </div>`;}
 
 // ── PANTALLA 1: MODO ──────────────────────────────────────────────────────────
 function hModo(){return`
@@ -663,7 +697,7 @@ function attachEvents(){
     render();
   });
 
-  document.getElementById('btnIniciar')?.addEventListener('click',()=>{
+  document.getElementById('btnIniciar')?.addEventListener('click',async()=>{
     const nombre=document.getElementById('fNombre')?.value?.trim()||ST.empleadoData?.colaborador?.split(',')[1]?.trim()||'';
     const apellido=document.getElementById('fApellido')?.value?.trim()||ST.empleadoData?.colaborador?.split(',')[0]?.trim()||'';
     const empresa=document.getElementById('fEmpresa')?.value?.trim()||ST.empleadoData?.empresa||'';
@@ -673,7 +707,23 @@ function attachEvents(){
     ST.form.sexo=document.getElementById('fSexo')?.value||'M';
     ST.form.fechaNacimiento=document.getElementById('fFechaNac')?.value||'';
     ST.form.infoGeneral=document.getElementById('fInfoGeneral')?.value?.trim()||'';
-    ST.error=null;ST.screen='encuadre';render();
+    ST.error=null;
+
+    // Anti-reenvío: un candidato no puede volver a hacer el DISC con los mismos datos
+    if(ST.modo==='candidato'){
+      const btn=document.getElementById('btnIniciar');
+      btn.innerHTML='<span class="spinner"></span>Verificando...';btn.disabled=true;
+      const yaHizo=await candidatoYaEvaluado(empresa,apellido,nombre);
+      if(yaHizo===null){
+        ST.error='No pudimos verificar tus datos. Revisá tu conexión e intentá de nuevo.';render();return;
+      }
+      if(yaHizo){
+        ST.blockMsg=`Ya registramos una evaluación DISC completada con estos datos (${empresa}${ST.form.unidad?' / '+ST.form.unidad:''}). Si creés que se trata de un error, escribí a <strong>${SOPORTE_EMAIL}</strong>.`;
+        ST.screen='bloqueado';render();return;
+      }
+    }
+
+    ST.screen='encuadre';render();
   });
 
   document.getElementById('btnEmpezar')?.addEventListener('click',()=>{
@@ -733,6 +783,21 @@ function attachEvents(){
 // ── FINALIZAR ─────────────────────────────────────────────────────────────────
 async function finalizarEvaluacion(){
   ST.screen='saving';render();
+
+  // Defensa adicional: revalidar expiración del link y no-reenvío justo antes de guardar,
+  // por si el candidato tardó en completar las 24 pantallas.
+  if(ST.modo==='candidato'){
+    if(ST.linkTs && (Date.now()-ST.linkTs*1000)>LINK_VALIDEZ_MS){
+      ST.blockMsg=`Este link de evaluación tiene una validez de 48 horas desde que fue generado y ya venció. Escribí a <strong>${SOPORTE_EMAIL}</strong> para que te generen un nuevo link.`;
+      ST.screen='bloqueado';render();return;
+    }
+    const yaHizo=await candidatoYaEvaluado(ST.form.empresa,ST.form.apellido,ST.form.nombre);
+    if(yaHizo){
+      ST.blockMsg=`Ya registramos una evaluación DISC completada con estos datos. Si creés que se trata de un error, escribí a <strong>${SOPORTE_EMAIL}</strong>.`;
+      ST.screen='bloqueado';render();return;
+    }
+  }
+
   const profiles=computeProfiles(ST.ans);
   const{U,M,C}=profiles;
   const rasgosU=derivarRasgos(U.D,U.I,U.S,U.C);
