@@ -100,14 +100,19 @@ async function sbUpdate(t,row,f){
   if(!r.ok)throw new Error(await r.text()); return r.json();
 }
 // Devuelve true/false, o null si no se pudo verificar (error de red/API).
-async function candidatoYaEvaluado(empresa,apellido,nombre){
+// Clave de identidad: empresa + nombre y apellido + fecha de nacimiento
+// (se evita usar DNI/documento por tratarse de un dato sensible bajo la Ley 25.326).
+async function candidatoYaEvaluado(empresa,apellido,nombre,fechaNacimiento){
   const nombreCompleto=`${apellido}, ${nombre}`.replace(/^,\s*/,'').replace(/,\s*$/,'').trim().toLowerCase();
+  const fechaNorm=(fechaNacimiento||'').toString().trim().slice(0,10); // YYYY-MM-DD
   try{
     const rows=await sbGet('colaboradores',{empresa,tipo:'candidato'});
-    return (rows||[]).some(r=>
-      (r.estado||'').toLowerCase()==='activo' &&
-      (r.colaborador||'').trim().toLowerCase()===nombreCompleto
-    );
+    return (rows||[]).some(r=>{
+      if((r.estado||'').toLowerCase()!=='activo') return false;
+      if((r.colaborador||'').trim().toLowerCase()!==nombreCompleto) return false;
+      const rFecha=(r.fecha_nacimiento||'').toString().trim().slice(0,10);
+      return rFecha===fechaNorm;
+    });
   }catch(e){console.error(e);return null;}
 }
 
@@ -374,11 +379,12 @@ function hDatos(){
         <div><label>Nombre *</label><input id="fNombre" value="${ed?.colaborador?.split(',')[1]?.trim()||f.nombre}" placeholder="Nombre" ${found?'disabled style="opacity:.6"':''}></div>
       </div>
       <div class="grid2">
-        <div><label>Fecha de nacimiento</label><input id="fFechaNac" type="date" value="${f.fechaNacimiento}"></div>
+        <div><label>Fecha de nacimiento${!isEmp?' *':''}</label><input id="fFechaNac" type="date" value="${f.fechaNacimiento}"></div>
         <div><label>Sexo</label>
           <select id="fSexo"><option value="M" ${f.sexo==='M'?'selected':''}>Masculino</option><option value="F" ${f.sexo==='F'?'selected':''}>Femenino</option></select>
         </div>
       </div>
+      ${!isEmp?'<p style="font-size:10px;color:var(--text3);margin-top:-4px">La fecha de nacimiento la usamos junto a tu nombre para identificarte y evitar evaluaciones duplicadas.</p>':''}
       <div><label>Empresa *</label><input id="fEmpresa" value="${ed?.empresa||f.empresa}" placeholder="Empresa" ${found?'disabled style="opacity:.6"':''}></div>
       <div><label>Área / Unidad de negocio</label><input id="fUnidad" value="${ed?.unidad_de_negocio||f.unidad}" placeholder="Ej: Comercial, Operaciones..."></div>
       <div><label>Información general</label><textarea id="fInfoGeneral" placeholder="Puesto al que aplica, comentarios, contexto adicional...">${f.infoGeneral}</textarea></div>
@@ -707,13 +713,14 @@ function attachEvents(){
     ST.form.sexo=document.getElementById('fSexo')?.value||'M';
     ST.form.fechaNacimiento=document.getElementById('fFechaNac')?.value||'';
     ST.form.infoGeneral=document.getElementById('fInfoGeneral')?.value?.trim()||'';
+    if(ST.modo==='candidato'&&!ST.form.fechaNacimiento){ST.error='Completá tu fecha de nacimiento. La usamos para identificarte y evitar evaluaciones duplicadas.';render();return;}
     ST.error=null;
 
     // Anti-reenvío: un candidato no puede volver a hacer el DISC con los mismos datos
     if(ST.modo==='candidato'){
       const btn=document.getElementById('btnIniciar');
       btn.innerHTML='<span class="spinner"></span>Verificando...';btn.disabled=true;
-      const yaHizo=await candidatoYaEvaluado(empresa,apellido,nombre);
+      const yaHizo=await candidatoYaEvaluado(empresa,apellido,nombre,ST.form.fechaNacimiento);
       if(yaHizo===null){
         ST.error='No pudimos verificar tus datos. Revisá tu conexión e intentá de nuevo.';render();return;
       }
@@ -791,7 +798,7 @@ async function finalizarEvaluacion(){
       ST.blockMsg=`Este link de evaluación tiene una validez de 48 horas desde que fue generado y ya venció. Escribí a <strong>${SOPORTE_EMAIL}</strong> para que te generen un nuevo link.`;
       ST.screen='bloqueado';render();return;
     }
-    const yaHizo=await candidatoYaEvaluado(ST.form.empresa,ST.form.apellido,ST.form.nombre);
+    const yaHizo=await candidatoYaEvaluado(ST.form.empresa,ST.form.apellido,ST.form.nombre,ST.form.fechaNacimiento);
     if(yaHizo){
       ST.blockMsg=`Ya registramos una evaluación DISC completada con estos datos. Si creés que se trata de un error, escribí a <strong>${SOPORTE_EMAIL}</strong>.`;
       ST.screen='bloqueado';render();return;
